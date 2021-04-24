@@ -2,8 +2,9 @@ import { Enemy } from "../enemy";
 import { Tower } from "../towers";
 import { Bullet } from "../bullet";
 import { WaveManager } from "../waves"
-import { Terrain } from "../terrain";
+import { Terrain, TILE_SIZE } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
+import { MetaScene } from "./MetaScene";
 
 var BULLET_DAMAGE = 10;
 
@@ -11,6 +12,7 @@ export class TDScene extends Phaser.Scene {
     path: Phaser.Curves.Path
     enemies: Phaser.Physics.Arcade.Group
     nextEnemy: number = 0
+    metaScene: MetaScene
 
     towers: Phaser.GameObjects.Group
 
@@ -19,9 +21,10 @@ export class TDScene extends Phaser.Scene {
     terrain: Terrain
 
     waveManager: WaveManager
-    moneyText: Phaser.GameObjects.Text
+    
+    sceneNumber: number
 
-    constructor(config: TDSceneConfig) {
+    constructor(config: TDSceneConfig, metaScene: MetaScene) {
         super({
             active: false,
             visible: false,
@@ -29,12 +32,8 @@ export class TDScene extends Phaser.Scene {
         });
 
         this.terrain = config.terrain;
-    }
-
-    public preload() {
-        // load the game assets
-        this.load.image('bomb', '../../assets/bomb.png');
-        this.load.image('star', '../../assets/star.png');
+        this.metaScene = metaScene;
+        this.sceneNumber = config.sceneNumber;
     }
 
     public create() {
@@ -42,12 +41,8 @@ export class TDScene extends Phaser.Scene {
         // its not related to our path
         var graphics = this.add.graphics();
 
-        this.terrain.create(this)
+        this.terrain.create()
         this.terrain.draw(graphics)
-
-        // the path for our enemies
-        // parameters are the start x and y of our path
-
 
         this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
 
@@ -57,9 +52,16 @@ export class TDScene extends Phaser.Scene {
         this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
         this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
 
-        this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
         this.waveManager = new WaveManager(this);
+        
+        const cam = this.cameras.main
+        cam.scrollX = -(2 * TILE_SIZE)
+    }
 
+    // Only foreground scene has input enabled & is visible; all scenes are being updated
+    public setIsForeground(isForegroundScene) {
+        this.input.enabled = isForegroundScene;
+        this.scene.setVisible(isForegroundScene);
     }
 
     public placeTower(pointer) {
@@ -74,6 +76,9 @@ export class TDScene extends Phaser.Scene {
                 tower.place(i, j, this.terrain);
             }
         }
+
+        let newSceneIndex = this.metaScene.addScene()
+        this.metaScene.switchToScene(newSceneIndex)
     }
 
     damageEnemy(enemy, bullet) {
@@ -88,8 +93,14 @@ export class TDScene extends Phaser.Scene {
         }
     }
 
+    frameNumber = 0;
     update(time, delta) {
+        this.frameNumber++;
         this.waveManager.update(time, delta)
+
+        if(this.frameNumber % 60 == 0) {
+            console.log(`Update ${this.sceneNumber}`)
+        }
     }
 
     addBullet(x, y, angle) {
