@@ -1,7 +1,7 @@
 import { TDScene } from "./scenes/sample"
 
 export enum TileType {
-    Start, Path, End, Empty, Buildable
+    Start, Path, End, Occupied, Buildable
 }
 
 export const TILE_SIZE = 64
@@ -24,8 +24,8 @@ export class Terrain {
         this.h = height
     }
 
-    create(scene: TDScene) {
-        this.generate(scene)
+    create() {
+        this.generate()
     }
 
     private offset() {
@@ -58,7 +58,7 @@ export class Terrain {
         return this.tiles[i][j] === TileType.Buildable;
     }
 
-    private generate(scene): number {
+    private generate(): number {
         let path = []
 
         let edges: GridPos[] = []
@@ -97,14 +97,16 @@ export class Terrain {
             .fill(false)
             .map(() => new Array(this.h)
                 .fill(TileType.Buildable));
-        
+                
         for (let i = 0; i < path.length; i++) {
-            let [x, y] = fromGridPos(path[i][0] + 1, path[i][1] + 1)
+            let [x, y] = this.fromGridPos(path[i][0], path[i][1])
             if (i == 0) {
                 // altenatively: this.path = new Phaser.Curves.Path(...)
-                this.path = scene.add.path(this.offset() + x, y)
+                // this.path = scene.add.path(x, y)
+                this.path = new Phaser.Curves.Path(x, y)
+                // scene.addObject(this.path)
             } else {
-                this.path.lineTo(this.offset() + x, y)
+                this.path.lineTo(x, y)
             }
 
             let setTo = TileType.Path
@@ -175,12 +177,12 @@ export class Terrain {
         )
         return res
     }
+
+    fromGridPos(i: integer, j: integer) {
+        return [(i + 0.5) * TILE_SIZE + this.offset(), (j + 0.5) * TILE_SIZE]
+    }
 }
 
 function randomItem(array) {
     return array[Math.floor(Math.random() * array.length)]
-}
-
-function fromGridPos(i, j) {
-    return [(i - 0.5) * TILE_SIZE, (j - 0.5) * TILE_SIZE]
 }

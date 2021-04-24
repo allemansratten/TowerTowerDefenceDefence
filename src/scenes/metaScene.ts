@@ -16,12 +16,12 @@ export class MetaScene extends Phaser.Scene {
     }
 
     public create() {
-        // this.scene.launch("tdScene0"); // the scene is already launched at the beginning somehow
+        this.scene.launch("tdScene0"); // the scene is already launched at the beginning somehow
         this.scene.launch("tdScene1");
 
     }
 
     update(time, delta) {
-        console.log("ASD")
+        // console.log("ASD")
     }
 }

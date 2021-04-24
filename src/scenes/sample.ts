@@ -42,12 +42,8 @@ export class TDScene extends Phaser.Scene {
         // its not related to our path
         var graphics = this.add.graphics();
 
-        this.terrain.create(this)
+        this.terrain.create()
         this.terrain.draw(graphics)
-
-        // the path for our enemies
-        // parameters are the start x and y of our path
-
 
         this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
 

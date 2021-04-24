@@ -21,9 +21,9 @@ import { Terrain } from './terrain';
 // };
 
 let levels = [
+  new MetaScene(),
   new TDScene(new TDSceneConfig(new Terrain(0, 10, 8), 0)),
   new TDScene(new TDSceneConfig(new Terrain(1, 10, 8), 1)),
-  new MetaScene(),
 ]
 
 const gameConfig = {
