@@ -10,8 +10,8 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class MetaScene extends Phaser.Scene {
 
-    scenes: TDScene[]
-    activeSceneIndex: number
+    public scenes: TDScene[]
+    public activeSceneIndex: number
 
     constructor(){
         super(sceneConfig);

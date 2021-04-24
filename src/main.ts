@@ -21,9 +21,12 @@ import { Terrain } from './terrain';
 //   scene: SampleScene,
 // };
 
+let metaScene = new MetaScene()
+let hudScene = new HudScene(metaScene);
+
 let levels = [
-  new MetaScene(),
-  new HudScene(),
+  metaScene,
+  hudScene,
 ]
 
 const gameConfig = {

@@ -17,6 +17,10 @@ export class TowerManager {
             if (tower) {
                 tower.make(i, j);
             }
+
+            // only switch to new scene when tower can be build
+            let newSceneIndex = this.scene.metaScene.addScene(this.scene)
+            this.scene.metaScene.switchToScene(newSceneIndex)
         }
     }
 }
