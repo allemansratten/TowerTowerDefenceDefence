@@ -55,18 +55,13 @@ export class Terrain {
     }
 
     public canPlaceTower(i: integer, j: integer) {
-        return this.tiles[i][j] === 0;
+        return this.tiles[i][j] === TileType.Buildable;
     }
 
     private generate(scene): number {
-        this.tiles = new Array(this.w)
-            .fill(false)
-            .map(() => new Array(this.h)
-                .fill(TileType.Empty));
-
         let path = []
 
-        let edges = []
+        let edges: GridPos[] = []
         for (let i = 1; i < this.w - 1; i++) {
             edges.push([i, 0])
             edges.push([i, this.h - 1])
@@ -81,7 +76,7 @@ export class Terrain {
         let attempts = 0
         while (!success) {
             let from = randomItem(edges)
-            let to
+            let to;
             do {
                 to = randomItem(edges)
             } while (to == from)
@@ -98,17 +93,10 @@ export class Terrain {
 
         console.log("Generated in", attempts, "attempts")
 
-        // TODO: fix
-        this.tiles = [
-            [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, -1, -1, -1, -1, -1, -1, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0]];
-
+        this.tiles = new Array(this.w)
+            .fill(false)
+            .map(() => new Array(this.h)
+                .fill(TileType.Buildable));
         
         for (let i = 0; i < path.length; i++) {
             let [x, y] = fromGridPos(path[i][0] + 1, path[i][1] + 1)
@@ -118,7 +106,17 @@ export class Terrain {
             } else {
                 this.path.lineTo(this.offset() + x, y)
             }
+
+            let setTo = TileType.Path
+            if (i == 0) {
+                setTo = TileType.Start
+            } else if (i == path.length - 1) {
+                setTo = TileType.End
+            }
+
+            this.tiles[path[i][0]][path[i][1]] = setTo
         }
+
         console.log("Generated terrain with offset is", this.offset())
 
         return path.length
