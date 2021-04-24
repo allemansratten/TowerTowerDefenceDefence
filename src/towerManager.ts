@@ -16,7 +16,7 @@ export class TowerManager {
         if (this.scene.terrain.canPlaceTower(i, j)) {
             // only switch to new scene when tower can be build
             let newScene = this.scene.metaScene.addScene(this.scene)
-            this.scene.metaScene.switchToScene(newScene.sceneNumber)
+            this.scene.metaScene.switchToScene(newScene.sceneIndex)
 
             var tower: NewTower = this.scene.towers.get();
             if (tower) {
@@ -26,7 +26,7 @@ export class TowerManager {
 
         let potentialExistingTower = this.scene.terrain.tryGetExistingTower(i, j);
         if (potentialExistingTower){
-            this.scene.metaScene.switchToScene(potentialExistingTower.innerTowerScene.sceneNumber)
+            this.scene.metaScene.switchToScene(potentialExistingTower.innerTowerScene.sceneIndex)
         }
         
     }

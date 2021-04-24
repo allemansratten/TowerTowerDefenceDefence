@@ -24,22 +24,22 @@ export class TDScene extends Phaser.Scene {
     waveManager: WaveManager
     towerManager: TowerManager
 
-    sceneNumber: number
-    sceneNumberParent: number
+    sceneIndex: number
+    sceneIndexParent: number
     sceneLevel: number; // Level of recursion
 
     constructor(config: TDSceneConfig, metaScene: MetaScene) {
         super({
             active: false,
             visible: false,
-            key: `tdScene${config.sceneNumber}`,
+            key: `tdScene${config.sceneIndex}`,
         });
 
         this.terrain = config.terrain;
         this.metaScene = metaScene;
 
-        this.sceneNumber = config.sceneNumber;
-        this.sceneNumberParent = config.sceneNumberParent;
+        this.sceneIndex = config.sceneIndex;
+        this.sceneIndexParent = config.sceneIndexParent;
         this.sceneLevel = config.sceneLevel;
     }
 
@@ -102,7 +102,7 @@ export class TDScene extends Phaser.Scene {
         this.waveManager.update(time, delta)
 
         if(this.frameNumber % 60 == 0) {
-            console.log(`Update ${this.sceneNumber} | e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneNumberParent}`)
+            console.log(`Update ${this.sceneIndex} | e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneIndexParent}`)
         }
     }
 
