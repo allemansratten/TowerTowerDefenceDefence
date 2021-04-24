@@ -49,6 +49,7 @@ export class Enemy extends Phaser.GameObjects.Image {
 
         // if we have reached the end of the path, remove the enemy
         if (this.follower.t >= 1) {
+            this.scene.waveManager.spawnedEnemies--;
             this.setActive(false);
             this.setVisible(false);
         }
@@ -74,7 +75,9 @@ export class Enemy extends Phaser.GameObjects.Image {
         if (this.hp <= 0) {
             this.setActive(false);
             this.setVisible(false);
-            this.scene.moneyText.setText('Money: ' + ++PlayerInfo.money)
+            this.scene.waveManager.deadEnemies++;
+            PlayerInfo.money++;
+            this.scene.moneyText.setText('Money: ' + PlayerInfo.money);
         }
     }
 }

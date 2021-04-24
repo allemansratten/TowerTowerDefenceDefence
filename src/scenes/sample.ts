@@ -20,6 +20,7 @@ export class TDScene extends Phaser.Scene {
 
     waveManager: WaveManager
     moneyText: Phaser.GameObjects.Text
+    waveText: Phaser.GameObjects.Text
 
     constructor(config: TDSceneConfig) {
         super({
@@ -58,9 +59,10 @@ export class TDScene extends Phaser.Scene {
         this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
 
         this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
+        this.waveText = this.add.text(400, 50, 'Wave: 1', { fontSize: '32px' });
         this.waveManager = new WaveManager(this);
-
     }
+
 
     public placeTower(pointer) {
         var i = Math.floor(pointer.y / 64);
