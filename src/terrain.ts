@@ -17,7 +17,9 @@ type GridPos = [integer, integer]
 export class Terrain {
     towers: NewTower[][]
     tiles: TileType[][]
+
     tileSprites: integer[][]
+
     path: Phaser.Curves.Path  // The Phaser path (for enemy movement)
     pathTiles: GridPos[]  // The sequence of tiles making up the path
 
@@ -102,9 +104,6 @@ export class Terrain {
 
     }
 
-    private offset() {
-        return 0;
-    }
 
     draw(graphics: Phaser.GameObjects.Graphics) {
         // this.drawGrid(graphics)
@@ -118,12 +117,12 @@ export class Terrain {
         graphics.lineStyle(1, 0x0000ff, 0.8);
 
         for (let i = 0; i <= this.h; i++) {
-            graphics.moveTo(this.offset() + 0, i * TILE_SIZE);
-            graphics.lineTo(this.offset() + TILE_SIZE * 10, i * TILE_SIZE);
+            graphics.moveTo(0, i * TILE_SIZE);
+            graphics.lineTo(TILE_SIZE * 10, i * TILE_SIZE);
         }
         for (let j = 0; j <= this.w; j++) {
-            graphics.moveTo(this.offset() + j * TILE_SIZE, 0);
-            graphics.lineTo(this.offset() + j * TILE_SIZE, TILE_SIZE * 8);
+            graphics.moveTo(j * TILE_SIZE, 0);
+            graphics.lineTo(j * TILE_SIZE, TILE_SIZE * 8);
         }
         graphics.strokePath();
     }
@@ -264,7 +263,7 @@ export class Terrain {
     }
 
     fromGridPos(i: integer, j: integer) {
-        return [(i + 0.5) * TILE_SIZE + this.offset(), (j + 0.5) * TILE_SIZE]
+        return [(i + 0.5) * TILE_SIZE, (j + 0.5) * TILE_SIZE]
     }
 }
 
