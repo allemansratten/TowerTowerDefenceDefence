@@ -1,6 +1,6 @@
 // import { GridPosition, Position, Terrain } from "./terrain";
 
-import { SampleScene } from "./scenes/sample";
+import { TDScene } from "./scenes/sample";
 import { PlayerInfo } from "./player" ;
 
 // export abstract class Enemy {
@@ -31,7 +31,7 @@ export class Enemy extends Phaser.GameObjects.Image {
     y_offset: number = Phaser.Math.RND.integerInRange(-20, 20);
     x_offset: number = Phaser.Math.RND.integerInRange(-20, 20);
 
-    scene: SampleScene // type assertion
+    scene: TDScene // type assertion
 
     constructor(scene) {
         super(scene, 0, 0, 'bomb');

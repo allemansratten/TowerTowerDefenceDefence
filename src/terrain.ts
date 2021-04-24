@@ -1,4 +1,4 @@
-import { SampleScene } from "./scenes/sample"
+import { TDScene } from "./scenes/sample"
 
 export enum TileType {
     Start, Path, End, Empty, Buildable
@@ -11,7 +11,7 @@ export class Terrain {
     path: Phaser.Curves.Path
 
     // todo: generate/load terrain
-    constructor(scene: SampleScene, n: integer) {
+    constructor() {
         this.tiles = [
             [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -21,18 +21,20 @@ export class Terrain {
             [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, -1, 0, 0]];
-        
-            this.path = scene.add.path(96, -32);
-            this.path.lineTo(96, 164);
-            this.path.lineTo(480, 164);
-            this.path.lineTo(480, 544);
-        
-        // this.tiles = new Array(n)
-        //     .fill(false)
-        //     .map(() => new Array(n)
-        //         .fill(TileType.Empty));
+    }
 
-        // this.tiles[1][0] = TileType.Buildable;
+    create(scene: TDScene, n: integer){
+        this.path = scene.add.path(96, -32);
+        this.path.lineTo(96, 164);
+        this.path.lineTo(480, 164);
+        this.path.lineTo(480, 544);
+    
+    // this.tiles = new Array(n)
+    //     .fill(false)
+    //     .map(() => new Array(n)
+    //         .fill(TileType.Empty));
+
+    // this.tiles[1][0] = TileType.Buildable;
     }
 
     draw(graphics) {

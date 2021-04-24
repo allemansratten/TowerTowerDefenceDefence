@@ -1,7 +1,7 @@
 // import { Enemy } from "./enemy";
 // import { GridPosition } from "./terrain";
 
-import { SampleScene } from "./scenes/sample";
+import { TDScene } from "./scenes/sample";
 import { Terrain, TILE_SIZE } from "./terrain";
 
 // export abstract class Tower {
@@ -32,7 +32,7 @@ export class Tower extends Phaser.GameObjects.Image {
     x: number
     y: number
 
-    scene: SampleScene
+    scene: TDScene
 
     constructor(scene) {
         super(scene, 0, 0, 'star');

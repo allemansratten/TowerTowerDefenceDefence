@@ -11,7 +11,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     key: 'Sample',
 };
 
-export class SampleScene extends Phaser.Scene {
+export class TDScene extends Phaser.Scene {
     private square: Phaser.GameObjects.Rectangle & { body: Phaser.Physics.Arcade.Body };
     path: Phaser.Curves.Path
     enemies: Phaser.Physics.Arcade.Group
@@ -25,8 +25,10 @@ export class SampleScene extends Phaser.Scene {
 
     moneyText: Phaser.GameObjects.Text
 
-    constructor() {
+    constructor(terrain: Terrain) {
         super(sceneConfig);
+
+        this.terrain = terrain;
     }
 
     public preload() {
@@ -40,7 +42,7 @@ export class SampleScene extends Phaser.Scene {
         // its not related to our path
         var graphics = this.add.graphics();
 
-        this.terrain = new Terrain(this, 10)
+        this.terrain.create(this, 10);
         this.terrain.draw(graphics)
 
         // the path for our enemies

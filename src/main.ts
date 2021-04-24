@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser'
-import { SampleScene } from './scenes/sample'
+import { TDScene } from './scenes/sample'
+import { Terrain } from './terrain';
 
 // const gameConfig: Phaser.Types.Core.GameConfig = {
 //   title: 'Sample',
@@ -17,6 +18,8 @@ import { SampleScene } from './scenes/sample'
 //   scene: SampleScene,
 // };
 
+let level1Terrain = new Terrain()
+
 const gameConfig = {
   type: Phaser.AUTO,
   parent: 'content',
@@ -25,7 +28,7 @@ const gameConfig = {
   physics: {
     default: 'arcade'
   },
-  scene: SampleScene
+  scene: [new TDScene(level1Terrain)]
 };
 
 export const game = new Phaser.Game(gameConfig);
