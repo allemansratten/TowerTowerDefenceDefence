@@ -38,11 +38,14 @@ export class MetaScene extends Phaser.Scene {
         newScene.scene.setVisible(false);
 
         return sceneIndex;
+        this.scene.isPaused
     }
 
+
+    // makes current scene invisible, makes new scene visible; doesn't change activness 
     public switchToScene(switchToIndex: number) {
-        this.scenes[this.activeSceneIndex].scene.setVisible(false);
-        this.scenes[switchToIndex].scene.setVisible(true);
+        this.scenes[this.activeSceneIndex].setIsForeground(false);
+        this.scenes[switchToIndex].setIsForeground(true);
 
         this.activeSceneIndex = switchToIndex;
     }

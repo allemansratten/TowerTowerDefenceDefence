@@ -58,6 +58,12 @@ export class TDScene extends Phaser.Scene {
         cam.scrollX = -(2 * TILE_SIZE)
     }
 
+    // Only foreground scene has input enabled & is visible; all scenes are being updated
+    public setIsForeground(isForegroundScene) {
+        this.input.enabled = isForegroundScene;
+        this.scene.setVisible(isForegroundScene);
+    }
+
     public placeTower(pointer) {
         var i = Math.floor(pointer.x / 64);
         var j = Math.floor(pointer.y / 64);
