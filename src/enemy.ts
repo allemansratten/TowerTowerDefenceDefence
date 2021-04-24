@@ -26,7 +26,7 @@ import { PlayerInfo } from "./player" ;
 export class Enemy extends Phaser.GameObjects.Image {
 
     follower: any
-    hp: number = 20;
+    hp: integer = 20;
     yOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     xOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     scene: TDScene // type assertion
@@ -54,7 +54,7 @@ export class Enemy extends Phaser.GameObjects.Image {
         }
     }
 
-    startOnPath(hp, speed) {
+    startOnPath(speed, hp) {
         // set the t parameter at the start of the path
         this.follower.t = 0;
         this.hp = hp;

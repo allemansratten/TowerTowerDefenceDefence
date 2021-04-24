@@ -32,7 +32,7 @@ export class WaveManager extends Phaser.GameObjects.GameObjectFactory {
                 enemy.setVisible(true);
 
                 // place the enemy at the start of the path
-                enemy.startOnPath(this, this.enemySpeed, this.enemyHealth);
+                enemy.startOnPath(this.enemySpeed, this.enemyHealth);
 
                 this.nextEnemy = time + this.enemyInterval;
             }

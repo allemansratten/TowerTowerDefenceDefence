@@ -62,7 +62,6 @@ export class TDScene extends Phaser.Scene {
         this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
         this.waveManager = new WaveManager(this);
 
-        this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
     }
 
     public placeTower(pointer) {
