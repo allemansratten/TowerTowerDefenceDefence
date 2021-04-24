@@ -83,7 +83,7 @@ export class Enemy extends Phaser.GameObjects.Image {
     onDeath() {
         if (this.scene.sceneLevel === 0) {  // Add gold in base layer only
             this.scene.waveManager.deadEnemies++;
-            PlayerInfo.money += this.stats.get('hp');
+            PlayerInfo.money += this.stats.get('money');
         }
     }
 }
