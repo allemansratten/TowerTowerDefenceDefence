@@ -26,6 +26,12 @@ export class SampleScene extends Phaser.Scene {
         super(sceneConfig);
     }
 
+    public preload() {
+        // load the game assets
+        this.load.image('bomb', '../../assets/bomb.png');
+        this.load.image('star', '../../assets/star.png');
+    }
+
     public create() {
         // this graphics element is only for visualization,
         // its not related to our path
