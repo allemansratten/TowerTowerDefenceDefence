@@ -17,7 +17,6 @@ import { PlayerInfo } from "./player" ;
 //     }
 // }
 
-var ENEMY_SPEED = 1 / 10000;
 
 // path = this.add.path(96, -32);
 // path.lineTo(96, 164);
@@ -28,10 +27,10 @@ export class Enemy extends Phaser.GameObjects.Image {
 
     follower: any
     hp: number = 20;
-    y_offset: number = Phaser.Math.RND.integerInRange(-20, 20);
-    x_offset: number = Phaser.Math.RND.integerInRange(-20, 20);
-
+    yOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
+    xOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     scene: SampleScene // type assertion
+    speed: number;
 
     constructor(scene) {
         super(scene, 0, 0, 'bomb');
@@ -40,13 +39,13 @@ export class Enemy extends Phaser.GameObjects.Image {
     }
     update(time, delta) {
         // move the t point along the path, 0 is the start and 1 is the end
-        this.follower.t += ENEMY_SPEED * delta;
+        this.follower.t += this.speed * delta;
 
         // get the new x and y coordinates in vec
         this.scene.path.getPoint(this.follower.t, this.follower.vec);
 
         // update enemy x and y to the newly obtained x and y
-        this.setPosition(this.follower.vec.x + this.x_offset, this.follower.vec.y + this.y_offset);
+        this.setPosition(this.follower.vec.x + this.xOffset, this.follower.vec.y + this.yOffset);
 
         // if we have reached the end of the path, remove the enemy
         if (this.follower.t >= 1) {
@@ -55,10 +54,11 @@ export class Enemy extends Phaser.GameObjects.Image {
         }
     }
 
-    startOnPath() {
+    startOnPath(hp, speed) {
         // set the t parameter at the start of the path
         this.follower.t = 0;
-        this.hp = 20;
+        this.hp = hp;
+        this.speed = speed;
 
         // get x and y of the given t point
         this.scene.path.getPoint(this.follower.t, this.follower.vec);

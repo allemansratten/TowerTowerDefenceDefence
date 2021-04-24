@@ -1,6 +1,7 @@
 import { Enemy } from "../enemy";
 import { Tower } from "../towers";
 import { Bullet } from "../bullet";
+import { WaveManager } from "../waves"
 
 var BULLET_DAMAGE = 10;
 
@@ -21,6 +22,8 @@ export class SampleScene extends Phaser.Scene {
     bullets: Phaser.Physics.Arcade.Group
 
     moneyText: Phaser.GameObjects.Text
+
+    waveManager: WaveManager
 
     map: any // todo: type
 
@@ -62,6 +65,7 @@ export class SampleScene extends Phaser.Scene {
         this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
 
         this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
+        this.waveManager = new WaveManager(this);
 
         this.map = [
             [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -119,20 +123,8 @@ export class SampleScene extends Phaser.Scene {
     }
 
     update(time, delta) {
-        if (time > this.nextEnemy) {
-            var enemy = this.enemies.get();
-            if (enemy) {
-                enemy.setActive(true);
-                enemy.setVisible(true);
-
-                // place the enemy at the start of the path
-                enemy.startOnPath(this);
-
-                this.nextEnemy = time + 300;
-            }
-        }
+        this.waveManager.update(time, delta)
     }
-
 
     addBullet(x, y, angle) {
         var bullet = this.bullets.get();
