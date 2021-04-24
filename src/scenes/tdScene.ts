@@ -43,13 +43,6 @@ export class TDScene extends Phaser.Scene {
         this.sceneLevel = config.sceneLevel;
     }
 
-    public preload() {
-        // load the game assets
-        this.load.image('bomb', '../../assets/bomb.png');
-        this.load.image('star', '../../assets/star.png');
-        this.load.image('towerbase', '../../assets/towerbase.png');
-    }
-
     public create() {
         // this graphics element is only for visualization,
         // its not related to our path

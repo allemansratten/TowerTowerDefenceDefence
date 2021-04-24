@@ -33,7 +33,7 @@ export class Enemy extends Phaser.GameObjects.Image {
     speed: number;
 
     constructor(scene) {
-        super(scene, 0, 0, 'bomb');
+        super(scene, 0, 0, 'enemy1');
 
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
     }
