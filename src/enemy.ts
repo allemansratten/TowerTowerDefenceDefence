@@ -46,7 +46,7 @@ export class Enemy extends Phaser.GameObjects.Image {
 
         // get the new x and y coordinates in vec
 
-        this.scene.path.getPoint(this.follower.t, this.follower.vec);
+        this.scene.terrain.path.getPoint(this.follower.t, this.follower.vec);
 
         // update enemy x and y to the newly obtained x and y
         this.setPosition(this.follower.vec.x + this.x_offset, this.follower.vec.y + this.y_offset);
@@ -63,7 +63,7 @@ export class Enemy extends Phaser.GameObjects.Image {
         this.follower.t = 0;
 
         // get x and y of the given t point
-        this.scene.path.getPoint(this.follower.t, this.follower.vec);
+        this.scene.terrain.path.getPoint(this.follower.t, this.follower.vec);
 
         // set the x and y of our enemy to the received from the previous step
         this.setPosition(this.follower.vec.x, this.follower.vec.y);

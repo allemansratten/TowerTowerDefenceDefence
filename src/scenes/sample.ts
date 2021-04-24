@@ -1,6 +1,7 @@
 import { Enemy } from "../enemy";
 import { Tower } from "../towers";
 import { Bullet } from "../bullet";
+import { Terrain } from "../terrain";
 
 var BULLET_DAMAGE = 10;
 
@@ -20,7 +21,7 @@ export class SampleScene extends Phaser.Scene {
 
     bullets: Phaser.Physics.Arcade.Group
 
-    map: any // todo: type
+    terrain: Terrain
 
     constructor() {
         super(sceneConfig);
@@ -37,20 +38,13 @@ export class SampleScene extends Phaser.Scene {
         // its not related to our path
         var graphics = this.add.graphics();
 
-        // draw grid
-        var graphics = this.add.graphics();
-        this.drawGrid(graphics);
+        this.terrain = new Terrain(this, 10)
+        this.terrain.draw(graphics)
 
         // the path for our enemies
         // parameters are the start x and y of our path
-        this.path = this.add.path(96, -32);
-        this.path.lineTo(96, 164);
-        this.path.lineTo(480, 164);
-        this.path.lineTo(480, 544);
-
-        graphics.lineStyle(3, 0xffffff, 1);
-        // visualize the path
-        this.path.draw(graphics);
+        
+        
         this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
 
         this.towers = this.add.group({ classType: Tower, runChildUpdate: true });
@@ -58,46 +52,18 @@ export class SampleScene extends Phaser.Scene {
 
         this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
         this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
-
-        this.map = [
-            [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, -1, -1, -1, -1, -1, -1, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0]];
-
-    }
-
-    drawGrid(graphics) {
-        graphics.lineStyle(1, 0x0000ff, 0.8);
-        for (var i = 0; i < 8; i++) {
-            graphics.moveTo(0, i * 64);
-            graphics.lineTo(640, i * 64);
-        }
-        for (var j = 0; j < 10; j++) {
-            graphics.moveTo(j * 64, 0);
-            graphics.lineTo(j * 64, 512);
-        }
-        graphics.strokePath();
-    }
-
-    public canPlaceTower(i, j) {
-        return this.map[i][j] === 0;
     }
 
     public placeTower(pointer) {
         var i = Math.floor(pointer.y / 64);
         var j = Math.floor(pointer.x / 64);
 
-        if (this.canPlaceTower(i, j)) {
+        if (this.terrain.canPlaceTower(i, j)) {
             var tower = this.towers.get();
             if (tower) {
                 tower.setActive(true);
                 tower.setVisible(true);
-                tower.place(i, j, this.map);
+                tower.place(i, j, this.terrain);
             }
         }
     }
