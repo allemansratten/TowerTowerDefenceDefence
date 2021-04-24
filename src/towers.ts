@@ -25,7 +25,7 @@ function getEnemy(x, y, distance, enemies) {
     return false;
 }
 
-export class Turret extends Phaser.GameObjects.Image {
+export class Tower extends Phaser.GameObjects.Image {
     
     nextTic: number
     x: number
@@ -38,7 +38,7 @@ export class Turret extends Phaser.GameObjects.Image {
         this.nextTic = 0;
     }
 
-    // we will place the turret according to the grid
+    // we will place the tower according to the grid
     place(i, j, map) {
         this.y = i * 64 + 64/2;
         this.x = j * 64 + 64/2;
@@ -53,7 +53,7 @@ export class Turret extends Phaser.GameObjects.Image {
             this.angle = (angle + Math.PI/2) * Phaser.Math.RAD_TO_DEG;
         }
     }
-    
+
     update(time, delta) {
         if(time > this.nextTic) {
             this.fire();

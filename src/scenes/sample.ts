@@ -1,5 +1,5 @@
 import { Enemy } from "../enemy";
-import { Turret } from "../towers";
+import { Tower } from "../towers";
 import { Bullet } from "../bullet";
 
 var BULLET_DAMAGE = 10;
@@ -16,7 +16,7 @@ export class SampleScene extends Phaser.Scene {
     enemies: Phaser.Physics.Arcade.Group
     nextEnemy: number = 0
 
-    turrets: Phaser.GameObjects.Group
+    towers: Phaser.GameObjects.Group
 
     bullets: Phaser.Physics.Arcade.Group
 
@@ -52,8 +52,8 @@ export class SampleScene extends Phaser.Scene {
         this.path.draw(graphics);
         this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
 
-        this.turrets = this.add.group({ classType: Turret, runChildUpdate: true });
-        this.input.on('pointerdown', this.placeTurret, this);
+        this.towers = this.add.group({ classType: Tower, runChildUpdate: true });
+        this.input.on('pointerdown', this.placeTower, this);
 
         this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
         this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
@@ -83,20 +83,20 @@ export class SampleScene extends Phaser.Scene {
         graphics.strokePath();
     }
 
-    public canPlaceTurret(i, j) {
+    public canPlaceTower(i, j) {
         return this.map[i][j] === 0;
     }
 
-    public placeTurret(pointer) {
+    public placeTower(pointer) {
         var i = Math.floor(pointer.y / 64);
         var j = Math.floor(pointer.x / 64);
 
-        if (this.canPlaceTurret(i, j)) {
-            var turret = this.turrets.get();
-            if (turret) {
-                turret.setActive(true);
-                turret.setVisible(true);
-                turret.place(i, j, this.map);
+        if (this.canPlaceTower(i, j)) {
+            var tower = this.towers.get();
+            if (tower) {
+                tower.setActive(true);
+                tower.setVisible(true);
+                tower.place(i, j, this.map);
             }
         }
     }
