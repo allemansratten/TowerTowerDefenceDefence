@@ -1,7 +1,7 @@
 import { Enemy } from "./enemy"
 import { TDScene } from "./scenes/sample";
 
-export class WaveManager extends Phaser.GameObjects.GameObjectFactory {
+export class WaveManager {
     scene: TDScene
     currentWave: integer = 1
     nextEnemy: integer = 0
@@ -14,7 +14,7 @@ export class WaveManager extends Phaser.GameObjects.GameObjectFactory {
     enemyInterval: integer
 
     constructor(scene) {
-        super(scene)
+        this.scene = scene;
         this.getWaveDifficulty()
     }
 
@@ -31,6 +31,7 @@ export class WaveManager extends Phaser.GameObjects.GameObjectFactory {
         this.spawnedEnemies = 0;
         this.currentWave++;
         this.scene.waveText.setText('Wave: ' + this.currentWave);
+        console.log('Starting wave ' + this.currentWave);
         this.getWaveDifficulty();
     }
 
