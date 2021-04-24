@@ -1,6 +1,3 @@
-// import { Enemy } from "./enemy";
-// import { GridPosition } from "./terrain";
-
 import { TDScene } from "./scenes/sample";
 import { Terrain, TILE_SIZE } from "./terrain";
 
@@ -26,8 +23,40 @@ function getEnemy(x, y, distance, enemies) {
     return false;
 }
 
-export class Tower extends Phaser.GameObjects.Image {
 
+export class NewTower extends Phaser.GameObjects.Container {
+    scene: TDScene
+
+    towerTurret: TowerTurret
+    towerBase: Phaser.GameObjects.Sprite
+
+    constructor(scene: TDScene) {
+        super(scene, 0, 0)
+        this.towerTurret = new TowerTurret(scene)
+        this.scene = scene;
+    }
+
+    public make(i, j) {
+        this.towerTurret.setActive(true);
+        this.towerTurret.setVisible(true);
+
+        let xCoord = i * TILE_SIZE + TILE_SIZE / 2
+        let yCoord = j * TILE_SIZE + TILE_SIZE / 2
+
+        this.towerBase = this.scene.add.sprite(xCoord, yCoord, 'towerbase')
+        this.add(this.towerBase);
+
+        this.towerTurret.place(i, j, this.scene.terrain);
+        this.add(this.towerTurret);
+    }
+
+    update(time, delta) {
+        this.towerTurret.update(time, delta)
+    }
+}
+
+
+export class TowerTurret extends Phaser.GameObjects.Image {
     nextTic: number
     x: number
     y: number
@@ -37,13 +66,6 @@ export class Tower extends Phaser.GameObjects.Image {
     constructor(scene) {
         super(scene, 0, 0, 'star');
         this.nextTic = 0;
-    }
-
-    // we will place the tower according to the grid
-    place(i: integer, j: integer, terrain: Terrain) {
-        this.x = i * TILE_SIZE + TILE_SIZE / 2;
-        this.y = j * TILE_SIZE + TILE_SIZE / 2;
-        terrain.tiles[i][j] = 1;
     }
 
     fire() {
@@ -60,5 +82,12 @@ export class Tower extends Phaser.GameObjects.Image {
             this.fire();
             this.nextTic = time + 1000;
         }
+    }
+
+    // we will place the tower according to the grid
+    place(i: integer, j: integer, terrain: Terrain) {
+        this.x = i * TILE_SIZE + TILE_SIZE / 2;
+        this.y = j * TILE_SIZE + TILE_SIZE / 2;
+        terrain.tiles[i][j] = 1;
     }
 }
