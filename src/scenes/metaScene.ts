@@ -27,12 +27,12 @@ export class MetaScene extends Phaser.Scene {
     // Creates new Scene, enables it, and sets it invisible
     public addScene(parentScene?: TDScene): TDScene {
 
-        let sceneNumberParent = parentScene?.sceneNumber ?? -1;
+        let sceneIndexParent = parentScene?.sceneIndex ?? -1;
         let sceneLevel = (parentScene?.sceneLevel ?? -1) + 1 ;
 
         let sceneIndex = this.scenes.length;
         let newScene = new TDScene(
-            new TDSceneConfig(new Terrain(10, 8), sceneIndex, sceneLevel, sceneNumberParent),
+            new TDSceneConfig(new Terrain(10, 8), sceneIndex, sceneLevel, sceneIndexParent),
             this);
 
         this.scene.add(
