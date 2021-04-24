@@ -1,6 +1,7 @@
 import { Enemy } from "../enemy";
 import { Tower } from "../towers";
 import { Bullet } from "../bullet";
+import { WaveManager } from "../waves"
 import { Terrain } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
 
@@ -17,6 +18,7 @@ export class TDScene extends Phaser.Scene {
 
     terrain: Terrain
 
+    waveManager: WaveManager
     moneyText: Phaser.GameObjects.Text
 
     constructor(config: TDSceneConfig) {
@@ -45,8 +47,8 @@ export class TDScene extends Phaser.Scene {
 
         // the path for our enemies
         // parameters are the start x and y of our path
-        
-        
+
+
         this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
 
         this.towers = this.add.group({ classType: Tower, runChildUpdate: true });
@@ -55,6 +57,8 @@ export class TDScene extends Phaser.Scene {
         this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
         this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
 
+        this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
+        this.waveManager = new WaveManager(this);
 
         this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
     }
@@ -86,20 +90,8 @@ export class TDScene extends Phaser.Scene {
     }
 
     update(time, delta) {
-        if (time > this.nextEnemy) {
-            var enemy = this.enemies.get();
-            if (enemy) {
-                enemy.setActive(true);
-                enemy.setVisible(true);
-
-                // place the enemy at the start of the path
-                enemy.startOnPath(this);
-
-                this.nextEnemy = time + 300;
-            }
-        }
+        this.waveManager.update(time, delta)
     }
-
 
     addBullet(x, y, angle) {
         var bullet = this.bullets.get();
