@@ -22,6 +22,7 @@ export class MetaScene extends Phaser.Scene {
         this.addScene();
         this.scenes[0].scene.setVisible(true);
         this.activeSceneIndex = 0
+        this.scene.start("hudScene")
     }
 
     // Creates new Scene, enables it, and sets it invisible
@@ -42,7 +43,8 @@ export class MetaScene extends Phaser.Scene {
             );
         this.scenes.push(newScene)
         newScene.scene.setVisible(false);
-
+        this.scene.bringToTop('hudScene');
+        
         return newScene;
     }
 
@@ -72,4 +74,7 @@ export class MetaScene extends Phaser.Scene {
         );
     }
 
+    getActiveScene() {
+        return this.scenes[this.activeSceneIndex]
+    }
 }
