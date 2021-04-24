@@ -2,6 +2,7 @@ import { Enemy } from "../enemy";
 import { Tower } from "../towers";
 import { Bullet } from "../bullet";
 import { Terrain } from "../terrain";
+import { TDSceneConfig } from "./TDSceneConfig";
 
 var BULLET_DAMAGE = 10;
 
@@ -25,10 +26,10 @@ export class TDScene extends Phaser.Scene {
 
     moneyText: Phaser.GameObjects.Text
 
-    constructor(terrain: Terrain) {
+    constructor(config: TDSceneConfig) {
         super(sceneConfig);
 
-        this.terrain = terrain;
+        this.terrain = config.terrain;
     }
 
     public preload() {
