@@ -63,8 +63,8 @@ export class TDScene extends Phaser.Scene {
     }
 
     public placeTower(pointer) {
-        var i = Math.floor(pointer.y / 64);
-        var j = Math.floor(pointer.x / 64);
+        var i = Math.floor(pointer.x / 64);
+        var j = Math.floor(pointer.y / 64);
 
         if (this.terrain.canPlaceTower(i, j)) {
             var tower = this.towers.get();
