@@ -20,6 +20,8 @@ export class SampleScene extends Phaser.Scene {
 
     bullets: Phaser.Physics.Arcade.Group
 
+    moneyText: Phaser.GameObjects.Text
+
     map: any // todo: type
 
     constructor() {
@@ -58,6 +60,8 @@ export class SampleScene extends Phaser.Scene {
 
         this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
         this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
+
+        this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
 
         this.map = [
             [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -124,7 +128,7 @@ export class SampleScene extends Phaser.Scene {
                 // place the enemy at the start of the path
                 enemy.startOnPath(this);
 
-                this.nextEnemy = time + 2000;
+                this.nextEnemy = time + 300;
             }
         }
     }

@@ -1,6 +1,7 @@
 // import { GridPosition, Position, Terrain } from "./terrain";
 
 import { SampleScene } from "./scenes/sample";
+import { PlayerInfo } from "./player" ;
 
 // export abstract class Enemy {
 //     gridPos: GridPosition  // position in grid coordinates
@@ -26,9 +27,9 @@ var ENEMY_SPEED = 1 / 10000;
 export class Enemy extends Phaser.GameObjects.Image {
 
     follower: any
-    hp: number
-    y_offset: number
-    x_offset: number
+    hp: number = 20;
+    y_offset: number = Phaser.Math.RND.integerInRange(-20, 20);
+    x_offset: number = Phaser.Math.RND.integerInRange(-20, 20);
 
     scene: SampleScene // type assertion
 
@@ -36,16 +37,12 @@ export class Enemy extends Phaser.GameObjects.Image {
         super(scene, 0, 0, 'bomb');
 
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
-        this.hp = 100;
-        this.x_offset = Phaser.Math.RND.integerInRange(-20, 20);
-        this.y_offset = Phaser.Math.RND.integerInRange(-20, 20);
     }
     update(time, delta) {
         // move the t point along the path, 0 is the start and 1 is the end
         this.follower.t += ENEMY_SPEED * delta;
 
         // get the new x and y coordinates in vec
-
         this.scene.path.getPoint(this.follower.t, this.follower.vec);
 
         // update enemy x and y to the newly obtained x and y
@@ -61,6 +58,7 @@ export class Enemy extends Phaser.GameObjects.Image {
     startOnPath() {
         // set the t parameter at the start of the path
         this.follower.t = 0;
+        this.hp = 20;
 
         // get x and y of the given t point
         this.scene.path.getPoint(this.follower.t, this.follower.vec);
@@ -76,6 +74,7 @@ export class Enemy extends Phaser.GameObjects.Image {
         if (this.hp <= 0) {
             this.setActive(false);
             this.setVisible(false);
+            this.scene.moneyText.setText('Money: ' + ++PlayerInfo.money)
         }
     }
 }
