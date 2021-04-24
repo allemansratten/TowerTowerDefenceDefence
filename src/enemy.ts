@@ -2,6 +2,7 @@
 
 import { TDScene } from "./scenes/tdScene";
 import { PlayerInfo } from "./player" ;
+import { EnemyConfig } from "./config";
 
 // export abstract class Enemy {
 //     gridPos: GridPosition  // position in grid coordinates
@@ -18,19 +19,16 @@ import { PlayerInfo } from "./player" ;
 // }
 
 
-// path = this.add.path(96, -32);
-// path.lineTo(96, 164);
-// path.lineTo(480, 164);
-// path.lineTo(480, 544);
-
 export class Enemy extends Phaser.GameObjects.Image {
+    stats = EnemyConfig.Basic;
 
     follower: any
-    hp: integer = 20;
+    hp: integer = this.stats.get('hp');
     yOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     xOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     scene: TDScene // type assertion
     speed: number;
+
 
     constructor(scene) {
         super(scene, 0, 0, 'enemy1');
@@ -53,15 +51,16 @@ export class Enemy extends Phaser.GameObjects.Image {
             this.setActive(false);
             this.setVisible(false);
             if (this.scene.sceneLevel === 0)
-                PlayerInfo.hp--;
+                PlayerInfo.hp -= this.stats.get('damage');
         }
     }
 
     startOnPath(speed, hp) {
         // set the t parameter at the start of the path
         this.follower.t = 0;
-        this.hp = hp;
-        this.speed = speed;
+
+        this.hp = this.stats.get('hp');
+        this.speed = this.stats.get('speed');
 
         // get x and y of the given t point
         this.scene.terrain.path.getPoint(this.follower.t, this.follower.vec);
@@ -71,16 +70,24 @@ export class Enemy extends Phaser.GameObjects.Image {
     }
 
     receiveDamage(damage) {
-        this.hp -= damage;
+        this.hp -= damage - this.stats.get('armor');
 
         // if hp drops below 0 we deactivate this enemy
         if (this.hp <= 0) {
             this.setActive(false);
             this.setVisible(false);
-            if (this.scene.sceneLevel === 0) {
-                this.scene.waveManager.deadEnemies++;
-                PlayerInfo.money++;
-            }
+            this.onDeath()
         }
     }
+
+    onDeath() {
+        if (this.scene.sceneLevel === 0) {  // Add gold in base layer only
+            this.scene.waveManager.deadEnemies++;
+            PlayerInfo.money += this.stats.get('hp');
+        }
+    }
+}
+
+export class FatEnemy extends Enemy {
+    stats = EnemyConfig.Fat
 }
