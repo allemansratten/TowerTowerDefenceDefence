@@ -15,13 +15,11 @@ export class Terrain {
     tiles: Array<Array<TileType>>
     path: Phaser.Curves.Path
 
-    private level: number; // I know this is terrible, I'm sorry
     w: number
     h: number
 
     // todo: generate/load terrain
-    constructor(level: integer, width: integer, height: integer) {
-        this.level = level;
+    constructor(width: integer, height: integer) {
         this.w = width
         this.h = height
     }

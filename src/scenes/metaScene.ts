@@ -32,7 +32,7 @@ export class MetaScene extends Phaser.Scene {
 
         let sceneIndex = this.scenes.length;
         let newScene = new TDScene(
-            new TDSceneConfig(new Terrain(sceneIndex, 10, 8), sceneIndex, sceneLevel, sceneNumberParent), 
+            new TDSceneConfig(new Terrain(10, 8), sceneIndex, sceneLevel, sceneNumberParent), 
             this);
 
         this.scene.add(
