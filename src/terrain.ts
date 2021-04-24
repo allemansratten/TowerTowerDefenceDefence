@@ -29,7 +29,7 @@ export class Terrain {
     }
 
     private offset() {
-        return this.level * LEVEL_OFFSET
+        return 0;
     }
 
     draw(graphics: Phaser.GameObjects.Graphics) {

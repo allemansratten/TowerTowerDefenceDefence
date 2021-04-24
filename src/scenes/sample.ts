@@ -4,6 +4,7 @@ import { Bullet } from "../bullet";
 import { WaveManager } from "../waves"
 import { Terrain } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
+import { MetaScene } from "./MetaScene";
 
 var BULLET_DAMAGE = 10;
 
@@ -11,6 +12,7 @@ export class TDScene extends Phaser.Scene {
     path: Phaser.Curves.Path
     enemies: Phaser.Physics.Arcade.Group
     nextEnemy: number = 0
+    metaScene: MetaScene
 
     towers: Phaser.GameObjects.Group
 
@@ -20,8 +22,9 @@ export class TDScene extends Phaser.Scene {
 
     waveManager: WaveManager
     moneyText: Phaser.GameObjects.Text
+    sceneNumber: number
 
-    constructor(config: TDSceneConfig) {
+    constructor(config: TDSceneConfig, metaScene: MetaScene) {
         super({
             active: false,
             visible: false,
@@ -29,13 +32,10 @@ export class TDScene extends Phaser.Scene {
         });
 
         this.terrain = config.terrain;
+        this.metaScene = metaScene;
+        this.sceneNumber = config.sceneNumber;
     }
 
-    public preload() {
-        // load the game assets
-        this.load.image('bomb', '../../assets/bomb.png');
-        this.load.image('star', '../../assets/star.png');
-    }
 
     public create() {
         // this graphics element is only for visualization,
@@ -74,6 +74,9 @@ export class TDScene extends Phaser.Scene {
                 tower.place(i, j, this.terrain);
             }
         }
+
+        let newSceneIndex = this.metaScene.addScene()
+        this.metaScene.switchToScene(newSceneIndex)
     }
 
     damageEnemy(enemy, bullet) {
@@ -88,8 +91,14 @@ export class TDScene extends Phaser.Scene {
         }
     }
 
+    frameNumber = 0;
     update(time, delta) {
+        this.frameNumber++;
         this.waveManager.update(time, delta)
+
+        if(this.frameNumber % 60 == 0) {
+            console.log(`Update ${this.sceneNumber}`)
+        }
     }
 
     addBullet(x, y, angle) {
