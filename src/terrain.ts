@@ -1,4 +1,4 @@
-import { TDScene } from "./scenes/sample"
+import { TDScene } from "./scenes/tdScene"
 
 export enum TileType {
     Start, Path, End, Occupied, Buildable
@@ -6,6 +6,8 @@ export enum TileType {
 
 export const TILE_SIZE = 64
 export const LEVEL_OFFSET = 15 * TILE_SIZE
+export const MAX_WIDTH = 10
+export const MAX_HEIGHT = 8
 
 type GridPos = [integer, integer]
 
@@ -43,11 +45,11 @@ export class Terrain {
     drawGrid(graphics: Phaser.GameObjects.Graphics) {
         graphics.lineStyle(1, 0x0000ff, 0.8);
 
-        for (var i = 0; i < this.h; i++) {
+        for (var i = 0; i <= this.h; i++) {
             graphics.moveTo(this.offset() + 0, i * TILE_SIZE);
             graphics.lineTo(this.offset() + TILE_SIZE * 10, i * TILE_SIZE);
         }
-        for (var j = 0; j < this.w; j++) {
+        for (var j = 0; j <= this.w; j++) {
             graphics.moveTo(this.offset() + j * TILE_SIZE, 0);
             graphics.lineTo(this.offset() + j * TILE_SIZE, TILE_SIZE * 8);
         }

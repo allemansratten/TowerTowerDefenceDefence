@@ -1,7 +1,7 @@
 // import { Enemy } from "./enemy";
 // import { GridPosition } from "./terrain";
 
-import { TDScene } from "./scenes/sample";
+import { TDScene } from "./scenes/tdScene";
 import { Terrain, TileType, TILE_SIZE } from "./terrain";
 
 // export abstract class Tower {

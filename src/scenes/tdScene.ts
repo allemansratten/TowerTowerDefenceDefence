@@ -2,7 +2,7 @@ import { Enemy } from "../enemy";
 import { Tower } from "../towers";
 import { Bullet } from "../bullet";
 import { WaveManager } from "../waves"
-import { Terrain } from "../terrain";
+import { Terrain, TILE_SIZE } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
 import { MetaScene } from "./MetaScene";
 
@@ -21,7 +21,7 @@ export class TDScene extends Phaser.Scene {
     terrain: Terrain
 
     waveManager: WaveManager
-    moneyText: Phaser.GameObjects.Text
+    
     sceneNumber: number
 
     constructor(config: TDSceneConfig, metaScene: MetaScene) {
@@ -35,7 +35,6 @@ export class TDScene extends Phaser.Scene {
         this.metaScene = metaScene;
         this.sceneNumber = config.sceneNumber;
     }
-
 
     public create() {
         // this graphics element is only for visualization,
@@ -53,9 +52,10 @@ export class TDScene extends Phaser.Scene {
         this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
         this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
 
-        this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
         this.waveManager = new WaveManager(this);
-
+        
+        const cam = this.cameras.main
+        cam.scrollX = -(2 * TILE_SIZE)
     }
 
     public placeTower(pointer) {

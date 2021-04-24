@@ -1,6 +1,6 @@
 // import { GridPosition, Position, Terrain } from "./terrain";
 
-import { TDScene } from "./scenes/sample";
+import { TDScene } from "./scenes/tdScene";
 import { PlayerInfo } from "./player" ;
 
 // export abstract class Enemy {
@@ -51,6 +51,7 @@ export class Enemy extends Phaser.GameObjects.Image {
         if (this.follower.t >= 1) {
             this.setActive(false);
             this.setVisible(false);
+            PlayerInfo.hp--  // todo: only reduce hp when in outermost scene
         }
     }
 
@@ -74,7 +75,7 @@ export class Enemy extends Phaser.GameObjects.Image {
         if (this.hp <= 0) {
             this.setActive(false);
             this.setVisible(false);
-            this.scene.moneyText.setText('Money: ' + ++PlayerInfo.money)
+            PlayerInfo.money++
         }
     }
 }

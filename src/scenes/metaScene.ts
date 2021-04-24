@@ -1,5 +1,5 @@
 import { Terrain } from "../terrain"
-import { TDScene } from "./sample";
+import { TDScene } from "./tdScene";
 import { TDSceneConfig } from "./tdSceneConfig"
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
