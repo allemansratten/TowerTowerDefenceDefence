@@ -1,8 +1,9 @@
 import { Enemy } from "../enemy";
-import { Tower } from "../towers";
+import { TowerTurret, NewTower } from "../towers";
 import { Bullet } from "../bullet";
 import { WaveManager } from "../waves"
-import { Terrain, TILE_SIZE } from "../terrain";
+import { TowerManager } from "../towerManager"
+import { Terrain } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
 import { MetaScene } from "./MetaScene";
 import { HUD_WIDTH } from "./hudScene";
@@ -16,14 +17,20 @@ export class TDScene extends Phaser.Scene {
     metaScene: MetaScene
 
     towers: Phaser.GameObjects.Group
+    newTowers: Phaser.GameObjects.Group
 
     bullets: Phaser.Physics.Arcade.Group
 
     terrain: Terrain
 
     waveManager: WaveManager
-    
+    towerManager: TowerManager
+    moneyText: Phaser.GameObjects.Text
+    waveText: Phaser.GameObjects.Text
+
     sceneNumber: number
+    sceneNumberParent: number
+    sceneLevel: number; // Level of recursion
 
     constructor(config: TDSceneConfig, metaScene: MetaScene) {
         super({
@@ -34,7 +41,17 @@ export class TDScene extends Phaser.Scene {
 
         this.terrain = config.terrain;
         this.metaScene = metaScene;
+
         this.sceneNumber = config.sceneNumber;
+        this.sceneNumberParent = config.sceneNumberParent;
+        this.sceneLevel = config.sceneLevel;
+    }
+
+    public preload() {
+        // load the game assets
+        this.load.image('bomb', '../../assets/bomb.png');
+        this.load.image('star', '../../assets/star.png');
+        this.load.image('towerbase', '../../assets/towerbase.png');
     }
 
     public create() {
@@ -45,16 +62,25 @@ export class TDScene extends Phaser.Scene {
         this.terrain.create(this)
         this.terrain.draw(graphics)
 
+        // the path for our enemies
+        // parameters are the start x and y of our path
+        this.waveManager = new WaveManager(this);
+        this.towerManager = new TowerManager(this);
+
         this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
 
-        this.towers = this.add.group({ classType: Tower, runChildUpdate: true });
-        this.input.on('pointerdown', this.placeTower, this);
+        this.towers = this.add.group({ classType: TowerTurret, runChildUpdate: true });
+        this.newTowers = this.add.group({ classType: NewTower, runChildUpdate: true });
+        this.input.on('pointerdown', this.towerManager.placeTower, this.towerManager);
 
         this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
         this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
 
+        this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
+        this.waveText = this.add.text(400, 50, 'Wave: 1', { fontSize: '32px' });
+
         this.waveManager = new WaveManager(this);
-        
+
         const cam = this.cameras.main
         cam.scrollX = -HUD_WIDTH
     }
@@ -65,22 +91,6 @@ export class TDScene extends Phaser.Scene {
         this.scene.setVisible(isForegroundScene);
     }
 
-    public placeTower(pointer) {
-        var i = Math.floor((pointer.x + this.cameras.main.scrollX) / TILE_SIZE);
-        var j = Math.floor(pointer.y / TILE_SIZE);
-
-        if (this.terrain.canPlaceTower(i, j)) {
-            var tower = this.towers.get();
-            if (tower) {
-                tower.setActive(true);
-                tower.setVisible(true);
-                tower.place(i, j, this.terrain);
-            }
-        }
-
-        let newSceneIndex = this.metaScene.addScene()
-        this.metaScene.switchToScene(newSceneIndex)
-    }
 
     damageEnemy(enemy, bullet) {
         // only if both enemy and bullet are alive
@@ -100,7 +110,7 @@ export class TDScene extends Phaser.Scene {
         this.waveManager.update(time, delta)
 
         if(this.frameNumber % 60 == 0) {
-            console.log(`Update ${this.sceneNumber}`)
+            console.log(`Update ${this.sceneNumber} | l: ${this.sceneLevel} | p: ${this.sceneNumberParent}`)
         }
     }
 

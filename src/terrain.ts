@@ -19,13 +19,11 @@ export class Terrain {
     path: Phaser.Curves.Path  // The Phaser path (for enemy movement)
     pathTiles: GridPos[]  // The sequence of tiles making up the path
 
-    private level: number; // I know this is terrible, I'm sorry
     w: number
     h: number
 
     // todo: generate/load terrain
-    constructor(level: integer, width: integer, height: integer) {
-        this.level = level;
+    constructor(width: integer, height: integer) {
         this.w = width
         this.h = height
     }

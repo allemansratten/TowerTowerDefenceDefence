@@ -10,8 +10,8 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class MetaScene extends Phaser.Scene {
 
-    scenes: TDScene[]
-    activeSceneIndex: number
+    public scenes: TDScene[]
+    public activeSceneIndex: number
 
     constructor(){
         super(sceneConfig);
@@ -25,9 +25,15 @@ export class MetaScene extends Phaser.Scene {
     }
 
     // Creates new Scene, enables it, and sets it invisible
-    public addScene(): number {
+    public addScene(parentScene?: TDScene): number {
+
+        let sceneNumberParent = parentScene?.sceneNumber ?? -1;
+        let sceneLevel = (parentScene?.sceneLevel ?? -1) + 1 ; 
+
         let sceneIndex = this.scenes.length;
-        let newScene = new TDScene(new TDSceneConfig(new Terrain(sceneIndex, 10, 8), sceneIndex), this);
+        let newScene = new TDScene(
+            new TDSceneConfig(new Terrain(10, 8), sceneIndex, sceneLevel, sceneNumberParent), 
+            this);
 
         this.scene.add(
             `tdScene${sceneIndex}`,

@@ -26,8 +26,40 @@ function getEnemy(x, y, distance, enemies) {
     return false;
 }
 
-export class Tower extends Phaser.GameObjects.Image {
 
+export class NewTower extends Phaser.GameObjects.Container {
+    scene: TDScene
+
+    towerTurret: TowerTurret
+    towerBase: Phaser.GameObjects.Sprite
+
+    constructor(scene: TDScene) {
+        super(scene, 0, 0)
+        this.towerTurret = new TowerTurret(scene)
+        this.scene = scene;
+    }
+
+    public make(i, j) {
+        this.towerTurret.setActive(true);
+        this.towerTurret.setVisible(true);
+
+        let xCoord = i * TILE_SIZE + TILE_SIZE / 2
+        let yCoord = j * TILE_SIZE + TILE_SIZE / 2
+
+        this.towerBase = this.scene.add.sprite(xCoord, yCoord, 'towerbase')
+        this.add(this.towerBase);
+
+        this.towerTurret.place(i, j, this.scene.terrain);
+        this.add(this.towerTurret);
+    }
+
+    update(time, delta) {
+        this.towerTurret.update(time, delta)
+    }
+}
+
+
+export class TowerTurret extends Phaser.GameObjects.Image {
     nextTic: number
     x: number
     y: number
