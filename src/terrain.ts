@@ -1,5 +1,5 @@
 import { TDScene } from "./scenes/tdScene"
-import { NewTower } from "./towers"
+import { Tower } from "./towers"
 
 export enum TileType {
     Start, Path, End, Occupied, Buildable
@@ -15,7 +15,7 @@ const N_TILESET_SPRITES = 10  // how many sprites are in the tileset?
 type GridPos = [integer, integer]
 
 export class Terrain {
-    towers: NewTower[][]
+    towers: Tower[][]
     tiles: TileType[][]
 
     tileSprites: integer[][]
@@ -36,7 +36,7 @@ export class Terrain {
         this.generate()
         this.setupSprites(scene)
 
-        this.towers = init2DArray<NewTower>(this.w, this.h, null)
+        this.towers = init2DArray<Tower>(this.w, this.h, null)
     }
 
     setupSprites(scene: TDScene) {
@@ -137,7 +137,7 @@ export class Terrain {
         return this.towers[i][j];
     }
 
-    public placeTower(i: integer, j: integer, tower: NewTower) {
+    public placeTower(i: integer, j: integer, tower: Tower) {
         if (i < 0 || j < 0 || i >= this.w || j >= this.h) return null
 
         this.tiles[i][j] = TileType.Occupied;
@@ -202,7 +202,7 @@ export class Terrain {
             this.tiles[path[i][0]][path[i][1]] = setTo
         }
 
-        console.log("Generated terrain with offset is", this.offset())
+        console.log("Generated terrain with offset is")
 
         this.pathTiles = path
         return path.length

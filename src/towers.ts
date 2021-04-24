@@ -27,7 +27,7 @@ function getEnemy(x, y, distance, enemies) {
 }
 
 
-export class NewTower extends Phaser.GameObjects.Container {
+export class Tower extends Phaser.GameObjects.Container {
     scene: TDScene
 
     towerTurret: TowerTurret

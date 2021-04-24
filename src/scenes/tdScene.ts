@@ -1,5 +1,5 @@
 import { Enemy } from "../enemy";
-import { NewTower } from "../towers";
+import { Tower } from "../towers";
 import { Bullet } from "../bullet";
 import { WaveManager } from "../waves"
 import { TowerManager } from "../towerManager"
@@ -58,7 +58,7 @@ export class TDScene extends Phaser.Scene {
 
         this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
 
-        this.towers = this.add.group({ classType: NewTower, runChildUpdate: true });
+        this.towers = this.add.group({ classType: Tower, runChildUpdate: true });
         this.input.on('pointerdown', this.towerManager.placeTower, this.towerManager);
 
         this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
