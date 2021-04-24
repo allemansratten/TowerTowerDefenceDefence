@@ -1,6 +1,6 @@
 // import { GridPosition, Position, Terrain } from "./terrain";
 
-import { SampleScene } from "./scenes/sample";
+import { TDScene } from "./scenes/sample";
 import { PlayerInfo } from "./player" ;
 
 // export abstract class Enemy {
@@ -29,7 +29,7 @@ export class Enemy extends Phaser.GameObjects.Image {
     hp: number = 20;
     yOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     xOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
-    scene: SampleScene // type assertion
+    scene: TDScene // type assertion
     speed: number;
 
     constructor(scene) {
@@ -42,7 +42,7 @@ export class Enemy extends Phaser.GameObjects.Image {
         this.follower.t += this.speed * delta;
 
         // get the new x and y coordinates in vec
-        this.scene.path.getPoint(this.follower.t, this.follower.vec);
+        this.scene.terrain.path.getPoint(this.follower.t, this.follower.vec);
 
         // update enemy x and y to the newly obtained x and y
         this.setPosition(this.follower.vec.x + this.xOffset, this.follower.vec.y + this.yOffset);
@@ -61,7 +61,7 @@ export class Enemy extends Phaser.GameObjects.Image {
         this.speed = speed;
 
         // get x and y of the given t point
-        this.scene.path.getPoint(this.follower.t, this.follower.vec);
+        this.scene.terrain.path.getPoint(this.follower.t, this.follower.vec);
 
         // set the x and y of our enemy to the received from the previous step
         this.setPosition(this.follower.vec.x, this.follower.vec.y);

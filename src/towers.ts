@@ -1,7 +1,8 @@
 // import { Enemy } from "./enemy";
 // import { GridPosition } from "./terrain";
 
-import { SampleScene } from "./scenes/sample";
+import { TDScene } from "./scenes/sample";
+import { Terrain, TILE_SIZE } from "./terrain";
 
 // export abstract class Tower {
 //     pos: GridPosition
@@ -31,7 +32,7 @@ export class Tower extends Phaser.GameObjects.Image {
     x: number
     y: number
 
-    scene: SampleScene
+    scene: TDScene
 
     constructor(scene) {
         super(scene, 0, 0, 'star');
@@ -39,10 +40,10 @@ export class Tower extends Phaser.GameObjects.Image {
     }
 
     // we will place the tower according to the grid
-    place(i, j, map) {
-        this.y = i * 64 + 64/2;
-        this.x = j * 64 + 64/2;
-        map[i][j] = 1;
+    place(i: integer, j: integer, terrain: Terrain) {
+        this.y = i * TILE_SIZE + TILE_SIZE/2;
+        this.x = j * TILE_SIZE + TILE_SIZE/2;
+        terrain.tiles[i][j] = 1;
     }
 
     fire() {

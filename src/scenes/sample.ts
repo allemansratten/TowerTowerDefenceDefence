@@ -2,6 +2,8 @@ import { Enemy } from "../enemy";
 import { Tower } from "../towers";
 import { Bullet } from "../bullet";
 import { WaveManager } from "../waves"
+import { Terrain } from "../terrain";
+import { TDSceneConfig } from "./tdSceneConfig";
 
 var BULLET_DAMAGE = 10;
 
@@ -11,8 +13,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     key: 'Sample',
 };
 
-export class SampleScene extends Phaser.Scene {
-    private square: Phaser.GameObjects.Rectangle & { body: Phaser.Physics.Arcade.Body };
+export class TDScene extends Phaser.Scene {
     path: Phaser.Curves.Path
     enemies: Phaser.Physics.Arcade.Group
     nextEnemy: number = 0
@@ -21,14 +22,15 @@ export class SampleScene extends Phaser.Scene {
 
     bullets: Phaser.Physics.Arcade.Group
 
-    moneyText: Phaser.GameObjects.Text
+    terrain: Terrain
 
     waveManager: WaveManager
+    moneyText: Phaser.GameObjects.Text
 
-    map: any // todo: type
-
-    constructor() {
+    constructor(config: TDSceneConfig) {
         super(sceneConfig);
+
+        this.terrain = config.terrain;
     }
 
     public preload() {
@@ -42,20 +44,13 @@ export class SampleScene extends Phaser.Scene {
         // its not related to our path
         var graphics = this.add.graphics();
 
-        // draw grid
-        var graphics = this.add.graphics();
-        this.drawGrid(graphics);
+        this.terrain.create(this, 10);
+        this.terrain.draw(graphics)
 
         // the path for our enemies
         // parameters are the start x and y of our path
-        this.path = this.add.path(96, -32);
-        this.path.lineTo(96, 164);
-        this.path.lineTo(480, 164);
-        this.path.lineTo(480, 544);
 
-        graphics.lineStyle(3, 0xffffff, 1);
-        // visualize the path
-        this.path.draw(graphics);
+
         this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
 
         this.towers = this.add.group({ classType: Tower, runChildUpdate: true });
@@ -67,45 +62,19 @@ export class SampleScene extends Phaser.Scene {
         this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
         this.waveManager = new WaveManager(this);
 
-        this.map = [
-            [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, -1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, -1, -1, -1, -1, -1, -1, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, -1, 0, 0]];
-
-    }
-
-    drawGrid(graphics) {
-        graphics.lineStyle(1, 0x0000ff, 0.8);
-        for (var i = 0; i < 8; i++) {
-            graphics.moveTo(0, i * 64);
-            graphics.lineTo(640, i * 64);
-        }
-        for (var j = 0; j < 10; j++) {
-            graphics.moveTo(j * 64, 0);
-            graphics.lineTo(j * 64, 512);
-        }
-        graphics.strokePath();
-    }
-
-    public canPlaceTower(i, j) {
-        return this.map[i][j] === 0;
+        this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
     }
 
     public placeTower(pointer) {
         var i = Math.floor(pointer.y / 64);
         var j = Math.floor(pointer.x / 64);
 
-        if (this.canPlaceTower(i, j)) {
+        if (this.terrain.canPlaceTower(i, j)) {
             var tower = this.towers.get();
             if (tower) {
                 tower.setActive(true);
                 tower.setVisible(true);
-                tower.place(i, j, this.map);
+                tower.place(i, j, this.terrain);
             }
         }
     }
