@@ -3,7 +3,7 @@ import { TowerTurret, NewTower } from "../towers";
 import { Bullet } from "../bullet";
 import { WaveManager } from "../waves"
 import { TowerManager } from "../towerManager"
-import { Terrain } from "../terrain";
+import { Terrain, TILE_SIZE } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
 import { MetaScene } from "./MetaScene";
 import { HUD_WIDTH } from "./hudScene";
@@ -48,10 +48,7 @@ export class TDScene extends Phaser.Scene {
     }
 
     public preload() {
-        // load the game assets
-        this.load.image('bomb', '../../assets/bomb.png');
-        this.load.image('star', '../../assets/star.png');
-        this.load.image('towerbase', '../../assets/towerbase.png');
+        // preloading belongs in metaScene
     }
 
     public create() {
@@ -71,7 +68,7 @@ export class TDScene extends Phaser.Scene {
 
         this.towers = this.add.group({ classType: TowerTurret, runChildUpdate: true });
         this.newTowers = this.add.group({ classType: NewTower, runChildUpdate: true });
-        this.input.on('pointerdown', this.towerManager.placeTower, this.towerManager);
+        this.input.on('pointerdown', this.onClick, this);
 
         this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
         this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
@@ -118,6 +115,20 @@ export class TDScene extends Phaser.Scene {
         var bullet = this.bullets.get();
         if (bullet) {
             bullet.fire(x, y, angle);
+        }
+    }
+
+    toGridPos(x, y) {
+        let i = Math.floor((x + this.cameras.main.scrollX) / TILE_SIZE);
+        let j = Math.floor((y + this.cameras.main.scrollY) / TILE_SIZE);
+        return [i, j]
+    }
+
+    onClick(pointer: Phaser.Input.Pointer) {
+        let [i, j] = this.toGridPos(pointer.x, pointer.y)
+        if (this.terrain.inBounds(i, j)) {
+            // todo: go deeper!
+            // console.log(this.newTowers.getChildren())
         }
     }
 }

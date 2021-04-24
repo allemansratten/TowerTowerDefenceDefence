@@ -22,6 +22,7 @@ export class MetaScene extends Phaser.Scene {
         this.addScene();
         this.scenes[0].scene.setVisible(true);
         this.activeSceneIndex = 0
+        this.scene.start("hudScene")
     }
 
     // Creates new Scene, enables it, and sets it invisible
@@ -67,6 +68,10 @@ export class MetaScene extends Phaser.Scene {
             'assets/tileset.png',
             { frameWidth: 64, frameHeight: 64 }
         );
+        this.load.image('towerbase', '../../assets/towerbase.png');
     }
 
+    getActiveScene() {
+        return this.scenes[this.activeSceneIndex]
+    }
 }

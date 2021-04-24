@@ -62,7 +62,6 @@ export class Terrain {
         }
 
         for (let pi = 0; pi < this.pathTiles.length; pi++) {
-            // let [x, y] = this.fromGridPos(path[i][0], path[i][1])
             let [i1, j1] = this.pathTiles[pi]
 
             if (pi == 0) {
@@ -75,8 +74,6 @@ export class Terrain {
                 if (d1 > d2) {
                     [d1, d2] = [d2, d1]
                 }
-                // console.log(pi, d1, this.pathTiles[pi-1], this.pathTiles[pi])
-                console.log(pi, d1, d2)
                 // Order of sprites (02 meaning d1=0, d2=2):
                 // 01 02 03 12 13 23
                 if (d1 == 0) {
@@ -125,8 +122,7 @@ export class Terrain {
     }
 
     public canPlaceTower(i: integer, j: integer) {
-        if (i < 0 || j < 0 || i >= this.w || j >= this.h) return false
-        return this.tiles[i][j] === TileType.Buildable;
+        return this.inBounds(i, j) && this.tiles[i][j] === TileType.Buildable;
     }
 
     private generate(): number {
@@ -239,16 +235,20 @@ export class Terrain {
             [pos[0], pos[1] + 1],
             [pos[0], pos[1] - 1],
         ]
-        res = res.filter(p => p[0] >= pad
-            && p[0] < this.w - pad
-            && p[1] >= pad
-            && p[1] < this.h - pad
-        )
+        res = res.filter(p => this.inBounds(p[0], p[1]))
+
         return res
     }
 
     fromGridPos(i: integer, j: integer) {
         return [(i + 0.5) * TILE_SIZE + this.offset(), (j + 0.5) * TILE_SIZE]
+    }
+
+    inBounds(i: integer, j: integer, pad=0) {
+        return (i >= pad
+        && i < this.w - pad
+        && j >= pad
+        && j < this.h - pad)
     }
 }
 
