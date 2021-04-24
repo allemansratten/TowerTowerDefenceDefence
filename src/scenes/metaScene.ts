@@ -22,6 +22,7 @@ export class MetaScene extends Phaser.Scene {
         this.addScene();
         this.scenes[0].scene.setVisible(true);
         this.activeSceneIndex = 0
+        this.scene.start("hudScene")
     }
 
     // Creates new Scene, enables it, and sets it invisible
@@ -42,7 +43,8 @@ export class MetaScene extends Phaser.Scene {
             );
         this.scenes.push(newScene)
         newScene.scene.setVisible(false);
-
+        this.scene.bringToTop('hudScene');
+        
         return newScene;
     }
 
@@ -62,7 +64,9 @@ export class MetaScene extends Phaser.Scene {
         // load the game assets
         this.load.image('enemy1', '../../assets/enemy.png');
         this.load.image('bullet', '../../assets/bullet.png');
-        this.load.image('towertop', '../../assets/towertop.png');
+        this.load.image('towertop0', '../../assets/towertop0.png');
+        this.load.image('towertop1', '../../assets/towertop1.png');
+        this.load.image('towermid', '../../assets/towermid.png');
         this.load.image('towerbase', '../../assets/towerbase.png');
         this.load.spritesheet('tileset',
             'assets/tileset.png',
@@ -70,4 +74,7 @@ export class MetaScene extends Phaser.Scene {
         );
     }
 
+    getActiveScene() {
+        return this.scenes[this.activeSceneIndex]
+    }
 }

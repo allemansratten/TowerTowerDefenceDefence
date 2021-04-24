@@ -27,14 +27,15 @@ function getEnemy(x, y, distance, enemies) {
 }
 
 
-export class NewTower extends Phaser.GameObjects.Container {
+export class Tower extends Phaser.GameObjects.Container {
     scene: TDScene
 
     towerTurret: TowerTurret
+    towerMid: Phaser.GameObjects.Sprite
     towerBase: Phaser.GameObjects.Sprite
-    
+
     public innerTowerScene: TDScene
-    
+
     constructor(towerScene: TDScene) {
         super(towerScene, 0, 0)
         this.towerTurret = new TowerTurret(towerScene)
@@ -50,6 +51,8 @@ export class NewTower extends Phaser.GameObjects.Container {
 
         this.towerBase = this.scene.add.sprite(xCoord, yCoord, 'towerbase')
         this.add(this.towerBase);
+        this.towerMid = this.scene.add.sprite(xCoord, yCoord, 'towermid')
+        this.add(this.towerMid);
 
         this.towerTurret.place(i, j, this.scene.terrain);
         this.scene.terrain.placeTower(i, j, this);
@@ -73,7 +76,7 @@ export class TowerTurret extends Phaser.GameObjects.Image {
     scene: TDScene
 
     constructor(scene) {
-        super(scene, 0, 0, 'towertop');
+        super(scene, 0, 0, 'towertop0');
         this.nextTic = 0;
     }
 

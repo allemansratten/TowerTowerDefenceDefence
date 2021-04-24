@@ -1,5 +1,5 @@
 import { TDScene } from "./scenes/tdScene"
-import { NewTower } from "./towers"
+import { Tower } from "./towers"
 
 export enum TileType {
     Start, Path, End, Occupied, Buildable
@@ -15,9 +15,11 @@ const N_TILESET_SPRITES = 10  // how many sprites are in the tileset?
 type GridPos = [integer, integer]
 
 export class Terrain {
-    towers: NewTower[][]
+    towers: Tower[][]
     tiles: TileType[][]
+
     tileSprites: integer[][]
+
     path: Phaser.Curves.Path  // The Phaser path (for enemy movement)
     pathTiles: GridPos[]  // The sequence of tiles making up the path
 
@@ -34,7 +36,7 @@ export class Terrain {
         this.generate()
         this.setupSprites(scene)
 
-        this.towers = init2DArray<NewTower>(this.w, this.h, null)
+        this.towers = init2DArray<Tower>(this.w, this.h, null)
     }
 
     setupSprites(scene: TDScene) {
@@ -66,7 +68,6 @@ export class Terrain {
         }
 
         for (let pi = 0; pi < this.pathTiles.length; pi++) {
-            // let [x, y] = this.fromGridPos(path[i][0], path[i][1])
             let [i1, j1] = this.pathTiles[pi]
 
             if (pi == 0) {
@@ -79,8 +80,6 @@ export class Terrain {
                 if (d1 > d2) {
                     [d1, d2] = [d2, d1]
                 }
-                // console.log(pi, d1, this.pathTiles[pi-1], this.pathTiles[pi])
-                console.log(pi, d1, d2)
                 // Order of sprites (02 meaning d1=0, d2=2):
                 // 01 02 03 12 13 23
                 if (d1 == 0) {
@@ -102,9 +101,6 @@ export class Terrain {
 
     }
 
-    private offset() {
-        return 0;
-    }
 
     draw(graphics: Phaser.GameObjects.Graphics) {
         // this.drawGrid(graphics)
@@ -118,19 +114,18 @@ export class Terrain {
         graphics.lineStyle(1, 0x0000ff, 0.8);
 
         for (let i = 0; i <= this.h; i++) {
-            graphics.moveTo(this.offset() + 0, i * TILE_SIZE);
-            graphics.lineTo(this.offset() + TILE_SIZE * 10, i * TILE_SIZE);
+            graphics.moveTo(0, i * TILE_SIZE);
+            graphics.lineTo(TILE_SIZE * 10, i * TILE_SIZE);
         }
         for (let j = 0; j <= this.w; j++) {
-            graphics.moveTo(this.offset() + j * TILE_SIZE, 0);
-            graphics.lineTo(this.offset() + j * TILE_SIZE, TILE_SIZE * 8);
+            graphics.moveTo(j * TILE_SIZE, 0);
+            graphics.lineTo(j * TILE_SIZE, TILE_SIZE * 8);
         }
         graphics.strokePath();
     }
 
     public canPlaceTower(i: integer, j: integer) {
-        if (i < 0 || j < 0 || i >= this.w || j >= this.h) return false
-        return this.tiles[i][j] === TileType.Buildable;
+        return this.inBounds(i, j) && this.tiles[i][j] === TileType.Buildable;
     }
 
     public tryGetExistingTower(i: integer, j: integer) {
@@ -138,7 +133,7 @@ export class Terrain {
         return this.towers[i][j];
     }
 
-    public placeTower(i: integer, j: integer, tower: NewTower) {
+    public placeTower(i: integer, j: integer, tower: Tower) {
         if (i < 0 || j < 0 || i >= this.w || j >= this.h) return null
 
         this.tiles[i][j] = TileType.Occupied;
@@ -203,7 +198,7 @@ export class Terrain {
             this.tiles[path[i][0]][path[i][1]] = setTo
         }
 
-        console.log("Generated terrain with offset is", this.offset())
+        console.log("Generated terrain.")
 
         this.pathTiles = path
         return path.length
@@ -255,16 +250,20 @@ export class Terrain {
             [pos[0], pos[1] + 1],
             [pos[0], pos[1] - 1],
         ]
-        res = res.filter(p => p[0] >= pad
-            && p[0] < this.w - pad
-            && p[1] >= pad
-            && p[1] < this.h - pad
-        )
+        res = res.filter(p => this.inBounds(p[0], p[1]))
+
         return res
     }
 
     fromGridPos(i: integer, j: integer) {
-        return [(i + 0.5) * TILE_SIZE + this.offset(), (j + 0.5) * TILE_SIZE]
+        return [(i + 0.5) * TILE_SIZE, (j + 0.5) * TILE_SIZE]
+    }
+
+    inBounds(i: integer, j: integer, pad=0) {
+        return (i >= pad
+        && i < this.w - pad
+        && j >= pad
+        && j < this.h - pad)
     }
 }
 

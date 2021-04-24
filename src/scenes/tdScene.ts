@@ -1,9 +1,9 @@
 import { Enemy } from "../enemy";
-import { NewTower } from "../towers";
+import { Tower } from "../towers";
 import { Bullet } from "../bullet";
 import { WaveManager } from "../waves"
 import { TowerManager } from "../towerManager"
-import { Terrain } from "../terrain";
+import { Terrain, TILE_SIZE } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
 import { MetaScene } from "./MetaScene";
 import { HUD_WIDTH } from "./hudScene";
@@ -58,8 +58,9 @@ export class TDScene extends Phaser.Scene {
 
         this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
 
-        this.towers = this.add.group({ classType: NewTower, runChildUpdate: true });
-        this.input.on('pointerdown', this.towerManager.placeTower, this.towerManager);
+        this.towers = this.add.group({ classType: Tower, runChildUpdate: true });
+
+        this.input.on('pointerdown', this.onClick, this);
 
         this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
         this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
@@ -103,6 +104,21 @@ export class TDScene extends Phaser.Scene {
         var bullet = this.bullets.get();
         if (bullet) {
             bullet.fire(x, y, angle);
+        }
+    }
+
+    toGridPos(x, y) {
+        let i = Math.floor((x + this.cameras.main.scrollX) / TILE_SIZE);
+        let j = Math.floor((y + this.cameras.main.scrollY) / TILE_SIZE);
+        return [i, j]
+    }
+
+    onClick(pointer: Phaser.Input.Pointer) {
+        const [i, j] = this.toGridPos(pointer.x, pointer.y)
+
+        let potentialExistingTower = this.terrain.tryGetExistingTower(i, j);
+        if (potentialExistingTower){
+            this.metaScene.switchToScene(potentialExistingTower.innerTowerScene.sceneIndex)
         }
     }
 }
