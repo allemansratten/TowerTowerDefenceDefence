@@ -49,9 +49,11 @@ export class Enemy extends Phaser.GameObjects.Image {
 
         // if we have reached the end of the path, remove the enemy
         if (this.follower.t >= 1) {
+            this.scene.waveManager.spawnedEnemies--;
             this.setActive(false);
             this.setVisible(false);
-            PlayerInfo.hp--  // todo: only reduce hp when in outermost scene
+            if (this.scene.sceneLevel === 0)
+                PlayerInfo.hp--;
         }
     }
 
@@ -75,7 +77,10 @@ export class Enemy extends Phaser.GameObjects.Image {
         if (this.hp <= 0) {
             this.setActive(false);
             this.setVisible(false);
-            PlayerInfo.money++
+            if (this.scene.sceneLevel === 0) {
+                this.scene.waveManager.deadEnemies++;
+                PlayerInfo.money++;
+            }
         }
     }
 }
