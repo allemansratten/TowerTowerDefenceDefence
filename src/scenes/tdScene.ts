@@ -102,7 +102,7 @@ export class TDScene extends Phaser.Scene {
         this.waveManager.update(time, delta)
 
         if(this.frameNumber % 60 == 0) {
-            console.log(`Update ${this.sceneNumber} | l: ${this.sceneLevel} | p: ${this.sceneNumberParent}`)
+            console.log(`Update ${this.sceneNumber} | e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneNumberParent}`)
         }
     }
 

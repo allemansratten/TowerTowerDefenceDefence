@@ -1,4 +1,5 @@
 import { TDScene } from "./scenes/tdScene"
+import { NewTower } from "./towers"
 
 export enum TileType {
     Start, Path, End, Occupied, Buildable
@@ -14,6 +15,7 @@ const N_TILESET_SPRITES = 10  // how many sprites are in the tileset?
 type GridPos = [integer, integer]
 
 export class Terrain {
+    towers: NewTower[][]
     tiles: TileType[][]
     tileSprites: integer[][]
     path: Phaser.Curves.Path  // The Phaser path (for enemy movement)
@@ -31,6 +33,8 @@ export class Terrain {
     create(scene: TDScene) {
         this.generate()
         this.setupSprites(scene)
+
+        this.towers = init2DArray<NewTower>(this.w, this.h, null)
     }
 
     setupSprites(scene: TDScene) {
@@ -127,6 +131,18 @@ export class Terrain {
     public canPlaceTower(i: integer, j: integer) {
         if (i < 0 || j < 0 || i >= this.w || j >= this.h) return false
         return this.tiles[i][j] === TileType.Buildable;
+    }
+
+    public tryGetExistingTower(i: integer, j: integer) {
+        if (i < 0 || j < 0 || i >= this.w || j >= this.h) return null
+        return this.towers[i][j];
+    }
+
+    public placeTower(i: integer, j: integer, tower: NewTower) {
+        if (i < 0 || j < 0 || i >= this.w || j >= this.h) return null
+
+        this.tiles[i][j] = TileType.Occupied;
+        return this.towers[i][j] = tower;
     }
 
     private generate(): number {
@@ -261,7 +277,7 @@ function randomFreeSprite() {
     return nSpecialSprites + Math.floor(Math.random() * (N_TILESET_SPRITES - nSpecialSprites))
 }
 
-function init2DArray(dim1, dim2, value) {
+function init2DArray<TVal>(dim1, dim2, value:TVal): TVal[][] {
     return new Array(dim1)
         .fill(false)
         .map(() => new Array(dim2)

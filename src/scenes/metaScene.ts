@@ -25,7 +25,7 @@ export class MetaScene extends Phaser.Scene {
     }
 
     // Creates new Scene, enables it, and sets it invisible
-    public addScene(parentScene?: TDScene): number {
+    public addScene(parentScene?: TDScene): TDScene {
 
         let sceneNumberParent = parentScene?.sceneNumber ?? -1;
         let sceneLevel = (parentScene?.sceneLevel ?? -1) + 1 ; 
@@ -43,8 +43,7 @@ export class MetaScene extends Phaser.Scene {
         this.scenes.push(newScene)
         newScene.scene.setVisible(false);
 
-        return sceneIndex;
-        this.scene.isPaused
+        return newScene;
     }
 
 
