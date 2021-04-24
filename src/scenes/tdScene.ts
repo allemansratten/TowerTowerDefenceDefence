@@ -5,6 +5,7 @@ import { WaveManager } from "../waves"
 import { Terrain, TILE_SIZE } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
 import { MetaScene } from "./MetaScene";
+import { HUD_WIDTH } from "./hudScene";
 
 var BULLET_DAMAGE = 10;
 
@@ -55,7 +56,7 @@ export class TDScene extends Phaser.Scene {
         this.waveManager = new WaveManager(this);
         
         const cam = this.cameras.main
-        cam.scrollX = -(2 * TILE_SIZE)
+        cam.scrollX = -HUD_WIDTH
     }
 
     // Only foreground scene has input enabled & is visible; all scenes are being updated
@@ -65,8 +66,8 @@ export class TDScene extends Phaser.Scene {
     }
 
     public placeTower(pointer) {
-        var i = Math.floor(pointer.x / 64);
-        var j = Math.floor(pointer.y / 64);
+        var i = Math.floor((pointer.x + this.cameras.main.scrollX) / TILE_SIZE);
+        var j = Math.floor(pointer.y / TILE_SIZE);
 
         if (this.terrain.canPlaceTower(i, j)) {
             var tower = this.towers.get();

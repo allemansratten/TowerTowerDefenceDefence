@@ -57,6 +57,7 @@ export class Terrain {
     }
 
     public canPlaceTower(i: integer, j: integer) {
+        if (i < 0 || j < 0 || i >= this.w || j >= this.h) return false
         return this.tiles[i][j] === TileType.Buildable;
     }
 

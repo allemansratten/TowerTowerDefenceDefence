@@ -1,7 +1,8 @@
 import { PlayerInfo } from "../player";
-import { MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
+import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
 
 const HUD_BG_COLOR = 0xffaa7d
+export const HUD_WIDTH = TILE_SIZE * 2
 
 export class HudScene extends Phaser.Scene {
 
@@ -17,8 +18,8 @@ export class HudScene extends Phaser.Scene {
     }
 
     public create() {
-        let w = TILE_SIZE * 2
-        let h = TILE_SIZE * 8
+        let w = HUD_WIDTH
+        let h = TILE_SIZE * MAX_HEIGHT
         this.add.rectangle(w / 2, h / 2, w, h, HUD_BG_COLOR)
         this.add.rectangle(
             w + MAX_WIDTH * TILE_SIZE + w / 2,
