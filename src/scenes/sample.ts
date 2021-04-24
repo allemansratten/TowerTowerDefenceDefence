@@ -7,12 +7,6 @@ import { TDSceneConfig } from "./tdSceneConfig";
 
 var BULLET_DAMAGE = 10;
 
-const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
-    active: false,
-    visible: false,
-    key: 'Sample',
-};
-
 export class TDScene extends Phaser.Scene {
     path: Phaser.Curves.Path
     enemies: Phaser.Physics.Arcade.Group
@@ -28,7 +22,11 @@ export class TDScene extends Phaser.Scene {
     moneyText: Phaser.GameObjects.Text
 
     constructor(config: TDSceneConfig) {
-        super(sceneConfig);
+        super({
+            active: false,
+            visible: false,
+            key: `tdScene${config.sceneNumber}`,
+        });
 
         this.terrain = config.terrain;
     }
