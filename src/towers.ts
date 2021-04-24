@@ -39,7 +39,7 @@ export class NewTower extends Phaser.GameObjects.Container {
         this.scene = scene;
     }
 
-    public make(i, j) {
+    public make(i: number, j: number) {
         this.towerTurret.setActive(true);
         this.towerTurret.setVisible(true);
 
