@@ -5,6 +5,7 @@ export class EnemyConfig {
         ['money', 1],
         ['damage', 1],
         ['armor', 0],
+        ['danger', 10],
     ])
 
     static Fat: Map<string, number> = new Map([
@@ -13,6 +14,7 @@ export class EnemyConfig {
         ['money', 2],
         ['damage', 2],
         ['armor', 0],
+        ['danger', 30],
     ])
 
 
