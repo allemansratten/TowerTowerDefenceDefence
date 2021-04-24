@@ -9,11 +9,15 @@ export const LEVEL_OFFSET = 15 * TILE_SIZE
 export const MAX_WIDTH = 10
 export const MAX_HEIGHT = 8
 
+const N_TILESET_SPRITES = 10  // how many sprites are in the tileset?
+
 type GridPos = [integer, integer]
 
 export class Terrain {
-    tiles: Array<Array<TileType>>
-    path: Phaser.Curves.Path
+    tiles: TileType[][]
+    tileSprites: integer[][]
+    path: Phaser.Curves.Path  // The Phaser path (for enemy movement)
+    pathTiles: GridPos[]  // The sequence of tiles making up the path
 
     private level: number; // I know this is terrible, I'm sorry
     w: number
@@ -26,8 +30,74 @@ export class Terrain {
         this.h = height
     }
 
-    create() {
+    create(scene: TDScene) {
         this.generate()
+        this.setupSprites(scene)
+    }
+
+    setupSprites(scene: TDScene) {
+        this.tileSprites = init2DArray(this.w, this.h, TileType.Buildable)
+
+        for (let i = 0; i < this.w; i++) {
+            for (let j = 0; j < this.h; j++) {
+                this.tileSprites[i][j] = randomFreeSprite()
+            }
+        }
+
+        const getDir = (pi: integer) => {
+            // console.log(this.pathTiles, pi)
+            let [i1, j1] = this.pathTiles[pi]
+            let [i2, j2] = this.pathTiles[pi + 1]
+
+            let [di, dj] = [i2 - i1, j2 - j1]
+            if (di == 1) {
+                return 0
+            } else if (dj == -1) {
+                return 1
+            } else if (di == -1) {
+                return 2
+            } else if (dj == 1) {
+                return 3
+            }
+            console.error("getDir failed")
+            return null
+        }
+
+        for (let pi = 0; pi < this.pathTiles.length; pi++) {
+            // let [x, y] = this.fromGridPos(path[i][0], path[i][1])
+            let [i1, j1] = this.pathTiles[pi]
+
+            if (pi == 0) {
+                this.tileSprites[i1][j1] = 6
+            } else if (pi == this.pathTiles.length - 1) {
+                this.tileSprites[i1][j1] = 7
+            } else {
+                let d1 = (getDir(pi-1) + 2) % 4
+                let d2 = getDir(pi)
+                if (d1 > d2) {
+                    [d1, d2] = [d2, d1]
+                }
+                // console.log(pi, d1, this.pathTiles[pi-1], this.pathTiles[pi])
+                console.log(pi, d1, d2)
+                // Order of sprites (02 meaning d1=0, d2=2):
+                // 01 02 03 12 13 23
+                if (d1 == 0) {
+                    this.tileSprites[i1][j1] = d2 - 1
+                } else if (d1 == 1) {
+                    this.tileSprites[i1][j1] = d2 + 1
+                } else if (d1 == 2) {
+                    this.tileSprites[i1][j1] = 5 // only 23 left
+                }
+            }
+        }
+
+        for (let i = 0; i < this.w; i++) {
+            for (let j = 0; j < this.h; j++) {
+                const [x, y] = this.fromGridPos(i, j)
+                scene.add.sprite(x, y, 'tileset', this.tileSprites[i][j]);
+            }
+        }
+
     }
 
     private offset() {
@@ -35,7 +105,7 @@ export class Terrain {
     }
 
     draw(graphics: Phaser.GameObjects.Graphics) {
-        this.drawGrid(graphics)
+        // this.drawGrid(graphics)
 
         graphics.lineStyle(3, 0xffffff, 1);
         // visualize the path
@@ -45,11 +115,11 @@ export class Terrain {
     drawGrid(graphics: Phaser.GameObjects.Graphics) {
         graphics.lineStyle(1, 0x0000ff, 0.8);
 
-        for (var i = 0; i <= this.h; i++) {
+        for (let i = 0; i <= this.h; i++) {
             graphics.moveTo(this.offset() + 0, i * TILE_SIZE);
             graphics.lineTo(this.offset() + TILE_SIZE * 10, i * TILE_SIZE);
         }
-        for (var j = 0; j <= this.w; j++) {
+        for (let j = 0; j <= this.w; j++) {
             graphics.moveTo(this.offset() + j * TILE_SIZE, 0);
             graphics.lineTo(this.offset() + j * TILE_SIZE, TILE_SIZE * 8);
         }
@@ -96,11 +166,8 @@ export class Terrain {
 
         console.log("Generated in", attempts, "attempts")
 
-        this.tiles = new Array(this.w)
-            .fill(false)
-            .map(() => new Array(this.h)
-                .fill(TileType.Buildable));
-                
+        this.tiles = init2DArray(this.w, this.h, TileType.Buildable)
+
         for (let i = 0; i < path.length; i++) {
             let [x, y] = this.fromGridPos(path[i][0], path[i][1])
             if (i == 0) {
@@ -124,6 +191,7 @@ export class Terrain {
 
         console.log("Generated terrain with offset is", this.offset())
 
+        this.pathTiles = path
         return path.length
     }
 
@@ -188,4 +256,16 @@ export class Terrain {
 
 function randomItem(array) {
     return array[Math.floor(Math.random() * array.length)]
+}
+
+function randomFreeSprite() {
+    const nSpecialSprites = 8
+    return nSpecialSprites + Math.floor(Math.random() * (N_TILESET_SPRITES - nSpecialSprites))
+}
+
+function init2DArray(dim1, dim2, value) {
+    return new Array(dim1)
+        .fill(false)
+        .map(() => new Array(dim2)
+            .fill(value));
 }

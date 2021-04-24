@@ -57,6 +57,10 @@ export class MetaScene extends Phaser.Scene {
         // load the game assets
         this.load.image('bomb', '../../assets/bomb.png');
         this.load.image('star', '../../assets/star.png');
+        this.load.spritesheet('tileset',
+            'assets/tileset.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
     }
 
 }
