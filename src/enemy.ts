@@ -78,7 +78,6 @@ export class Enemy extends Phaser.GameObjects.Image {
             this.setVisible(false);
             this.scene.waveManager.deadEnemies++;
             PlayerInfo.money++;
-            this.scene.moneyText.setText('Money: ' + PlayerInfo.money);
         }
     }
 }

@@ -1,4 +1,3 @@
-import { Enemy } from "./enemy"
 import { TDScene } from "./scenes/tdScene";
 
 export class WaveManager {
@@ -20,17 +19,16 @@ export class WaveManager {
 
     private getWaveDifficulty() {
         //TODO: add difficulty scaling and balancing for waves
-        this.numEnemies = this.currentWave;
+        this.numEnemies = this.currentWave+50;
         this.enemyHealth = 20;
-        this.enemySpeed = 1/15000;
-        this.enemyInterval = 300;
+        this.enemySpeed = 1/20000;
+        this.enemyInterval = 200;
     }
 
     private nextWave() {
         this.deadEnemies = 0;
         this.spawnedEnemies = 0;
         this.currentWave++;
-        this.scene.waveText.setText('Wave: ' + this.currentWave);
         console.log('Starting wave ' + this.currentWave);
         this.getWaveDifficulty();
     }

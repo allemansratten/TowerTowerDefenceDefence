@@ -13,7 +13,7 @@ export class TowerManager {
         var j = Math.floor((pointer.y + this.scene.cameras.main.scrollY) / TILE_SIZE);
 
         if (this.scene.terrain.canPlaceTower(i, j)) {
-            var tower = this.scene.newTowers.get();
+            var tower = this.scene.towers.get();
             if (tower) {
                 tower.make(i, j);
             }
