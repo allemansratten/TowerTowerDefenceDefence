@@ -26,14 +26,14 @@ export class MetaScene extends Phaser.Scene {
     }
 
     // Creates new Scene, enables it, and sets it invisible
-    public addScene(parentScene?: TDScene): number {
+    public addScene(parentScene?: TDScene): TDScene {
 
-        let sceneNumberParent = parentScene?.sceneNumber ?? -1;
-        let sceneLevel = (parentScene?.sceneLevel ?? -1) + 1 ; 
+        let sceneIndexParent = parentScene?.sceneIndex ?? -1;
+        let sceneLevel = (parentScene?.sceneLevel ?? -1) + 1 ;
 
         let sceneIndex = this.scenes.length;
         let newScene = new TDScene(
-            new TDSceneConfig(new Terrain(10, 8), sceneIndex, sceneLevel, sceneNumberParent), 
+            new TDSceneConfig(new Terrain(10, 8), sceneIndex, sceneLevel, sceneIndexParent),
             this);
 
         this.scene.add(
@@ -44,12 +44,11 @@ export class MetaScene extends Phaser.Scene {
         this.scenes.push(newScene)
         newScene.scene.setVisible(false);
 
-        return sceneIndex;
-        this.scene.isPaused
+        return newScene;
     }
 
 
-    // makes current scene invisible, makes new scene visible; doesn't change activness 
+    // makes current scene invisible, makes new scene visible; doesn't change activness
     public switchToScene(switchToIndex: number) {
         this.scenes[this.activeSceneIndex].setIsForeground(false);
         this.scenes[switchToIndex].setIsForeground(true);
@@ -62,8 +61,12 @@ export class MetaScene extends Phaser.Scene {
 
     public preload() {
         // load the game assets
-        this.load.image('bomb', '../../assets/bomb.png');
-        this.load.image('star', '../../assets/star.png');
+        this.load.image('enemy1', '../../assets/enemy.png');
+        this.load.image('bullet', '../../assets/bullet.png');
+        this.load.image('towertop0', '../../assets/towertop0.png');
+        this.load.image('towertop1', '../../assets/towertop1.png');
+        this.load.image('towermid', '../../assets/towermid.png');
+        this.load.image('towerbase', '../../assets/towerbase.png');
         this.load.spritesheet('tileset',
             'assets/tileset.png',
             { frameWidth: 64, frameHeight: 64 }

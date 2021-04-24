@@ -27,19 +27,22 @@ function getEnemy(x, y, distance, enemies) {
 }
 
 
-export class NewTower extends Phaser.GameObjects.Container {
+export class Tower extends Phaser.GameObjects.Container {
     scene: TDScene
 
     towerTurret: TowerTurret
+    towerMid: Phaser.GameObjects.Sprite
     towerBase: Phaser.GameObjects.Sprite
 
-    constructor(scene: TDScene) {
-        super(scene, 0, 0)
-        this.towerTurret = new TowerTurret(scene)
-        this.scene = scene;
+    public innerTowerScene: TDScene
+
+    constructor(towerScene: TDScene) {
+        super(towerScene, 0, 0)
+        this.towerTurret = new TowerTurret(towerScene)
+        this.scene = towerScene;
     }
 
-    public make(i, j) {
+    public make(i: number, j: number, innerTowerScene: TDScene) {
         this.towerTurret.setActive(true);
         this.towerTurret.setVisible(true);
 
@@ -48,9 +51,15 @@ export class NewTower extends Phaser.GameObjects.Container {
 
         this.towerBase = this.scene.add.sprite(xCoord, yCoord, 'towerbase')
         this.add(this.towerBase);
+        this.towerMid = this.scene.add.sprite(xCoord, yCoord, 'towermid')
+        this.add(this.towerMid);
 
         this.towerTurret.place(i, j, this.scene.terrain);
+        this.scene.terrain.placeTower(i, j, this);
+
         this.add(this.towerTurret);
+
+        this.innerTowerScene = innerTowerScene;
     }
 
     update(time, delta) {
@@ -67,14 +76,13 @@ export class TowerTurret extends Phaser.GameObjects.Image {
     scene: TDScene
 
     constructor(scene) {
-        super(scene, 0, 0, 'star');
+        super(scene, 0, 0, 'towertop0');
         this.nextTic = 0;
     }
 
     // we will place the tower according to the grid
     place(i: integer, j: integer, terrain: Terrain) {
         [this.x, this.y] = terrain.fromGridPos(i, j)
-        terrain.tiles[i][j] = TileType.Occupied;
     }
 
     fire() {

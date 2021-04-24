@@ -1,4 +1,5 @@
 import { TDScene } from "./scenes/tdScene"
+import { Tower } from "./towers"
 
 export enum TileType {
     Start, Path, End, Occupied, Buildable
@@ -14,8 +15,11 @@ const N_TILESET_SPRITES = 10  // how many sprites are in the tileset?
 type GridPos = [integer, integer]
 
 export class Terrain {
+    towers: Tower[][]
     tiles: TileType[][]
+
     tileSprites: integer[][]
+
     path: Phaser.Curves.Path  // The Phaser path (for enemy movement)
     pathTiles: GridPos[]  // The sequence of tiles making up the path
 
@@ -31,6 +35,8 @@ export class Terrain {
     create(scene: TDScene) {
         this.generate()
         this.setupSprites(scene)
+
+        this.towers = init2DArray<Tower>(this.w, this.h, null)
     }
 
     setupSprites(scene: TDScene) {
@@ -95,9 +101,6 @@ export class Terrain {
 
     }
 
-    private offset() {
-        return 0;
-    }
 
     draw(graphics: Phaser.GameObjects.Graphics) {
         // this.drawGrid(graphics)
@@ -111,18 +114,30 @@ export class Terrain {
         graphics.lineStyle(1, 0x0000ff, 0.8);
 
         for (let i = 0; i <= this.h; i++) {
-            graphics.moveTo(this.offset() + 0, i * TILE_SIZE);
-            graphics.lineTo(this.offset() + TILE_SIZE * 10, i * TILE_SIZE);
+            graphics.moveTo(0, i * TILE_SIZE);
+            graphics.lineTo(TILE_SIZE * 10, i * TILE_SIZE);
         }
         for (let j = 0; j <= this.w; j++) {
-            graphics.moveTo(this.offset() + j * TILE_SIZE, 0);
-            graphics.lineTo(this.offset() + j * TILE_SIZE, TILE_SIZE * 8);
+            graphics.moveTo(j * TILE_SIZE, 0);
+            graphics.lineTo(j * TILE_SIZE, TILE_SIZE * 8);
         }
         graphics.strokePath();
     }
 
     public canPlaceTower(i: integer, j: integer) {
         return this.inBounds(i, j) && this.tiles[i][j] === TileType.Buildable;
+    }
+
+    public tryGetExistingTower(i: integer, j: integer) {
+        if (i < 0 || j < 0 || i >= this.w || j >= this.h) return null
+        return this.towers[i][j];
+    }
+
+    public placeTower(i: integer, j: integer, tower: Tower) {
+        if (i < 0 || j < 0 || i >= this.w || j >= this.h) return null
+
+        this.tiles[i][j] = TileType.Occupied;
+        return this.towers[i][j] = tower;
     }
 
     private generate(): number {
@@ -183,7 +198,7 @@ export class Terrain {
             this.tiles[path[i][0]][path[i][1]] = setTo
         }
 
-        console.log("Generated terrain with offset is", this.offset())
+        console.log("Generated terrain.")
 
         this.pathTiles = path
         return path.length
@@ -241,7 +256,7 @@ export class Terrain {
     }
 
     fromGridPos(i: integer, j: integer) {
-        return [(i + 0.5) * TILE_SIZE + this.offset(), (j + 0.5) * TILE_SIZE]
+        return [(i + 0.5) * TILE_SIZE, (j + 0.5) * TILE_SIZE]
     }
 
     inBounds(i: integer, j: integer, pad=0) {
@@ -261,7 +276,7 @@ function randomFreeSprite() {
     return nSpecialSprites + Math.floor(Math.random() * (N_TILESET_SPRITES - nSpecialSprites))
 }
 
-function init2DArray(dim1, dim2, value) {
+function init2DArray<TVal>(dim1, dim2, value:TVal): TVal[][] {
     return new Array(dim1)
         .fill(false)
         .map(() => new Array(dim2)

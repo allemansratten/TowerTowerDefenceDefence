@@ -1,4 +1,3 @@
-import { Enemy } from "./enemy"
 import { TDScene } from "./scenes/tdScene";
 
 export class WaveManager {
@@ -15,28 +14,37 @@ export class WaveManager {
 
     constructor(scene) {
         this.scene = scene;
-        this.getWaveDifficulty()
+        if (this.scene.sceneLevel === 0)
+            this.getWaveDifficulty();
+        else
+            this.getNestedWaveDifficulty();
+    }
+
+    private getNestedWaveDifficulty() {
+        //TODO: add difficulty scaling for nested levels
+        this.enemyHealth = 20;
+        this.enemySpeed = 1/20000;
+        this.enemyInterval = 500;
     }
 
     private getWaveDifficulty() {
         //TODO: add difficulty scaling and balancing for waves
         this.numEnemies = this.currentWave;
         this.enemyHealth = 20;
-        this.enemySpeed = 1/15000;
-        this.enemyInterval = 300;
+        this.enemySpeed = 1/20000;
+        this.enemyInterval = 200;
     }
 
     private nextWave() {
         this.deadEnemies = 0;
         this.spawnedEnemies = 0;
         this.currentWave++;
-        this.scene.waveText.setText('Wave: ' + this.currentWave);
         console.log('Starting wave ' + this.currentWave);
         this.getWaveDifficulty();
     }
 
     public update(time, delta) {
-        if (this.spawnedEnemies < this.numEnemies && time > this.nextEnemy) {
+        if ((this.scene.sceneLevel > 0 || this.spawnedEnemies < this.numEnemies) && time > this.nextEnemy) {
             var enemy = this.scene.enemies.get();
             if (enemy) {
                 enemy.setActive(true);
@@ -49,7 +57,7 @@ export class WaveManager {
                 this.nextEnemy = time + this.enemyInterval;
             }
         }
-        if (this.deadEnemies === this.numEnemies) {
+        if (this.scene.sceneLevel === 0 && this.deadEnemies === this.numEnemies) {
             //next wave
             this.nextWave();
         }

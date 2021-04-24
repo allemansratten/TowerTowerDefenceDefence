@@ -1,5 +1,6 @@
 import { TDScene } from "./scenes/tdScene";
 import { TILE_SIZE } from "./terrain"
+import { Tower } from "./towers";
 
 export class TowerManager {
     scene: TDScene
@@ -11,14 +12,21 @@ export class TowerManager {
     public placeTower(pointer) {
         const [i, j] = this.scene.toGridPos(pointer.x, pointer.y)
         if (this.scene.terrain.canPlaceTower(i, j)) {
-            let tower = this.scene.newTowers.get();
-            if (tower) {
-                tower.make(i, j);
-            }
+            var tower: Tower = this.scene.towers.get();
 
             // only switch to new scene when tower can be build
-            let newSceneIndex = this.scene.metaScene.addScene(this.scene)
-            this.scene.metaScene.switchToScene(newSceneIndex)
+            let newScene = this.scene.metaScene.addScene(this.scene)
+            this.scene.metaScene.switchToScene(newScene.sceneIndex)
+
+            if (tower) {
+                tower.make(i, j, newScene);
+            }
         }
+
+        let potentialExistingTower = this.scene.terrain.tryGetExistingTower(i, j);
+        if (potentialExistingTower){
+            this.scene.metaScene.switchToScene(potentialExistingTower.innerTowerScene.sceneIndex)
+        }
+        
     }
 }

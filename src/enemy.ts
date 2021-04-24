@@ -33,7 +33,7 @@ export class Enemy extends Phaser.GameObjects.Image {
     speed: number;
 
     constructor(scene) {
-        super(scene, 0, 0, 'bomb');
+        super(scene, 0, 0, 'enemy1');
 
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
     }
@@ -52,7 +52,8 @@ export class Enemy extends Phaser.GameObjects.Image {
             this.scene.waveManager.spawnedEnemies--;
             this.setActive(false);
             this.setVisible(false);
-            PlayerInfo.hp--  // todo: only reduce hp when in outermost scene
+            if (this.scene.sceneLevel === 0)
+                PlayerInfo.hp--;
         }
     }
 
@@ -76,9 +77,10 @@ export class Enemy extends Phaser.GameObjects.Image {
         if (this.hp <= 0) {
             this.setActive(false);
             this.setVisible(false);
-            this.scene.waveManager.deadEnemies++;
-            PlayerInfo.money++;
-            this.scene.moneyText.setText('Money: ' + PlayerInfo.money);
+            if (this.scene.sceneLevel === 0) {
+                this.scene.waveManager.deadEnemies++;
+                PlayerInfo.money++;
+            }
         }
     }
 }
