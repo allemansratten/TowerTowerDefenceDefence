@@ -5,6 +5,8 @@ import { WaveManager } from "../waves"
 import { TowerManager } from "../towerManager"
 import { Terrain } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
+import { MetaScene } from "./MetaScene";
+import { HUD_WIDTH } from "./hudScene";
 
 var BULLET_DAMAGE = 10;
 
@@ -12,6 +14,7 @@ export class TDScene extends Phaser.Scene {
     path: Phaser.Curves.Path
     enemies: Phaser.Physics.Arcade.Group
     nextEnemy: number = 0
+    metaScene: MetaScene
 
     towers: Phaser.GameObjects.Group
     newTowers: Phaser.GameObjects.Group
@@ -25,7 +28,9 @@ export class TDScene extends Phaser.Scene {
     moneyText: Phaser.GameObjects.Text
     waveText: Phaser.GameObjects.Text
 
-    constructor(config: TDSceneConfig) {
+    sceneNumber: number
+
+    constructor(config: TDSceneConfig, metaScene: MetaScene) {
         super({
             active: false,
             visible: false,
@@ -33,6 +38,8 @@ export class TDScene extends Phaser.Scene {
         });
 
         this.terrain = config.terrain;
+        this.metaScene = metaScene;
+        this.sceneNumber = config.sceneNumber;
     }
 
     public preload() {
@@ -47,7 +54,7 @@ export class TDScene extends Phaser.Scene {
         // its not related to our path
         var graphics = this.add.graphics();
 
-        this.terrain.create(this)
+        this.terrain.create()
         this.terrain.draw(graphics)
 
         // the path for our enemies
@@ -66,6 +73,17 @@ export class TDScene extends Phaser.Scene {
 
         this.moneyText = this.add.text(400, 16, 'Money: 0', { fontSize: '32px' });
         this.waveText = this.add.text(400, 50, 'Wave: 1', { fontSize: '32px' });
+
+        this.waveManager = new WaveManager(this);
+
+        const cam = this.cameras.main
+        cam.scrollX = -HUD_WIDTH
+    }
+
+    // Only foreground scene has input enabled & is visible; all scenes are being updated
+    public setIsForeground(isForegroundScene) {
+        this.input.enabled = isForegroundScene;
+        this.scene.setVisible(isForegroundScene);
     }
 
 
@@ -81,8 +99,14 @@ export class TDScene extends Phaser.Scene {
         }
     }
 
+    frameNumber = 0;
     update(time, delta) {
+        this.frameNumber++;
         this.waveManager.update(time, delta)
+
+        if(this.frameNumber % 60 == 0) {
+            console.log(`Update ${this.sceneNumber}`)
+        }
     }
 
     addBullet(x, y, angle) {

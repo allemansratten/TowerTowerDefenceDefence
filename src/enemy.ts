@@ -1,6 +1,6 @@
 // import { GridPosition, Position, Terrain } from "./terrain";
 
-import { TDScene } from "./scenes/sample";
+import { TDScene } from "./scenes/tdScene";
 import { PlayerInfo } from "./player" ;
 
 // export abstract class Enemy {
@@ -52,6 +52,7 @@ export class Enemy extends Phaser.GameObjects.Image {
             this.scene.waveManager.spawnedEnemies--;
             this.setActive(false);
             this.setVisible(false);
+            PlayerInfo.hp--  // todo: only reduce hp when in outermost scene
         }
     }
 

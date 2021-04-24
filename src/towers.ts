@@ -1,5 +1,8 @@
-import { TDScene } from "./scenes/sample";
-import { Terrain, TILE_SIZE } from "./terrain";
+// import { Enemy } from "./enemy";
+// import { GridPosition } from "./terrain";
+
+import { TDScene } from "./scenes/tdScene";
+import { Terrain, TileType, TILE_SIZE } from "./terrain";
 
 // export abstract class Tower {
 //     pos: GridPosition
@@ -68,6 +71,12 @@ export class TowerTurret extends Phaser.GameObjects.Image {
         this.nextTic = 0;
     }
 
+    // we will place the tower according to the grid
+    place(i: integer, j: integer, terrain: Terrain) {
+        [this.x, this.y] = terrain.fromGridPos(i, j)
+        terrain.tiles[i][j] = TileType.Occupied;
+    }
+
     fire() {
         var enemy = getEnemy(this.x, this.y, 100, this.scene.enemies);
         if (enemy) {
@@ -82,12 +91,5 @@ export class TowerTurret extends Phaser.GameObjects.Image {
             this.fire();
             this.nextTic = time + 1000;
         }
-    }
-
-    // we will place the tower according to the grid
-    place(i: integer, j: integer, terrain: Terrain) {
-        this.x = i * TILE_SIZE + TILE_SIZE / 2;
-        this.y = j * TILE_SIZE + TILE_SIZE / 2;
-        terrain.tiles[i][j] = 1;
     }
 }

@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser'
+import { HudScene } from './scenes/hudScene';
 import { MetaScene } from './scenes/MetaScene';
-import { TDScene } from './scenes/sample'
+import { TDScene } from './scenes/tdScene'
 import { TDSceneConfig } from './scenes/tdSceneConfig';
 import { Terrain } from './terrain';
 
@@ -21,15 +22,14 @@ import { Terrain } from './terrain';
 // };
 
 let levels = [
-  new TDScene(new TDSceneConfig(new Terrain(0, 10, 8), 0)),
-  new TDScene(new TDSceneConfig(new Terrain(1, 10, 8), 1)),
   new MetaScene(),
+  new HudScene(),
 ]
 
 const gameConfig = {
   type: Phaser.AUTO,
   parent: 'content',
-  width: 640,
+  width: 896,
   height: 512,
   physics: {
     default: 'arcade'

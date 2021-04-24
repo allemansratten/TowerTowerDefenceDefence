@@ -1,5 +1,5 @@
 import { Enemy } from "./enemy"
-import { TDScene } from "./scenes/sample";
+import { TDScene } from "./scenes/tdScene";
 
 export class WaveManager {
     scene: TDScene
