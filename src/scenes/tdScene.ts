@@ -114,10 +114,11 @@ export class TDScene extends Phaser.Scene {
     }
 
     onClick(pointer: Phaser.Input.Pointer) {
-        let [i, j] = this.toGridPos(pointer.x, pointer.y)
-        if (this.terrain.inBounds(i, j)) {
-            // todo: go deeper!
-            // console.log(this.newTowers.getChildren())
+        const [i, j] = this.toGridPos(pointer.x, pointer.y)
+
+        let potentialExistingTower = this.terrain.tryGetExistingTower(i, j);
+        if (potentialExistingTower){
+            this.metaScene.switchToScene(potentialExistingTower.innerTowerScene.sceneIndex)
         }
     }
 }

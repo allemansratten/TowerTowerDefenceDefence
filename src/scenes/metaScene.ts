@@ -43,7 +43,8 @@ export class MetaScene extends Phaser.Scene {
             );
         this.scenes.push(newScene)
         newScene.scene.setVisible(false);
-
+        this.scene.bringToTop('hudScene');
+        
         return newScene;
     }
 
@@ -71,7 +72,6 @@ export class MetaScene extends Phaser.Scene {
             'assets/tileset.png',
             { frameWidth: 64, frameHeight: 64 }
         );
-        this.load.image('towerbase', '../../assets/towerbase.png');
     }
 
     getActiveScene() {
