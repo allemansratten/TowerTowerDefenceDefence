@@ -13,7 +13,6 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 };
 
 export class TDScene extends Phaser.Scene {
-    private square: Phaser.GameObjects.Rectangle & { body: Phaser.Physics.Arcade.Body };
     path: Phaser.Curves.Path
     enemies: Phaser.Physics.Arcade.Group
     nextEnemy: number = 0

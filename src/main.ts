@@ -19,7 +19,8 @@ import { Terrain } from './terrain';
 //   scene: SampleScene,
 // };
 
-let level1 = new TDSceneConfig(new Terrain())
+let level0 = new TDSceneConfig(new Terrain(0))
+let level1 = new TDSceneConfig(new Terrain(1))
 
 const gameConfig = {
   type: Phaser.AUTO,
@@ -29,7 +30,7 @@ const gameConfig = {
   physics: {
     default: 'arcade'
   },
-  scene: [new TDScene(level1)]
+  scene: [new TDScene(level1), new TDScene(level0)]
 };
 
 export const game = new Phaser.Game(gameConfig);
