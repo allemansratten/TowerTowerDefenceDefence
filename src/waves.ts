@@ -1,8 +1,8 @@
 import { Enemy } from "./enemy"
-import { SampleScene } from "./scenes/sample";
+import { TDScene } from "./scenes/sample";
 
 export class WaveManager extends Phaser.GameObjects.GameObjectFactory {
-    scene: SampleScene
+    scene: TDScene
     currentWave: integer = 0
     nextEnemy: integer = 0
 
