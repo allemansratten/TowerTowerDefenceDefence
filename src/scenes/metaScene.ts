@@ -15,10 +15,10 @@ export class MetaScene extends Phaser.Scene {
 
     constructor(){
         super(sceneConfig);
+        this.scenes = [];
     }
 
     public create() {
-        this.scenes = [];
         this.addScene();
         this.scenes[0].scene.setVisible(true);
         this.activeSceneIndex = 0
@@ -75,6 +75,19 @@ export class MetaScene extends Phaser.Scene {
     }
 
     getActiveScene() {
-        return this.scenes[this.activeSceneIndex]
+        return this.scenes.length > 0 ? this.scenes[this.activeSceneIndex] : null;
+    }
+
+    getParentScenesToRoot() {
+        let parentScenes: TDScene[] = []
+        let scene = this.getActiveScene();
+
+        while(scene && scene.sceneIndexParent > -1) {
+            let parent = this.scenes[scene.sceneIndexParent];
+            parentScenes.push(parent);
+            scene = parent;
+        }
+
+        return parentScenes;
     }
 }
