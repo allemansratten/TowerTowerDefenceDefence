@@ -82,8 +82,7 @@ export class TDScene extends Phaser.Scene {
         // only if both enemy and bullet are alive
         if (enemy.active === true && bullet.active === true) {
             // we remove the bullet right away
-            bullet.setActive(false);
-            bullet.setVisible(false);
+            bullet.hit()
 
             // decrease the enemy hp with BULLET_DAMAGE
             enemy.receiveDamage(BULLET_DAMAGE);

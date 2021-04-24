@@ -44,7 +44,7 @@ export class MetaScene extends Phaser.Scene {
         this.scenes.push(newScene)
         newScene.scene.setVisible(false);
         this.scene.bringToTop('hudScene');
-        
+
         return newScene;
     }
 
@@ -62,16 +62,19 @@ export class MetaScene extends Phaser.Scene {
 
     public preload() {
         // load the game assets
-        this.load.image('enemy1', '../../assets/enemy.png');
-        this.load.image('bullet', '../../assets/bullet.png');
-        this.load.image('towertop0', '../../assets/towertop0.png');
-        this.load.image('towertop1', '../../assets/towertop1.png');
-        this.load.image('towermid', '../../assets/towermid.png');
-        this.load.image('towerbase', '../../assets/towerbase.png');
+        this.load.setPath("../../assets/")
+
+        this.load.image('enemy1', 'enemy.png');
+        this.load.image('bullet', 'bullet.png');
+        this.load.image('towertop0', 'towertop0.png');
+        this.load.image('towertop1', 'towertop1.png');
+        this.load.image('towermid', 'towermid.png');
+        this.load.image('towerbase', 'towerbase.png');
         this.load.spritesheet('tileset',
-            'assets/tileset.png',
+            'tileset.png',
             { frameWidth: 64, frameHeight: 64 }
         );
+        this.load.image('particle_red', 'particle_red.png');
     }
 
     getActiveScene() {
