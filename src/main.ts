@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser'
 import { TDScene } from './scenes/sample'
-import { TDSceneConfig } from './scenes/TDSceneConfig';
+import { TDSceneConfig } from './scenes/tdSceneConfig';
 import { Terrain } from './terrain';
 
 // const gameConfig: Phaser.Types.Core.GameConfig = {

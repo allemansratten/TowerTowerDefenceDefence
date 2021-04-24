@@ -2,7 +2,7 @@ import { Enemy } from "../enemy";
 import { Tower } from "../towers";
 import { Bullet } from "../bullet";
 import { Terrain } from "../terrain";
-import { TDSceneConfig } from "./TDSceneConfig";
+import { TDSceneConfig } from "./tdSceneConfig";
 
 var BULLET_DAMAGE = 10;
 
