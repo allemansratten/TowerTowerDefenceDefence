@@ -73,7 +73,7 @@ export class TowerTurret extends Phaser.GameObjects.Image {
     scene: TDScene
 
     constructor(scene) {
-        super(scene, 0, 0, 'star');
+        super(scene, 0, 0, 'towertop');
         this.nextTic = 0;
     }
 
