@@ -27,6 +27,8 @@ export class Enemy extends Phaser.GameObjects.Image {
 
     follower: any
     hp: number
+    y_offset: number
+    x_offset: number
 
     scene: SampleScene // type assertion
 
@@ -35,17 +37,19 @@ export class Enemy extends Phaser.GameObjects.Image {
 
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
         this.hp = 100;
+        this.x_offset = Phaser.Math.RND.integerInRange(-20, 20);
+        this.y_offset = Phaser.Math.RND.integerInRange(-20, 20);
     }
     update(time, delta) {
         // move the t point along the path, 0 is the start and 1 is the end
         this.follower.t += ENEMY_SPEED * delta;
 
         // get the new x and y coordinates in vec
-        
+
         this.scene.path.getPoint(this.follower.t, this.follower.vec);
 
         // update enemy x and y to the newly obtained x and y
-        this.setPosition(this.follower.vec.x, this.follower.vec.y);
+        this.setPosition(this.follower.vec.x + this.x_offset, this.follower.vec.y + this.y_offset);
 
         // if we have reached the end of the path, remove the enemy
         if (this.follower.t >= 1) {
@@ -53,7 +57,7 @@ export class Enemy extends Phaser.GameObjects.Image {
             this.setVisible(false);
         }
     }
-    
+
     startOnPath() {
         // set the t parameter at the start of the path
         this.follower.t = 0;
