@@ -47,8 +47,8 @@ export class Terrain {
             this.path.lineTo(480, 164);
             this.path.lineTo(480, 544);
         } else {
-            this.path = scene.add.path(96, -32);
-            this.path.lineTo(96, 544);
+            this.path = scene.add.path(500+96, -32);
+            this.path.lineTo(500+96, 544);
         }
 
         // this.tiles = new Array(n)
@@ -70,12 +70,12 @@ export class Terrain {
     drawGrid(graphics) {
         graphics.lineStyle(1, 0x0000ff, 0.8);
         for (var i = 0; i < 8; i++) {
-            graphics.moveTo(0, i * TILE_SIZE);
-            graphics.lineTo(TILE_SIZE * 10, i * TILE_SIZE);
+            graphics.moveTo(this.level*500 + 0, i * TILE_SIZE);
+            graphics.lineTo(this.level*500 + TILE_SIZE * 10, i * TILE_SIZE);
         }
         for (var j = 0; j < 10; j++) {
-            graphics.moveTo(j * TILE_SIZE, 0);
-            graphics.lineTo(j * TILE_SIZE, TILE_SIZE * 8);
+            graphics.moveTo(this.level*500 + j * TILE_SIZE, 0);
+            graphics.lineTo(this.level*500 + j * TILE_SIZE, TILE_SIZE * 8);
         }
         graphics.strokePath();
     }
