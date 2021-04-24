@@ -9,8 +9,8 @@ export class TowerManager {
     }
 
     public placeTower(pointer) {
-        var i = Math.floor(pointer.x / TILE_SIZE);
-        var j = Math.floor(pointer.y / TILE_SIZE);
+        var i = Math.floor((pointer.x + this.scene.cameras.main.scrollX) / TILE_SIZE);
+        var j = Math.floor((pointer.y + this.scene.cameras.main.scrollY) / TILE_SIZE);
 
         if (this.scene.terrain.canPlaceTower(i, j)) {
             var tower = this.scene.newTowers.get();
