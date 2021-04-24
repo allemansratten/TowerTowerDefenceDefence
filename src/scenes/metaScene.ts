@@ -61,7 +61,7 @@ export class MetaScene extends Phaser.Scene {
     public preload() {
         // load the game assets
         this.load.image('enemy1', '../../assets/enemy.png');
-        this.load.image('bullet', '../../assets/towertop.png');
+        this.load.image('bullet', '../../assets/bullet.png');
         this.load.image('towertop', '../../assets/towertop.png');
         this.load.image('towerbase', '../../assets/towerbase.png');
         this.load.spritesheet('tileset',
