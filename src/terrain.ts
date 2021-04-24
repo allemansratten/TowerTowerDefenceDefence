@@ -202,7 +202,7 @@ export class Terrain {
             this.tiles[path[i][0]][path[i][1]] = setTo
         }
 
-        console.log("Generated terrain with offset is")
+        console.log("Generated terrain.")
 
         this.pathTiles = path
         return path.length
