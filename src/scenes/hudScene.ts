@@ -54,7 +54,7 @@ export class HudScene extends Phaser.Scene {
     public update(time, delta) {
         this.moneyText.setText('Money: ' + PlayerInfo.money)
         this.hpText.setText('HP: ' + PlayerInfo.hp)
-        
+
         if (this.metaScene.scenes && this.metaScene.scenes.length > this.metaScene.activeSceneIndex) {
             this.levelText.setText(`LEVEL: ${this.metaScene.scenes[this.metaScene.activeSceneIndex].sceneLevel}`)
         }
@@ -63,43 +63,59 @@ export class HudScene extends Phaser.Scene {
     public backToRootScene(arg0: string, backToRootScene: any) {
         this.metaScene.switchToScene(0);
     }
-    
+
 }
 
 class BuyTowerIcon {
-    sprite: Phaser.GameObjects.Sprite
+    spriteContainer: Phaser.GameObjects.Container
     origX: number
     origY: number
 
     constructor(hudScene: HudScene, x, y) {
-        this.sprite = hudScene.add.sprite(x, y, "towerbase")
+        var sprites = [
+            hudScene.add.sprite(0, 0, "towerbase"),
+            hudScene.add.sprite(0, 0, "towermid"),
+            hudScene.add.sprite(0, 0, "towertop0"),
+        ]
+        this.spriteContainer = hudScene.add.container(x, y, sprites)
+
         this.origX = x
         this.origY = y
-        
-        this.sprite.setInteractive()
-        // this.input.on('pointerdown', () => console.log("foobar"), this);
-        hudScene.input.setDraggable(this.sprite, true);
 
-        this.sprite.on('pointerover', function () {
+        this.spriteContainer.setSize(TILE_SIZE, TILE_SIZE);
+        this.spriteContainer.setInteractive()
+        // this.input.on('pointerdown', () => console.log("foobar"), this);
+        hudScene.input.setDraggable(this.spriteContainer);
+
+        this.spriteContainer.on('pointerover', () => {
             if (PlayerInfo.money < 10) {
-                this.setTint(0xff0000);
+                this.spriteContainer.list.forEach((sprite:Phaser.GameObjects.Sprite) => {
+                    sprite.setTint(0xff0000);
+                });
             }
         });
-        this.sprite.on('pointerout', function () {
-            this.clearTint();
+
+        this.spriteContainer.on('pointerout', () => {
+            this.spriteContainer.list.forEach((sprite:Phaser.GameObjects.Sprite) => {
+                sprite.clearTint();
+            });
         });
-    
+
         hudScene.input.on('dragstart', function (pointer, gameObject) {
-            gameObject.setTint(0xff0000);
+            gameObject.list.forEach((sprite:Phaser.GameObjects.Sprite) => {
+                sprite.setTint(0xff0000);
+            });
         });
         hudScene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
             gameObject.x = dragX;
             gameObject.y = dragY;
-    
+
         });
         hudScene.input.on('dragend', function (pointer, gameObject) {
-            gameObject.clearTint();
-            
+            gameObject.list.forEach((sprite:Phaser.GameObjects.Sprite) => {
+                sprite.clearTint();
+            });
+
             const scene = hudScene.metaScene.getActiveScene()
             scene.towerManager.placeTower(pointer)
 
