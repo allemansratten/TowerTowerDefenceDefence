@@ -1,4 +1,4 @@
-import { EnemyConfig, PAUSE_AFTER_WAVE_TIME, ENEMY_CONFIGS } from "./config";
+import { EnemyConfig, PAUSE_AFTER_WAVE_TIME, ENEMY_CONFIGS, WaveConfig } from "./config";
 import { PlayerInfo } from "./playerInfo";
 import { TDScene } from "./scenes/tdScene";
 // import { Enemy, FatEnemy} from "./enemy";
@@ -18,6 +18,8 @@ export class WaveManager {
 
     enemyInterval: integer
 
+    queuedEnemy: any
+
     constructor(scene) {
         this.scene = scene;
 
@@ -26,20 +28,17 @@ export class WaveManager {
 
         if (this.scene.sceneLevel === 0)
             this.getWaveDifficulty();
-        else
-            this.getNestedWaveDifficulty();
-    }
-
-    private getNestedWaveDifficulty() {
-        //TODO: add difficulty scaling for nested levels
-        this.enemyInterval = 2000;
+        else {
+            this.lastTime = 1e9 // a lot
+        }
+        
     }
 
     private getWaveDifficulty() {
         //TODO: add difficulty scaling and balancing for waves
-        this.waveDifficulty = this.currentWave * 10;  // MUST BE MULTIPLE OF 10!
-        this.remainingDanger = this.waveDifficulty;
-        this.enemyInterval = 200;
+        this.waveDifficulty = WaveConfig.outerWaveDanger(this.currentWave)  // MUST BE MULTIPLE OF 10!
+        this.remainingDanger = this.waveDifficulty
+        this.enemyInterval = WaveConfig.outerEnemyInterval
     }
 
     private nextWave() {
@@ -50,15 +49,11 @@ export class WaveManager {
     }
 
     private spawnEnemy() {
-        let availEnemies = []
-        for(let enemyType in ENEMY_CONFIGS) {  // Select all enemies that can be spawned
-            let enemy = ENEMY_CONFIGS[enemyType];
-            if (enemy.danger <= this.remainingDanger)
-                availEnemies.push([enemyType, enemy]);
-        }
-        if (availEnemies.length > 0) {  // Pick a random one of them
-            let randEnemy = availEnemies[Math.floor(PlayerInfo.RNG.frac()*availEnemies.length)][1];
-            // console.log("Spawning: " + randEnemy[0] + ", danger: " + randEnemy[1].danger);
+        let randEnemy = this.getRandEnemy(
+            (enemy) => enemy.danger <= this.remainingDanger
+        )
+
+        if (randEnemy) {
             this.remainingDanger -= randEnemy.danger;
             return this.scene.allEnemies[randEnemy.name + 'Enemy'].get();
         }
@@ -71,31 +66,59 @@ export class WaveManager {
     lastTime: number = 0
     public update(delta) {
         this.lastTime += delta
-        if (!this.waveActive && this.lastTime > this.nextWaveTime) {
-            this.nextWave();  // no waves in nested layers
-        } else {
-            if ((this.scene.sceneLevel > 0 || this.remainingDanger > 0) && this.lastTime > this.nextEnemy) {
-                if  (this.scene.sceneLevel > 0)
-                    var enemy = this.scene.allEnemies['WeakEnemy'].get();
-                else
-                    var enemy = this.spawnEnemy();
-
-                if (enemy) {
-                    enemy.setActive(true);
-                    enemy.setVisible(true);
-
-                    // place the enemy at the start of the path
-                    enemy.startOnPath();
-                    this.spawnedEnemies++;
-                    this.nextEnemy = this.lastTime + this.enemyInterval;
-                }
+        let enemy
+        if (this.scene.sceneLevel === 0) {
+            if (!this.waveActive && this.lastTime > this.nextWaveTime) {
+                this.nextWave();  // no waves in nested layers
             }
-            if (this.scene.sceneLevel === 0 && this.deadDanger === this.waveDifficulty) {
+            if (this.remainingDanger > 0 && this.lastTime > this.nextEnemy) {
+                enemy = this.spawnEnemy();
+            }
+            if (this.deadDanger === this.waveDifficulty) {
                 console.log("Wave " + this.currentWave + " complete! Next wave in " + PAUSE_AFTER_WAVE_TIME);
                 this.deadDanger = 0;
                 this.waveActive = false;
                 this.nextWaveTime = this.lastTime + PAUSE_AFTER_WAVE_TIME;
             }
+        } else {
+            if (!this.queuedEnemy) {
+                this.queuedEnemy = this.getRandEnemy(() => true)
+            }
+
+            const a = this.lastTime * (WaveConfig.dangerPerSec(this.scene.getTowerParent().level) * 0.001)
+            const b = (this.queuedEnemy.danger * 1.0) 
+            if (a > b) {
+                enemy = this.scene.allEnemies[this.queuedEnemy.name + 'Enemy'].get();
+                // console.log(this.lastTime, b)
+                this.queuedEnemy = null
+                this.lastTime = 0
+            }
+        }
+
+        if (enemy) {
+            enemy.setActive(true);
+            enemy.setVisible(true);
+
+            // place the enemy at the start of the path
+            enemy.startOnPath();
+            this.spawnedEnemies++;
+            this.nextEnemy = this.lastTime + this.enemyInterval;
+        }
+    }
+
+    private getRandEnemy(filter_fn): EnemyConfig {
+        let availEnemies = []
+        for(let enemy of ENEMY_CONFIGS) {  // Select all enemies that can be spawned
+            if (filter_fn(enemy))
+                availEnemies.push(enemy);
+        }
+
+        if (availEnemies.length > 0) {
+            // Pick a random one of them
+            let randEnemy = availEnemies[Math.floor(PlayerInfo.RNG.frac() * availEnemies.length)];
+            return randEnemy
+        } else {
+            return null
         }
     }
 }

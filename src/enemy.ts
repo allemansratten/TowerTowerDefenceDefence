@@ -6,7 +6,7 @@ import { HudScene } from "./scenes/hudScene";
 import { MetaScene } from "./scenes/MetaScene";
 
 
-abstract class EnemyBase extends Phaser.GameObjects.Image {
+export abstract class EnemyBase extends Phaser.GameObjects.Image {
     stats: any;  // { [key:string]: any }
 
     follower: any
