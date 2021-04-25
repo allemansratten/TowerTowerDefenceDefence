@@ -17,11 +17,14 @@ import { Terrain, TileType, TILE_SIZE } from "./terrain";
 // }
 
 // todo: move to scene?
-function getEnemy(x, y, distance, enemies) {
-    var enemyUnits = enemies.getChildren();
-    for (var i = 0; i < enemyUnits.length; i++) {
-        if (enemyUnits[i].active && Phaser.Math.Distance.Between(x, y, enemyUnits[i].x, enemyUnits[i].y) <= distance)
-            return enemyUnits[i];
+function getEnemy(x, y, range, enemies) {
+    for (let enemyGroup in enemies) {
+        let enemyUnits = enemies[enemyGroup].getChildren();
+        for (let i = 0; i < enemyUnits.length; i++) {
+            if (enemyUnits[i].active && Phaser.Math.Distance.Between(x, y, enemyUnits[i].x, enemyUnits[i].y) <= range)
+                return enemyUnits[i];
+
+        }
     }
     return false;
 }
@@ -86,7 +89,7 @@ export class TowerTurret extends Phaser.GameObjects.Image {
     }
 
     fire() {
-        var enemy = getEnemy(this.x, this.y, 200, this.scene.enemies);
+        var enemy = getEnemy(this.x, this.y, 200, this.scene.allEnemies);
         if (enemy) {
             var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
             this.scene.addBullet(this.x, this.y, angle);
