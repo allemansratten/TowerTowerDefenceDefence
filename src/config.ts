@@ -85,7 +85,7 @@ export const Basic: TowerConfig = {
     'spriteTop': 0,
     'tintBase': 0xffffff,
     'tintMid': 0xffffff,
-    'tintTop': 0xffffff,
+    'tintTop': 0xaaaaff,
 }
 
 

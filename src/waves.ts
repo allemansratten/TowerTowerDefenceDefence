@@ -91,7 +91,7 @@ export class WaveManager {
                 }
             }
             if (this.scene.sceneLevel === 0 && this.deadDanger === this.waveDifficulty) {
-                console.log("Wave complete! Next wave in " + PAUSE_AFTER_WAVE_TIME);
+                console.log("Wave " + this.currentWave + " complete! Next wave in " + PAUSE_AFTER_WAVE_TIME);
                 this.deadDanger = 0;
                 this.waveActive = false;
                 this.nextWaveTime = this.lastTime + PAUSE_AFTER_WAVE_TIME;
