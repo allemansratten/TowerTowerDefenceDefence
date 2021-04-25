@@ -10,7 +10,7 @@ export const PAUSE_AFTER_WAVE_TIME = 3000;
 
 export const RANGE_INDICATOR_CONFIG = {
     'colour': 0xbbbbff,
-    'alpha': 0x40,
+    'alpha': 210,
     'edgeColour': 0x8080ff,
     'edgeWidth': 4
 };
@@ -113,9 +113,9 @@ export type TowerConfig = {
 
 export const Basic: TowerConfig = {
     'name': "Basic",
-    'damage': level => 7 + 3 * level,
-    'firerate': level => Math.min( 1000 - 100 * level, 500),
-    'range': level => 180,
+    'damage': level => 3 + 2 * level,
+    'firerate': level => Math.max( 1500 - 50 * level, 1000),
+    'range': level => 165,
     'bulletSpeedMod': 4,
     'price': 5,
     'spriteBase': 0,
@@ -145,8 +145,8 @@ export const Sniper: TowerConfig = {
 
 export const Multishot: TowerConfig = {
     'name': "Multishot",
-    'damage': level => 3 + level,
-    'firerate': level => Math.min(800 - 50*level, 500),
+    'damage': level => 2 + level,
+    'firerate': level => Math.max(1300 - 50*level, 1000),
     'range': level => 80,
     'bulletSpeedMod': 4,
     'price': 10,
