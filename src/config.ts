@@ -62,9 +62,8 @@ export const Fat: EnemyConfig = {
     'damage': 1,
     'armor': 0,
     'danger': 240,
-    // 'spriteName': 'fatEnemy',
-    'spriteName': 'enemy1',
-    'tint': 0x0000ff,
+    'spriteName': 'fatEnemy',
+    'tint': 0xffffff,
 }
 
 export const Armoured: EnemyConfig = {

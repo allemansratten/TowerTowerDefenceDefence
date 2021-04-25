@@ -33,6 +33,12 @@ export class MetaScene extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         });
+        this.anims.create({
+            key: 'fatEnemy_walk',
+            frames: this.anims.generateFrameNumbers('fatEnemy', { start: 0, end: 9 }),
+            frameRate: 10,
+            repeat: -1
+        });
     }
 
     // Creates new Scene, enables it, and sets it invisible
@@ -81,8 +87,8 @@ export class MetaScene extends Phaser.Scene {
         this.load.setPath("../../assets/")
 
         this.load.spritesheet('enemy1', 'enemy.png', { frameWidth: 48, frameHeight: 48 });
-        
-        this.load.image('fatEnemy', 'chonk.png');
+        this.load.spritesheet('fatEnemy', 'chonk.png', { frameWidth: 56, frameHeight: 56 });
+
         this.load.image('bullet', 'bullet.png');
         this.load.spritesheet('tileset',
             'tileset.png',
