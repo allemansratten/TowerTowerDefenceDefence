@@ -99,18 +99,30 @@ export class HudScene extends Phaser.Scene {
 
 class BuyTowerIcon {
     towerName: string
+    towerConfig: any
+
     spriteContainer: Phaser.GameObjects.Container
     origX: number
     origY: number
 
-    constructor(hudScene: HudScene, x, y, towerName, towerConfig) {
+    constructor(hudScene: HudScene, x, y, towerName, config) {
+        let towerBase = hudScene.add.sprite(0, 0, 'towerbases', config.spriteBase);
+        towerBase.setTint(config.tintBase); 
+        let towerMid = hudScene.add.sprite(0, 0, 'towermids', config.spriteMid);
+        towerMid.setTint(config.tintMid);
+        let towerTop = hudScene.add.sprite(0, 0, 'towertops', config.spriteTop);
+        towerTop.setTint(config.tintTop);
+
         var sprites = [
-            hudScene.add.sprite(0, 0, "towerbases", 0).setTint(0xffffff),
-            hudScene.add.sprite(0, 0, "towermids", 0).setTint(0xffffff),
-            hudScene.add.sprite(0, 0, "towertops", 0).setTint(0xffffff),
+            towerBase,
+            towerMid,
+            towerTop,
         ]
         this.spriteContainer = hudScene.add.container(x, y, sprites)
+        this.spriteContainer.getAll()
+
         this.towerName = towerName;
+        this.towerConfig = config
 
         this.origX = x
         this.origY = y
@@ -129,16 +141,13 @@ class BuyTowerIcon {
         });
 
         this.spriteContainer.on('pointerout', () => {
-            this.spriteContainer.list.forEach((sprite:Phaser.GameObjects.Sprite) => {
-                sprite.clearTint();
-            });
+            this.resetTint()
         });
 
         hudScene.input.on('dragstart', function (pointer, gameObject) {
             if (gameObject != this.spriteContainer) { return; }
 
             gameObject.list.forEach((sprite:Phaser.GameObjects.Sprite) => {
-                sprite.setTint(0xff0000);
             });
         }, this);
         hudScene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
@@ -152,7 +161,6 @@ class BuyTowerIcon {
             if (gameObject != this.spriteContainer) { return; }
             
             gameObject.list.forEach((sprite:Phaser.GameObjects.Sprite) => {
-                sprite.clearTint();
             });
 
             const scene = hudScene.metaScene.getActiveScene()
@@ -161,5 +169,11 @@ class BuyTowerIcon {
             gameObject.x = this.origX
             gameObject.y = this.origY
         }, this);
+    }
+
+    resetTint(){
+        (this.spriteContainer.list[0] as Phaser.GameObjects.Sprite).setTint(this.towerConfig.tintBase);
+        (this.spriteContainer.list[1] as Phaser.GameObjects.Sprite).setTint(this.towerConfig.tintMid);
+        (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(this.towerConfig.tintTop);
     }
 }
