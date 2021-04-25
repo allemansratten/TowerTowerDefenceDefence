@@ -52,10 +52,10 @@ export class Tower extends Phaser.GameObjects.Container {
         let xCoord = i * TILE_SIZE + TILE_SIZE / 2
         let yCoord = j * TILE_SIZE + TILE_SIZE / 2
 
-        this.towerBase = this.scene.add.sprite(xCoord, yCoord, this.config.spriteBase);
+        this.towerBase = this.scene.add.sprite(xCoord, yCoord, 'towerbases', this.config.spriteBase);
         this.towerBase.setTint(this.config.tintBase);
         this.add(this.towerBase);
-        this.towerMid = this.scene.add.sprite(xCoord, yCoord, this.config.spriteMid);
+        this.towerMid = this.scene.add.sprite(xCoord, yCoord, 'towermids', this.config.spriteMid);
         this.towerBase.setTint(this.config.tintMid);
         this.add(this.towerMid);
 
@@ -82,7 +82,7 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     scene: TDScene
 
     constructor(scene: TDScene, sprite: string, tint: number) {
-        super(scene, 0, 0, sprite);
+        super(scene, 0, 0, 'towertops', sprite);
         this.setTint(tint);
         this.nextTic = 0;
     }
