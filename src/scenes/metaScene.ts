@@ -1,5 +1,5 @@
 import { Terrain } from "../terrain"
-import { TDScene } from "./tdScene";
+import { SCENE_TRANSITION_MS, TDScene } from "./tdScene";
 import { TDSceneConfig } from "./tdSceneConfig"
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
@@ -14,7 +14,7 @@ export class MetaScene extends Phaser.Scene {
     public activeScene: TDScene
     mainSound: Phaser.Sound.BaseSound;
 
-    constructor(){
+    constructor() {
         super(sceneConfig);
         this.scenes = [];
     }
@@ -30,7 +30,7 @@ export class MetaScene extends Phaser.Scene {
 
     // Creates new Scene, enables it, and sets it invisible
     public addScene(parentScene?: TDScene): TDScene {
-        let sceneLevel = (parentScene?.sceneLevel ?? -1) + 1 ;
+        let sceneLevel = (parentScene?.sceneLevel ?? -1) + 1;
 
         let sceneIndex = this.scenes.length;
         let newScene = new TDScene(
@@ -41,7 +41,7 @@ export class MetaScene extends Phaser.Scene {
             `tdScene${sceneIndex}`,
             newScene,
             true
-            );
+        );
         this.scenes.push(newScene)
         newScene.scene.setVisible(false);
         this.scene.bringToTop('hudScene');
@@ -51,12 +51,22 @@ export class MetaScene extends Phaser.Scene {
 
 
     // makes current scene invisible, makes new scene visible; doesn't change activness
-    public switchToScene(switchToScene: TDScene) {
-        this.activeScene?.setIsForeground(false);
-        switchToScene.setIsForeground(true);
+    public switchToScene(switchToScene: TDScene, goingInside: boolean, i = 0, j = 0) {
+        this.activeScene?.setIsForeground(false, goingInside, i, j);
 
-        this.activeScene = switchToScene;
-        this.sound.setRate(1/(Math.pow(1.25, switchToScene.sceneLevel)))
+        switchToScene.time.addEvent({
+            delay: SCENE_TRANSITION_MS,
+            loop: false,
+            callback: () => {
+                this.activeScene?.scene.setVisible(false)
+                switchToScene.scene.setVisible(true)
+                this.activeScene = switchToScene
+                switchToScene.setIsForeground(true, goingInside, i, j);
+            }
+        })
+
+        // 1.05946309436 ~ 2^(1/12), i.e. one semitone
+        this.sound.setRate(1/(Math.pow(1.05946309436, switchToScene.sceneLevel)))
     }
 
     update(time, delta) {
@@ -67,6 +77,7 @@ export class MetaScene extends Phaser.Scene {
         this.load.setPath("../../assets/")
 
         this.load.image('enemy1', 'enemy.png');
+        this.load.image('fatEnemy', 'chonk.png');
         this.load.image('bullet', 'bullet.png');
         this.load.image('towertop0', 'towertop0.png');
         this.load.image('towertop1', 'towertop1.png');
@@ -78,7 +89,7 @@ export class MetaScene extends Phaser.Scene {
         );
         this.load.image('particle_red', 'particle_red.png');
 
-        this.load.audio("main_music", "gamejam_LD48.ogg") 
+        this.load.audio("main_music", "gamejam_LD48.ogg")
     }
 
     getActiveScene() {
@@ -89,7 +100,7 @@ export class MetaScene extends Phaser.Scene {
         let parentScenes: TDScene[] = []
         let scene = this.getActiveScene();
 
-        while(scene?.sceneParent) {
+        while (scene?.sceneParent) {
             let parent = scene.sceneParent;
             parentScenes.push(parent);
             scene = parent;

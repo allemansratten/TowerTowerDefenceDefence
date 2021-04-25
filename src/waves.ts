@@ -3,7 +3,7 @@ import { TDScene } from "./scenes/tdScene";
 
 export class WaveManager {
     scene: TDScene
-    currentWave: integer = 0
+    currentWave: integer = 1
     nextEnemy: integer = 0
     spawnedEnemies: integer = 0
     deadEnemies: integer = 0
@@ -21,7 +21,7 @@ export class WaveManager {
 
     private getNestedWaveDifficulty() {
         //TODO: add difficulty scaling for nested levels
-        this.enemyInterval = 500;
+        this.enemyInterval = 2000;
     }
 
     private getWaveDifficulty() {

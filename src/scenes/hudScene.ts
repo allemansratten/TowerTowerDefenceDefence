@@ -78,7 +78,7 @@ export class HudScene extends Phaser.Scene {
             let sceneIndex = (parentScenes.length - 1) - i;
             let newButton = this.add.text(780, 50 + sceneIndex * 50, `GoLevel: ${sceneIndex}`, { fontSize: '20px' });
             newButton.setInteractive();
-            newButton.on('pointerdown', () => this.metaScene.switchToScene(parentScenes[i]), this.metaScene)
+            newButton.on('pointerdown', () => this.metaScene.switchToScene(parentScenes[i], false), this.metaScene)
             this.parentScenesTexts.push(
                 newButton
             )
