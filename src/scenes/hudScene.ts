@@ -228,16 +228,6 @@ class BuyTowerIcon {
         // this.input.on('pointerdown', () => console.log("foobar"), this);
         hudScene.input.setDraggable(this.spriteContainer)
 
-        this.spriteContainer.on('pointerover', () => {
-            if (PlayerInfo.money < config.price) {
-                // cannot afford
-                this.setShopIconTint(0xff0000);
-            }
-        });
-
-        this.spriteContainer.on('pointerout', () => {
-            this.resetTint()
-        });
 
         hudScene.input.on('dragstart', (pointer, gameObject) => {
             if (gameObject != this.spriteContainer) { return; }
@@ -281,18 +271,18 @@ class BuyTowerIcon {
     setShopIconTint(tint) {
         (this.spriteContainer.list[0] as Phaser.GameObjects.Sprite).setTint(tint);
         (this.spriteContainer.list[1] as Phaser.GameObjects.Sprite).setTint(tint);
-        (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(tint);
+        // (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(tint);
     }
 
     update(time, delta) {
         // Uncomment to prevent negative money:
         // this.hudScene.input.setDraggable(this.spriteContainer, PlayerInfo.money >= this.towerConfig.price)
-        if (PlayerInfo.money > this.towerConfig.price) {
+        if (PlayerInfo.money >= this.towerConfig.price) {
             this.priceText.setTint(0x00ff00);
-            this.resetTint;
+            this.resetTint();
         } else {
             this.priceText.setTint(0xff0000);
-            this.setShopIconTint(0xff0000);
+            this.setShopIconTint(0xff09090);
         }
     }
 }
