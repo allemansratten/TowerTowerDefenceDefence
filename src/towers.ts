@@ -7,6 +7,7 @@ import { Terrain, TILE_SIZE } from "./terrain";
 import { TowerConfig, RANGE_INDICATOR_CONFIG } from "./config";
 import { PlayerInfo } from "./playerInfo";
 import { EnemyBase } from "./enemy";
+import { HudScene } from "./scenes/hudScene";
 
 
 // todo: move to scene?
@@ -86,6 +87,9 @@ export class Tower extends Phaser.GameObjects.Container {
         this.towerBase.on('pointerover', () => {
             this.scene.children.bringToTop(this);
             this.rangeIndicator.setVisible(true);
+
+            let hudScene = this.scene.scene.get("hudScene") as HudScene
+            hudScene.setDescription(this.config, this)
         });
         this.towerBase.on('pointerout', () => { this.rangeIndicator.setVisible(false) });
 

@@ -1,10 +1,11 @@
 import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG } from "../config";
 import { PlayerInfo } from "../playerInfo";
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
+import { Tower } from "../towers";
 import { MetaScene } from "./MetaScene";
 import { TDScene, TD_SCENE_HEIGHT, TD_SCENE_WIDTH } from "./tdScene";
 
-const HUD_BG_COLOR = 0xffaa7d
+const HUD_BG_COLOR = 0xff8a6d  //0xffaa7d
 export const HUD_WIDTH = TILE_SIZE * 3
 
 export class HudScene extends Phaser.Scene {
@@ -15,6 +16,7 @@ export class HudScene extends Phaser.Scene {
     hpRedness: number // 0 to 1
     depthText: Phaser.GameObjects.Text
     goUpText: Phaser.GameObjects.Text
+    descriptionText: Phaser.GameObjects.Text
 
     metaScene: MetaScene;
     backToRootSceneButton: Phaser.GameObjects.Text;
@@ -63,6 +65,9 @@ export class HudScene extends Phaser.Scene {
         this.goUpText = this.add.text(xRight, 50, "Go up to:", { fontSize: '20px' });
         this.goUpText.setOrigin(0.5)
         this.goUpText.setVisible(false)
+
+        this.descriptionText = this.add.text(5, 300, "Description", { fontSize: '10pt' });
+        this.descriptionText.setWordWrapWidth(HUD_WIDTH - 10, false);
 
         this.buyTowerIcons = [];
         let towerTypeIndex = 0;
@@ -165,6 +170,27 @@ export class HudScene extends Phaser.Scene {
 
         }
     }
+
+    setDescription(config: TowerConfig, tower: Tower = null) {
+        let level = 0
+        let text = ""
+
+        if (tower === null) {
+            text = `${config.name}: ${config.description}\n`
+            text += `Damage: ${config.damage(0)}.\n`
+            text += `Fire rate: ${config.firerate(0)}.\n`
+
+            this.descriptionText.setText(text)
+        } else {
+            text = `Level ${tower.level} ${config.name} tower.\n`
+            level = tower.level
+        }
+
+        text += `Damage: ${config.damage(level)}.\n`
+        text += `Fire rate: ${config.firerate(level)}.\n`
+
+        this.descriptionText.setText(text)
+    }
 }
 
 class BuyTowerIcon {
@@ -229,14 +255,7 @@ class BuyTowerIcon {
         hudScene.input.setDraggable(this.spriteContainer)
 
         this.spriteContainer.on('pointerover', () => {
-            if (PlayerInfo.money < config.price) {
-                // cannot afford
-                this.setShopIconTint(0xff0000);
-            }
-        });
-
-        this.spriteContainer.on('pointerout', () => {
-            this.resetTint()
+            this.hudScene.setDescription(config)
         });
 
         hudScene.input.on('dragstart', (pointer, gameObject) => {
@@ -278,21 +297,21 @@ class BuyTowerIcon {
         (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(this.towerConfig.tintTop);
     }
 
-    setShopIconTint(tint) {
-        (this.spriteContainer.list[0] as Phaser.GameObjects.Sprite).setTint(tint);
-        (this.spriteContainer.list[1] as Phaser.GameObjects.Sprite).setTint(tint);
-        (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(tint);
+    setShopIconTint(tint: number) {
+        (this.spriteContainer.list[0] as Phaser.GameObjects.Sprite).setTint(tint & this.towerConfig.tintBase);
+        (this.spriteContainer.list[1] as Phaser.GameObjects.Sprite).setTint(tint & this.towerConfig.tintMid);
+        (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(tint & this.towerConfig.tintTop);
     }
 
     update(time, delta) {
         // Uncomment to prevent negative money:
         // this.hudScene.input.setDraggable(this.spriteContainer, PlayerInfo.money >= this.towerConfig.price)
-        if (PlayerInfo.money > this.towerConfig.price) {
+        if (PlayerInfo.money >= this.towerConfig.price) {
             this.priceText.setTint(0x00ff00);
-            this.resetTint;
+            this.resetTint();
         } else {
             this.priceText.setTint(0xff0000);
-            this.setShopIconTint(0xff0000);
+            this.setShopIconTint(0x995555);
         }
     }
 }
