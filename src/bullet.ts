@@ -50,7 +50,7 @@ export class Bullet extends Phaser.GameObjects.Container {
         this.dx = Math.cos(angle);
         this.dy = Math.sin(angle);
 
-        this.lifespan = 500;
+        this.lifespan = 1000/speedMod;
 
         this.emitter = this.particles.createEmitter({
             speed: 100,

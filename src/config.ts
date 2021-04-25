@@ -2,7 +2,7 @@ import * as enem from "./enemy";
 
 // enemy damage * DAMAGE_TO_TOWER_HEALTH_COEF = how much health tower loses
 // (tower health is from 0 to 1)
-export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.2
+export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.3
 
 export const TOWER_HEALTH_REGEN = 0.00001 * 2
 
@@ -10,7 +10,7 @@ export const PAUSE_AFTER_WAVE_TIME = 3000;
 
 export const RANGE_INDICATOR_CONFIG = {
     'colour': 0xbbbbff,
-    'alpha': 0x40,
+    'alpha': 210,
     'edgeColour': 0x8080ff,
     'edgeWidth': 4
 };
@@ -20,17 +20,17 @@ export const WaveConfig = {
     // How much time between consecutive spawns in a wave
     outerEnemyInterval: 500,
     // How much danger in a wave
-    outerWaveDanger: (wave) => wave * 10,
+    outerWaveDanger: (wave) => wave * 40,
 
     // ------------------- inner -----------------------
     // How much danger per second is generatee in inner depths?
-    dangerPerSec: (level) => level * 5,
+    dangerPerSec: (level) => 20+ level*15,
 }
 
 export type EnemyConfig = {
     name: string
     class: any
-    hp: integer
+    hp: (integer) => integer
     speed: number
     money: integer
     damage: integer
@@ -43,12 +43,12 @@ export type EnemyConfig = {
 export const Weak: EnemyConfig = {
     'name': 'Weak',
     'class': enem.WeakEnemy,
-    'hp': 20,
+    'hp': (wave) => 25,
     'speed': 1 / 20000,
     'money': 1,
     'damage': 1,
     'armor': 0,
-    'danger': 10,
+    'danger': 20,
     'spriteName': 'enemy1',
     'tint': 0xffffff,
 }
@@ -56,12 +56,12 @@ export const Weak: EnemyConfig = {
 export const Fat: EnemyConfig = {
     'name': 'Fat',
     'class': enem.FatEnemy,
-    'hp': 50,
+    'hp': (wave) => 100,
     'speed': 1 / 40000,
     'money': 2,
     'damage': 1,
     'armor': 0,
-    'danger': 30,
+    'danger': 240,
     // 'spriteName': 'fatEnemy',
     'spriteName': 'enemy1',
     'tint': 0x0000ff,
@@ -70,12 +70,12 @@ export const Fat: EnemyConfig = {
 export const Armoured: EnemyConfig = {
     'name': 'Armoured',
     'class': enem.ArmouredEnemy,
-    'hp': 20,
+    'hp': (wave) => 30,
     'speed': 1 / 30000,
     'money': 2,
     'damage': 1,
-    'armor': 2,
-    'danger': 30,
+    'armor': 4,
+    'danger': 160,
     'spriteName': 'enemy1',
     'tint': 0xaaaaff,
 }
@@ -83,12 +83,12 @@ export const Armoured: EnemyConfig = {
 export const Fast: EnemyConfig = {
     'name': 'Fast',
     'class': enem.FastEnemy,
-    'hp': 10,
+    'hp': (wave) => 15,
     'speed': 1 / 10000,
-    'money': 2,
+    'money': 1,
     'damage': 1,
     'armor': 0,
-    'danger': 20,
+    'danger': 80,
     'spriteName': 'enemy1',
     'tint': 0xff00aa,
 }
@@ -109,13 +109,14 @@ export type TowerConfig = {
     tintBase: integer
     tintMid: integer
     tintTop: integer
+    description: string,
 }
 
 export const Basic: TowerConfig = {
     'name': "Basic",
-    'damage': level => 7 + 3 * level,
-    'firerate': level => Math.min( 1000 - 100 * level, 500),
-    'range': level => 180,
+    'damage': level => 10 + 15 * (level-1),
+    'firerate': level => Math.max( 1500 - 50 * level, 1000),
+    'range': level => 125,
     'bulletSpeedMod': 4,
     'price': 5,
     'spriteBase': 0,
@@ -124,14 +125,15 @@ export const Basic: TowerConfig = {
     'tintBase': 0xffffff,
     'tintMid': 0xffffff,
     'tintTop': 0xaaaaff,
+    'description': "Nothing fancy. Damage and fire rate grow with level.",
 }
 
 
 export const Sniper: TowerConfig = {
     'name': "Sniper",
-    'damage': level => 15 + 5 * level,
+    'damage': level => 25 + 50 * (level-1),
     'firerate': level => 4000,
-    'range': level => 200 + 25 * level,
+    'range': level => 200 + 35 * level,
     'bulletSpeedMod': 5,
     'price': 20,
     'spriteBase': 0,
@@ -140,14 +142,15 @@ export const Sniper: TowerConfig = {
     'tintBase': 0xbbffbb,
     'tintMid': 0xffffff,
     'tintTop': 0x00ff00,
+    'description': "Long range, but fires slowly. Damage and range grow with level.",
 }
 
 
 export const Multishot: TowerConfig = {
     'name': "Multishot",
-    'damage': level => 3 + level,
-    'firerate': level => Math.min(800 - 50*level, 500),
-    'range': level => 80,
+    'damage': level => 5 + 10*(level-1),
+    'firerate': level => Math.max(1300 - 50*level, 1000),
+    'range': level => 90,
     'bulletSpeedMod': 4,
     'price': 10,
     'spriteBase': 0,
@@ -156,6 +159,7 @@ export const Multishot: TowerConfig = {
     'tintBase': 0xffffff,
     'tintMid': 0xffffff,
     'tintTop': 0xff0000,
+    'description': "Can shoot at multiple enemies at once. Damage and fire rate grow with level.",
 }
 
 export const TOWER_CONFIGS = [Basic, Multishot, Sniper]

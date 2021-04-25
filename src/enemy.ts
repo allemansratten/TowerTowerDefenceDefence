@@ -6,7 +6,7 @@ import { HudScene } from "./scenes/hudScene";
 import { MetaScene } from "./scenes/MetaScene";
 
 
-abstract class EnemyBase extends Phaser.GameObjects.Sprite {
+export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
     stats: cfg.EnemyConfig;
 
     follower: any
@@ -46,6 +46,10 @@ abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         if (this.follower.t >= 1) {
             this.reachEnd()
         }
+
+        this.alpha = 1
+        this.angle = 0
+        this.scale = 1
     }
 
     reachEnd() {
@@ -67,11 +71,11 @@ abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         }
     }
 
-    startOnPath() {
+    startOnPath(wave) {
         // set the t parameter at the start of the path
         this.follower.t = 0;
 
-        this.hp = this.stats.hp;
+        this.hp = this.stats.hp(wave);
         this.speed = this.stats.speed;
         this.tint = this.stats.tint;
 
@@ -84,10 +88,6 @@ abstract class EnemyBase extends Phaser.GameObjects.Sprite {
             key: 'enemy1_walk',
             frameRate: Math.min(60, this.stats.speed * 40000 * 15)
         });
-
-        this.alpha = 1
-        this.angle = 0
-        this.scale = 1
     }
 
     receiveDamage(damage: integer) {

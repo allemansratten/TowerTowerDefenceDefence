@@ -99,7 +99,7 @@ export class WaveManager {
             enemy.setVisible(true);
 
             // place the enemy at the start of the path
-            enemy.startOnPath();
+            enemy.startOnPath(this.currentWave);
             this.spawnedEnemies++;
             this.nextEnemy = this.lastTime + this.enemyInterval;
         }

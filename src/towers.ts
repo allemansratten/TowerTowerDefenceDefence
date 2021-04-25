@@ -6,25 +6,29 @@ import { TDScene } from "./scenes/tdScene";
 import { Terrain, TILE_SIZE } from "./terrain";
 import { TowerConfig, RANGE_INDICATOR_CONFIG } from "./config";
 import { PlayerInfo } from "./playerInfo";
+import { EnemyBase } from "./enemy";
+import { HudScene } from "./scenes/hudScene";
 
 
 // todo: move to scene?
-function getEnemy(x, y, range, enemies, numToGet) {
-    let outEnemies = [];
+function getEnemy(x, y, range, enemies, numToGet): EnemyBase[] {
+    let outEnemies: EnemyBase[] = [];
+
     for (let enemyGroup in enemies) {
         let enemyUnits = enemies[enemyGroup].getChildren();
         for (let i = 0; i < enemyUnits.length; i++) {
             if (enemyUnits[i].active && Phaser.Math.Distance.Between(x, y, enemyUnits[i].x, enemyUnits[i].y) <= range) {
                 outEnemies.push(enemyUnits[i]);
-                if (outEnemies.length === numToGet) {
-                    return outEnemies
-                }
             }
         }
     }
-    if (outEnemies.length > 0)
-        return outEnemies;
-    return false;
+
+    if (outEnemies.length > 0) {
+        outEnemies.sort((a, b) => b.follower.t - a.follower.t)
+        outEnemies.length = Math.min(numToGet, outEnemies.length)
+        return outEnemies
+    }
+    return null
 }
 
 
@@ -80,7 +84,13 @@ export class Tower extends Phaser.GameObjects.Container {
         this.add(this.rangeIndicator);
 
         this.towerBase.setInteractive();
-        this.towerBase.on('pointerover', () => { this.rangeIndicator.setVisible(true) });
+        this.towerBase.on('pointerover', () => {
+            this.scene.children.bringToTop(this);
+            this.rangeIndicator.setVisible(true);
+
+            let hudScene = this.scene.scene.get("hudScene") as HudScene
+            hudScene.setDescription(this.config, this)
+        });
         this.towerBase.on('pointerout', () => { this.rangeIndicator.setVisible(false) });
 
         this.towerTurret.place(i, j, this.scene.terrain);
@@ -118,8 +128,8 @@ export class Tower extends Phaser.GameObjects.Container {
 
         this.healthBar.health += TOWER_HEALTH_REGEN * delta
 
-        if (this.healthBar.health === 1.0) {
-            this.healthBar.health = 0
+        if (this.healthBar.health >= 1.0) {
+            this.healthBar.levelUp();
             this.level++
             this.levelText.setText("" + this.level)
 
@@ -155,12 +165,13 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     }
 
     fire() {
-        var enemy = getEnemy(
+        let enemies = getEnemy(
             this.x, this.y, this.parent.stats.range(this.parent.level),
             this.scene.allEnemies, 1
-        )[0];
-        if (enemy) {
-            var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+        );
+        if (enemies) {
+            let enemy = enemies[0]
+            let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
             this.scene.addBullet(
                 this.x, this.y, angle,
                 this.parent.stats.damage(this.parent.level),
@@ -202,8 +213,9 @@ export class MultishotTurret extends _TowerTurret {
 
 
     fire() {
-        var enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, 3);
-        if (enemies) {
+        let enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, 3);
+        
+        if (enemies && enemies.length > 0) {
             for (let enemy of enemies) {
                 var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
                 this.scene.addBullet(
