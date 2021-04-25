@@ -33,9 +33,22 @@ export class TowerConfig {
         'spriteBase': 'towerbase',
         'spriteMid': 'towermid',
         'spriteTop': 'towertop0',
-        'baseTint': 0xffffff,
-        'midTint': 0xffffff,
-        'topTint': 0xffffff,
+        'tintBase': 0xffffff,
+        'tintMid': 0xffffff,
+        'tintTop': 0xffffff,
+    }
+
+    static Multishot: { [key:string]: any } = {
+        'damage': 5,
+        'firerate': 1,
+        'range': 100,
+        'price': 10,
+        'spriteBase': 'towerbase',
+        'spriteMid': 'towermid',
+        'spriteTop': 'towertop1',
+        'tintBase': 0xffffff,
+        'tintMid': 0xffffff,
+        'tintTop': 0xff0000,
     }
 
 

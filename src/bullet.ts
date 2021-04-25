@@ -10,6 +10,7 @@ export class Bullet extends Phaser.GameObjects.Container {
     dy: number = 0
     lifespan: number = 0
     speed: number
+    damage: integer
 
     bulletImage: Phaser.GameObjects.Image
     particles: Phaser.GameObjects.Particles.ParticleEmitterManager
@@ -26,7 +27,9 @@ export class Bullet extends Phaser.GameObjects.Container {
         this.bulletImage = this.scene.add.image(0, 0, 'bullet')
     }
 
-    fire(x, y, angle) {
+    fire(x, y, angle, damage) {
+        this.damage = damage;
+
         this.add(this.bulletImage)
 
         this.particles = this.scene.add.particles('particle_red');
@@ -45,12 +48,12 @@ export class Bullet extends Phaser.GameObjects.Container {
         this.dy = Math.sin(angle);
 
         this.lifespan = 300;
-        
+
         this.emitter = this.particles.createEmitter({
             speed: 100,
             scale: { start: 0.3, end: 0 },
             blendMode: 'ADD',
-            lifespan: 300,
+            lifespan: 100,
         });
         this.emitter.startFollow(this.bulletImage);
     }
@@ -72,6 +75,7 @@ export class Bullet extends Phaser.GameObjects.Container {
         if (this.lifespan <= 0) {
             this.setActive(false);
             this.setVisible(false);
+            this.particles.destroy(); // disable emittor (also could explode it)
         }
     }
 }
