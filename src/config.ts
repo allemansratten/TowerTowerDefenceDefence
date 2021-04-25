@@ -8,6 +8,17 @@ export const TOWER_HEALTH_REGEN = 0.00001 * 2
 
 export const PAUSE_AFTER_WAVE_TIME = 3000;
 
+export const WaveConfig = {
+    // ------------------- outer -----------------------
+    // How much time between consecutive spawns in a wave
+    outerEnemyInterval: 500,
+    // How much danger in a wave
+    outerWaveDanger: (wave) => wave * 10,
+
+    // ------------------- inner -----------------------
+    // How much danger per second is generatee in inner depths?
+    dangerPerSec: (level) => level * 5,    
+}
 
 export type EnemyConfig = {
     name: string

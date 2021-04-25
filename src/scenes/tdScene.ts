@@ -196,4 +196,8 @@ export class TDScene extends Phaser.Scene {
         this.endHealthBar.make(x, y, TILE_SIZE - 14, 0.5)
         this.add.container(0, 0, this.endHealthBar)
     }
+
+    getTowerParent() {
+        return this.towerParent
+    }
 }
