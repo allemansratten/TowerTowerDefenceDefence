@@ -84,7 +84,7 @@ export class MetaScene extends Phaser.Scene {
             { frameWidth: 64, frameHeight: 64 }
         );
         this.load.spritesheet('towertops',
-            'towertop0.png',
+            'towertop.png',
             { frameWidth: 64, frameHeight: 64 }
         )
         this.load.spritesheet('towermids',
