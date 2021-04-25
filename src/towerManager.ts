@@ -21,6 +21,7 @@ export class TowerManager {
             let newScene = this.scene.metaScene.addScene(this.scene)
             if (tower) {
                 tower.make(i, j, newScene, this.towerTypes[towerType]);
+                newScene.setTowerParent(tower)
             }
         }
     }

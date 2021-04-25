@@ -79,14 +79,22 @@ export class MetaScene extends Phaser.Scene {
         this.load.image('enemy1', 'enemy.png');
         this.load.image('fatEnemy', 'chonk.png');
         this.load.image('bullet', 'bullet.png');
-        this.load.image('towertop0', 'towertop0.png');
-        this.load.image('towertop1', 'towertop1.png');
-        this.load.image('towermid', 'towermid.png');
-        this.load.image('towerbase', 'towerbase.png');
         this.load.spritesheet('tileset',
             'tileset.png',
             { frameWidth: 64, frameHeight: 64 }
         );
+        this.load.spritesheet('towertops',
+            'towertop.png',
+            { frameWidth: 64, frameHeight: 64 }
+        )
+        this.load.spritesheet('towermids',
+            'towermid.png',
+            { frameWidth: 64, frameHeight: 64 }
+        )
+        this.load.spritesheet('towerbases',
+            'towerbase.png',
+            { frameWidth: 64, frameHeight: 64 }
+        )
         this.load.image('particle_red', 'particle_red.png');
 
         this.load.audio("main_music", "gamejam_LD48.ogg")
