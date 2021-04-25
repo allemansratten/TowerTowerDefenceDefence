@@ -1,4 +1,4 @@
-import { EnemyConfig, PAUSE_AFTER_WAVE_TIME } from "./config";
+import { EnemyConfig, PAUSE_AFTER_WAVE_TIME, ENEMY_CONFIGS } from "./config";
 import { PlayerInfo } from "./playerInfo";
 import { TDScene } from "./scenes/tdScene";
 // import { Enemy, FatEnemy} from "./enemy";
@@ -51,20 +51,21 @@ export class WaveManager {
 
     private spawnEnemy() {
         let availEnemies = []
-        for(let enemyType in EnemyConfig) {  // Select all enemies that can be spawned
-            let enemy = EnemyConfig[enemyType];
+        for(let enemyType in ENEMY_CONFIGS) {  // Select all enemies that can be spawned
+            let enemy = ENEMY_CONFIGS[enemyType];
             if (enemy.danger <= this.remainingDanger)
                 availEnemies.push([enemyType, enemy]);
         }
         if (availEnemies.length > 0) {  // Pick a random one of them
-            let randEnemy = availEnemies[Math.floor(PlayerInfo.RNG.frac()*availEnemies.length)];
+            let randEnemy = availEnemies[Math.floor(PlayerInfo.RNG.frac()*availEnemies.length)][1];
             // console.log("Spawning: " + randEnemy[0] + ", danger: " + randEnemy[1].danger);
-            this.remainingDanger -= randEnemy[1].danger;
-            return this.scene.allEnemies[randEnemy[0] + 'Enemy'].get();
+            this.remainingDanger -= randEnemy.danger;
+            return this.scene.allEnemies[randEnemy.name + 'Enemy'].get();
         }
 
-        console.log('No available enemy to spawn, spawning Basic!');
-        return this.scene.allEnemies['BasicEnemy'].get();
+        console.log('No available enemy to spawn, spawning WeakEnemy!');
+        this.remainingDanger = 0;
+        return this.scene.allEnemies['WeakEnemy'].get();
     }
 
     lastTime: number = 0
@@ -75,7 +76,7 @@ export class WaveManager {
         } else {
             if ((this.scene.sceneLevel > 0 || this.remainingDanger > 0) && this.lastTime > this.nextEnemy) {
                 if  (this.scene.sceneLevel > 0)
-                    var enemy = this.scene.allEnemies['BasicEnemy'].get();
+                    var enemy = this.scene.allEnemies['WeakEnemy'].get();
                 else
                     var enemy = this.spawnEnemy();
 
