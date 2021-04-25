@@ -3,7 +3,7 @@ import { Tower } from "../towers";
 import { Bullet } from "../bullet";
 import { WaveManager } from "../waves"
 import { TowerManager } from "../towerManager"
-import { Terrain, TILE_SIZE } from "../terrain";
+import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
 import { MetaScene } from "./MetaScene";
 import { HUD_WIDTH } from "./hudScene";
@@ -11,6 +11,8 @@ import { UUID } from "../utils/guid";
 import { HealthBar } from "../healthBar";
 
 export const SCENE_TRANSITION_MS = 500
+export const TD_SCENE_WIDTH = MAX_WIDTH * TILE_SIZE
+export const TD_SCENE_HEIGHT = MAX_HEIGHT * TILE_SIZE
 
 export class TDScene extends Phaser.Scene {
     path: Phaser.Curves.Path
@@ -101,6 +103,24 @@ export class TDScene extends Phaser.Scene {
     }
 
     public fadeOut(goingInside: boolean, i, j) {
+        // Take a screenshot
+        this.game.renderer.snapshotArea(
+            -this.cameras.main.scrollX,
+            -this.cameras.main.scrollY,
+            TD_SCENE_WIDTH,
+            TD_SCENE_HEIGHT,
+            (image: HTMLImageElement) => {
+                const snapKey = `snap-${this.scene.key}`
+                if (this.textures.exists(snapKey)) {
+                    this.textures.remove(snapKey);
+                }
+                this.textures.addImage(snapKey, image);
+
+                // debugging: show the screenshot
+                // document.body.appendChild(image)
+            }
+        )
+
         this.cameras.main.fadeOut(SCENE_TRANSITION_MS, 0, 0, 0)
         if (goingInside) {
             let [x, y] = this.terrain.fromGridPos(i, j)
