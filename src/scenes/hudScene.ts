@@ -115,8 +115,9 @@ export class HudScene extends Phaser.Scene {
         for (let i = parentScenes.length - 1; i >= 0; i--) {
             let sceneIndex = (parentScenes.length - 1) - i;
             let scale = 0.1
-            if (parentScenes.length > 7) {
-                scale /= ((parentScenes.length / 7) * 1.022)
+            const maxImagesNormalScaleFit = 7;
+            if (parentScenes.length > maxImagesNormalScaleFit) {
+                scale /= ((parentScenes.length / maxImagesNormalScaleFit) * 1.022) // NOTE: Drifts, hence re-scale by this magic number, idk why; no time to figure out
             }
 
             let newButton = this.add.image(
