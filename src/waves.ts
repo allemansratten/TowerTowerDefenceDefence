@@ -1,4 +1,5 @@
 import { EnemyConfig, PAUSE_AFTER_WAVE_TIME } from "./config";
+import { PlayerInfo } from "./playerInfo";
 import { TDScene } from "./scenes/tdScene";
 // import { Enemy, FatEnemy} from "./enemy";
 
@@ -56,7 +57,7 @@ export class WaveManager {
                 availEnemies.push([enemyType, enemy]);
         }
         if (availEnemies.length > 0) {  // Pick a random one of them
-            let randEnemy = availEnemies[Math.floor(Math.random()*availEnemies.length)];
+            let randEnemy = availEnemies[Math.floor(PlayerInfo.RNG.frac()*availEnemies.length)];
             // console.log("Spawning: " + randEnemy[0] + ", danger: " + randEnemy[1].danger);
             this.remainingDanger -= randEnemy[1].danger;
             return this.scene.allEnemies[randEnemy[0] + 'Enemy'].get();

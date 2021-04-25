@@ -37,7 +37,8 @@ const gameConfig = {
   physics: {
     default: 'arcade'
   },
-  scene: levels 
+  scene: levels,
+  seed: ["42"]
 };
 
 export const game = new Phaser.Game(gameConfig);

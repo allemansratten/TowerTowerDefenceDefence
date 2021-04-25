@@ -1,3 +1,4 @@
+import { PlayerInfo } from "./playerInfo"
 import { TDScene } from "./scenes/tdScene"
 import { Tower } from "./towers"
 
@@ -268,12 +269,12 @@ export class Terrain {
 }
 
 function randomItem(array) {
-    return array[Math.floor(Math.random() * array.length)]
+    return array[Math.floor(PlayerInfo.RNG.frac() * array.length)]
 }
 
 function randomFreeSprite() {
     const nSpecialSprites = 8
-    return nSpecialSprites + Math.floor(Math.random() * (N_TILESET_SPRITES - nSpecialSprites))
+    return nSpecialSprites + Math.floor(PlayerInfo.RNG.frac() * (N_TILESET_SPRITES - nSpecialSprites))
 }
 
 function init2DArray<TVal>(dim1, dim2, value:TVal): TVal[][] {
