@@ -114,11 +114,14 @@ export class HudScene extends Phaser.Scene {
 
         for (let i = parentScenes.length - 1; i >= 0; i--) {
             let sceneIndex = (parentScenes.length - 1) - i;
-            // let newButton = this.add.text(780, 50 + sceneIndex * 50, `GoLevel: ${sceneIndex}`, { fontSize: '20px' });
-            const scale = 0.1
+            let scale = 0.1
+            if (parentScenes.length > 7) {
+                scale /= ((parentScenes.length / 7) * 1.02)
+            }
+
             let newButton = this.add.image(
                 TD_SCENE_WIDTH + HUD_WIDTH * 1.5,
-                100 + sceneIndex * scale * TD_SCENE_HEIGHT * 1.5,
+                100 + sceneIndex * scale * TD_SCENE_HEIGHT * 1.2, 
                 `snap-${parentScenes[i].scene.key}`
             );
             newButton.scaleX = scale
