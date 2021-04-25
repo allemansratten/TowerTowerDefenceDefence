@@ -6,42 +6,57 @@ export const TOWER_HEALTH_REGEN = 0.00001 * 2
 
 export const PAUSE_AFTER_WAVE_TIME = 3000;
 
-export class EnemyConfig {
-    static Basic = {
-        'hp': 20,
-        'speed': 1 / 20000,
-        'money': 1,
-        'damage': 1,
-        'armor': 0,
-        'danger': 10,
-        'spriteName': 'enemy1',
-        'tint': 0xffffff,
-    }
 
-    static Fat = {
-        'hp': 50,
-        'speed': 1 / 40000,
-        'money': 2,
-        'damage': 1,
-        'armor': 0,
-        'danger': 30,
-        'spriteName': 'fatEnemy',
-        'tint': 0xffffff,
-    }
-
-    static Armoured: { [key: string]: any } = {
-        'hp': 20,
-        'speed': 1 / 30000,
-        'money': 2,
-        'damage': 1,
-        'armor': 2,
-        'danger': 30,
-        'spriteName': 'enemy1',
-        'tint': 0xaaaaff,
-    }
-
-
+export type EnemyConfig = {
+    name: string
+    hp: integer
+    speed: number
+    money: integer
+    damage: integer
+    armor: integer
+    danger: integer // must be multiple of 10
+    spriteName: string
+    tint: integer
 }
+
+export const Weak: EnemyConfig = {
+    'name': 'Weak',
+    'hp': 20,
+    'speed': 1 / 20000,
+    'money': 1,
+    'damage': 1,
+    'armor': 0,
+    'danger': 10,
+    'spriteName': 'enemy1',
+    'tint': 0xffffff,
+}
+
+export const Fat: EnemyConfig = {
+    'name': 'Fat',
+    'hp': 50,
+    'speed': 1 / 40000,
+    'money': 2,
+    'damage': 1,
+    'armor': 0,
+    'danger': 30,
+    'spriteName': 'fatEnemy',
+    'tint': 0xffffff,
+}
+
+export const Armoured: EnemyConfig = {
+    'name': 'Armoured',
+    'hp': 20,
+    'speed': 1 / 30000,
+    'money': 2,
+    'damage': 1,
+    'armor': 2,
+    'danger': 30,
+    'spriteName': 'enemy1',
+    'tint': 0xaaaaff,
+}
+
+export const ENEMY_CONFIGS = [Weak, Fat, Armoured]
+
 
 export type TowerConfig = {
     name: string
@@ -74,7 +89,7 @@ export const Basic: TowerConfig = {
 }
 
 
-export const Sniper = {
+export const Sniper: TowerConfig = {
     'name': "Sniper",
     'damage': level => 20 * level,
     'firerate': level => 4000,

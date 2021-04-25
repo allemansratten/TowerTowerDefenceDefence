@@ -65,7 +65,7 @@ export class TDScene extends Phaser.Scene {
         this.waveManager = new WaveManager(this);
         this.towerManager = new TowerManager(this);
 
-        for (let enemyType of [enem.BasicEnemy, enem.FatEnemy, enem.ArmouredEnemy]) {
+        for (let enemyType of [enem.WeakEnemy, enem.FatEnemy, enem.ArmouredEnemy]) {
             this.allEnemies[enemyType.name] = this.physics.add.group({ classType: enemyType, runChildUpdate: true });
         }
 

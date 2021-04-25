@@ -1,7 +1,7 @@
 // import { GridPosition, Position, Terrain } from "./terrain";
 import { TDScene } from "./scenes/tdScene";
 import { PlayerInfo } from "./playerInfo";
-import { EnemyConfig } from "./config";
+import * as cfg from "./config";
 import { HudScene } from "./scenes/hudScene";
 import { MetaScene } from "./scenes/MetaScene";
 
@@ -94,16 +94,16 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
     }
 }
 
-export class BasicEnemy extends EnemyBase {
-    static stats = EnemyConfig.Basic
+export class WeakEnemy extends EnemyBase {
+    static stats = cfg.Weak
 
     constructor(scene: TDScene) {
-        super(scene, BasicEnemy.stats)
+        super(scene, WeakEnemy.stats)
     }
 }
 
 export class FatEnemy extends EnemyBase {
-    static stats = EnemyConfig.Fat
+    static stats = cfg.Fat
 
     constructor(scene: TDScene) {
         super(scene, FatEnemy.stats)
@@ -111,7 +111,7 @@ export class FatEnemy extends EnemyBase {
 }
 
 export class ArmouredEnemy extends EnemyBase {
-    static stats = EnemyConfig.Armoured
+    static stats = cfg.Armoured
 
     constructor(scene: TDScene) {
         super(scene, ArmouredEnemy.stats)
