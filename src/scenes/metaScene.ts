@@ -65,7 +65,8 @@ export class MetaScene extends Phaser.Scene {
             }
         })
 
-        this.sound.setRate(1/(Math.pow(1.25, switchToScene.sceneLevel)))
+        // 1.05946309436 ~ 2^(1/12), i.e. one semitone
+        this.sound.setRate(1/(Math.pow(1.05946309436, switchToScene.sceneLevel)))
     }
 
     update(time, delta) {
