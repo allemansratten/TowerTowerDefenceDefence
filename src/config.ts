@@ -10,7 +10,7 @@ export const PAUSE_AFTER_WAVE_TIME = 3000;
 
 export const RANGE_INDICATOR_CONFIG = {
     'colour': 0xbbbbff,
-    'alpha': 0x40,
+    'alpha': 210,
     'edgeColour': 0x8080ff,
     'edgeWidth': 4
 };

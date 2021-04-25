@@ -6,7 +6,7 @@ import { HudScene } from "./scenes/hudScene";
 import { MetaScene } from "./scenes/MetaScene";
 
 
-abstract class EnemyBase extends Phaser.GameObjects.Sprite {
+export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
     stats: cfg.EnemyConfig;
 
     follower: any
