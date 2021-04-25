@@ -10,7 +10,6 @@ import { HUD_WIDTH } from "./hudScene";
 import { UUID } from "../utils/guid";
 import { HealthBar } from "../healthBar";
 
-const BULLET_DAMAGE = 10
 export const SCENE_TRANSITION_MS = 500
 
 export class TDScene extends Phaser.Scene {
@@ -118,8 +117,8 @@ export class TDScene extends Phaser.Scene {
             // we remove the bullet right away
             bullet.hit()
 
-            // decrease the enemy hp with BULLET_DAMAGE
-            enemy.receiveDamage(BULLET_DAMAGE);
+            // decrease the enemy hp with bullet damage
+            enemy.receiveDamage(bullet.damage);
         }
     }
 
@@ -137,10 +136,10 @@ export class TDScene extends Phaser.Scene {
         }
     }
 
-    addBullet(x, y, angle) {
+    addBullet(x, y, angle, damage) {
         var bullet = this.bullets.get();
         if (bullet) {
-            bullet.fire(x, y, angle);
+            bullet.fire(x, y, angle, damage);
         }
     }
 

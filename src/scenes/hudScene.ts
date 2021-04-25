@@ -141,7 +141,7 @@ class BuyTowerIcon {
             });
 
             const scene = hudScene.metaScene.getActiveScene()
-            scene.towerManager.placeTower(pointer)
+            scene.towerManager.placeTower(pointer, 'Multishot');
 
             gameObject.x = this.origX
             gameObject.y = this.origY
