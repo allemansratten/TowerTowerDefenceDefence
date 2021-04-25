@@ -46,7 +46,7 @@ export class EnemyConfig {
 export class TowerConfig {
     static Basic = {
         'damage': 10,
-        'firerate': 1,
+        'firerate': 1000,
         'range': 150,
         'price': 5,
         'spriteBase': 0,
@@ -59,7 +59,7 @@ export class TowerConfig {
 
     static Multishot = {
         'damage': 5,
-        'firerate': 1,
+        'firerate': 1000,
         'range': 100,
         'price': 10,
         'spriteBase': 0,

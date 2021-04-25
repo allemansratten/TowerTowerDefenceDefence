@@ -1,3 +1,4 @@
+import { PlayerInfo } from "./playerInfo";
 import { TDScene } from "./scenes/tdScene";
 import { TILE_SIZE } from "./terrain"
 import * as towers from "./towers";
@@ -14,14 +15,15 @@ export class TowerManager {
     }
 
     public placeTower(pointer, towerType) {
-        console.log(`Placed new tower ${towerType}`)
         const [i, j] = this.scene.toGridPos(pointer.x, pointer.y)
         if (this.scene.terrain.canPlaceTower(i, j)) {
             var tower: towers.Tower = this.scene.towers.get();
+            console.log(this.towerTypes[towerType])
 
             let newScene = this.scene.metaScene.addScene(this.scene)
             if (tower) {
                 tower.make(i, j, newScene, this.towerTypes[towerType]);
+                PlayerInfo.money -= tower.config.price
                 newScene.setTowerParent(tower)
             }
         }

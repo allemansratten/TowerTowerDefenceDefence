@@ -9,7 +9,7 @@ import { MetaScene } from "./MetaScene";
 import { HUD_WIDTH } from "./hudScene";
 import { UUID } from "../utils/guid";
 import { HealthBar } from "../healthBar";
-import { PlayerInfo } from "../player";
+import { PlayerInfo } from "../playerInfo";
 
 export const SCENE_TRANSITION_MS = 500
 export const TD_SCENE_WIDTH = MAX_WIDTH * TILE_SIZE

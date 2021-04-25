@@ -1,4 +1,3 @@
-import { PlayerInfo } from "./player"
 import { TDScene } from "./scenes/tdScene"
 import { TILE_SIZE } from "./terrain"
 

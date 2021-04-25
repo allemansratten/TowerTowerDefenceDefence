@@ -1,6 +1,6 @@
 // import { GridPosition, Position, Terrain } from "./terrain";
 import { TDScene } from "./scenes/tdScene";
-import { PlayerInfo } from "./player";
+import { PlayerInfo } from "./playerInfo";
 import { EnemyConfig } from "./config";
 import { HudScene } from "./scenes/hudScene";
 import { MetaScene } from "./scenes/MetaScene";

@@ -1,4 +1,4 @@
-import { PlayerInfo } from "./player"
+import { PlayerInfo } from "./playerInfo"
 import { TDScene } from "./scenes/tdScene"
 
 export const RADIUS = 10
