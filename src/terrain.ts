@@ -105,7 +105,9 @@ export class Terrain {
             for (let j = 0; j < this.h; j++) {
                 const [x, y] = this.fromGridPos(i, j)
                 const sprite = scene.add.sprite(x, y, 'tileset', this.tileSprites[i][j]);
-                sprite.setTint(this.tint)
+                if (this.tiles[i][j] == TileType.Buildable) {
+                    sprite.setTint(this.tint)
+                }
             }
         }
     }
