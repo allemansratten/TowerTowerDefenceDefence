@@ -86,18 +86,22 @@ export class TowerTurret extends Phaser.GameObjects.Image {
     }
 
     fire() {
-        var enemy = getEnemy(this.x, this.y, 100, this.scene.enemies);
+        var enemy = getEnemy(this.x, this.y, 200, this.scene.enemies);
         if (enemy) {
             var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
             this.scene.addBullet(this.x, this.y, angle);
             this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+            return true;
         }
+        return false
     }
 
     update(time, delta) {
         if (time > this.nextTic) {
-            this.fire();
-            this.nextTic = time + 1000;
+            if(this.fire())
+                this.nextTic = time + 1000;
+            else
+                this.nextTic = time + 50;
         }
     }
 }
