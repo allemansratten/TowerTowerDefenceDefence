@@ -2,6 +2,8 @@
 import { TDScene } from "./scenes/tdScene";
 import { PlayerInfo } from "./player";
 import { EnemyConfig } from "./config";
+import { HudScene } from "./scenes/hudScene";
+import { MetaScene } from "./scenes/MetaScene";
 
 
 abstract class EnemyBase extends Phaser.GameObjects.Image {
@@ -34,15 +36,26 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
 
         // if we have reached the end of the path, remove the enemy
         if (this.follower.t >= 1) {
-            this.scene.waveManager.remainingDanger += this.stats.danger;
-            this.setActive(false);
-            this.setVisible(false);
-            if (this.scene.sceneLevel === 0)
-                PlayerInfo.hp -= this.stats.damage;
+            this.reachEnd()
+        }
+    }
 
-            if (this.scene.enemyEndCallback) {
-                this.scene.enemyEndCallback()
-            }
+    reachEnd() {
+        this.scene.waveManager.remainingDanger += this.stats.danger;
+        this.setActive(false);
+        this.setVisible(false);
+        if (this.scene.sceneLevel === 0) {
+            const hudScene = this.scene.scene.get("hudScene") as HudScene
+
+            PlayerInfo.hp -= this.stats.damage;
+            hudScene.hpRedness = 1
+
+            const metaScene = this.scene.scene.get("metaScene") as MetaScene
+            metaScene.getActiveScene().cameras.main.shake(200, 0.005)
+        }
+
+        if (this.scene.enemyEndCallback) {
+            this.scene.enemyEndCallback()
         }
     }
 

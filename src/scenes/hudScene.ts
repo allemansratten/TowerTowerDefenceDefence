@@ -11,6 +11,7 @@ export class HudScene extends Phaser.Scene {
 
     moneyText: Phaser.GameObjects.Text
     hpText: Phaser.GameObjects.Text
+    hpRedness: number // 0 to 1
     depthText: Phaser.GameObjects.Text
     goUpText: Phaser.GameObjects.Text
 
@@ -45,6 +46,7 @@ export class HudScene extends Phaser.Scene {
 
         this.moneyText = this.add.text(10, 10, "", { fontSize: '20px' });
         this.hpText = this.add.text(10, 50, "", { fontSize: '20px' });
+        this.hpRedness = 0
 
         this.depthText = this.add.text(780, 10, "Depth: ", { fontSize: '20px' });
 
@@ -55,10 +57,10 @@ export class HudScene extends Phaser.Scene {
         let towerTypeIndex = 0;
         for (let towerName in TowerConfig) {
             let towerConfig = TowerConfig[towerName]
-            this.buyTowerIcons.push(new BuyTowerIcon(this, w / 2, 110+70*towerTypeIndex, towerName, towerConfig))
+            this.buyTowerIcons.push(new BuyTowerIcon(this, w / 2, 110 + 70 * towerTypeIndex, towerName, towerConfig))
             towerTypeIndex++;
         }
-
+    
 
         this.scene.bringToTop('hudScene');
         this.parentScenesTexts = []
@@ -68,6 +70,13 @@ export class HudScene extends Phaser.Scene {
     public update(time, delta) {
         this.moneyText.setText('Money: ' + PlayerInfo.money)
         this.hpText.setText('HP: ' + PlayerInfo.hp)
+
+        this.hpText.setColor(Phaser.Display.Color.RGBToString(
+            255, 255 * (1 - this.hpRedness), 255 * (1 - this.hpRedness)
+        ))
+        const secsToWhite = 0.5
+        this.hpRedness = Math.max(0, this.hpRedness - delta / 1000 / secsToWhite)
+
         this.updateInfoBasedOnActiveScene();
     }
 
