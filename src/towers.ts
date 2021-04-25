@@ -60,7 +60,7 @@ export class Tower extends Phaser.GameObjects.Container {
         this.towerBase.setTint(this.config.tintBase);
         this.add(this.towerBase);
         this.towerMid = this.scene.add.sprite(xCoord, yCoord, 'towermids', this.config.spriteMid);
-        this.towerBase.setTint(this.config.tintMid);
+        this.towerMid.setTint(this.config.tintMid);
         this.add(this.towerMid);
 
         this.towerTurret.place(i, j, this.scene.terrain);
