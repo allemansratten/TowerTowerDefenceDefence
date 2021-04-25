@@ -95,3 +95,11 @@ export class FatEnemy extends EnemyBase {
         super(scene, FatEnemy.stats)
     }
 }
+
+export class ArmouredEnemy extends EnemyBase {
+    static stats = EnemyConfig.Armoured
+
+    constructor(scene: TDScene) {
+        super(scene, ArmouredEnemy.stats)
+    }
+}

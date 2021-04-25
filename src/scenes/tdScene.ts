@@ -1,4 +1,4 @@
-import { BasicEnemy, FatEnemy } from "../enemy";
+import * as enem from "../enemy";
 import { Tower } from "../towers";
 import { Bullet } from "../bullet";
 import { WaveManager } from "../waves"
@@ -62,7 +62,7 @@ export class TDScene extends Phaser.Scene {
         this.waveManager = new WaveManager(this);
         this.towerManager = new TowerManager(this);
 
-        for (let enemyType of [BasicEnemy, FatEnemy]) {
+        for (let enemyType of [enem.BasicEnemy, enem.FatEnemy, enem.ArmouredEnemy]) {
             this.allEnemies[enemyType.name] = this.physics.add.group({ classType: enemyType, runChildUpdate: true });
         }
 

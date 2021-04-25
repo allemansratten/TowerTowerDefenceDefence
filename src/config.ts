@@ -27,6 +27,17 @@ export class EnemyConfig {
         'tint': 0xffffff,
     }
 
+    static Armoured: { [key:string]: any } = {
+        'hp': 20,
+        'speed': 1/30000,
+        'money': 2,
+        'damage': 1,
+        'armor': 2,
+        'danger': 30,
+        'spriteName': 'enemy1',
+        'tint': 0xaaaaff,
+    }
+
 
 }
 
@@ -40,7 +51,7 @@ export class TowerConfig {
         'spriteMid': 0,
         'spriteTop': 0,
         'tintBase': 0xffffff,
-        'tintMid': 0x0000ff,
+        'tintMid': 0xffffff,
         'tintTop': 0xffffff,
     }
 
@@ -53,7 +64,7 @@ export class TowerConfig {
         'spriteMid': 0,
         'spriteTop': 2,
         'tintBase': 0xffffff,
-        'tintMid': 0x0000ff,
+        'tintMid': 0xffffff,
         'tintTop': 0xff0000,
     }
 }
