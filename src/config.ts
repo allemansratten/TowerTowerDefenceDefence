@@ -43,7 +43,7 @@ export type EnemyConfig = {
 export const Weak: EnemyConfig = {
     'name': 'Weak',
     'class': enem.WeakEnemy,
-    'hp': (wave) => 45,
+    'hp': (wave) => 25,
     'speed': 1 / 20000,
     'money': 1,
     'damage': 1,
@@ -56,7 +56,7 @@ export const Weak: EnemyConfig = {
 export const Fat: EnemyConfig = {
     'name': 'Fat',
     'class': enem.FatEnemy,
-    'hp': (wave) => 130,
+    'hp': (wave) => 100,
     'speed': 1 / 40000,
     'money': 2,
     'damage': 1,
@@ -70,11 +70,11 @@ export const Fat: EnemyConfig = {
 export const Armoured: EnemyConfig = {
     'name': 'Armoured',
     'class': enem.ArmouredEnemy,
-    'hp': (wave) => 60,
+    'hp': (wave) => 50,
     'speed': 1 / 30000,
     'money': 2,
     'damage': 1,
-    'armor': 8,
+    'armor': 4,
     'danger': 160,
     'spriteName': 'enemy1',
     'tint': 0xaaaaff,
@@ -83,7 +83,7 @@ export const Armoured: EnemyConfig = {
 export const Fast: EnemyConfig = {
     'name': 'Fast',
     'class': enem.FastEnemy,
-    'hp': (wave) => 30,
+    'hp': (wave) => 15,
     'speed': 1 / 10000,
     'money': 1,
     'damage': 1,
@@ -113,7 +113,7 @@ export type TowerConfig = {
 
 export const Basic: TowerConfig = {
     'name': "Basic",
-    'damage': level => 5 + 10 * level,
+    'damage': level => 10 + 15 * (level-1),
     'firerate': level => Math.max( 1500 - 50 * level, 1000),
     'range': level => 125,
     'bulletSpeedMod': 4,
@@ -129,9 +129,9 @@ export const Basic: TowerConfig = {
 
 export const Sniper: TowerConfig = {
     'name': "Sniper",
-    'damage': level => 15 + 25 * level,
+    'damage': level => 25 + 50 * (level-1),
     'firerate': level => 4000,
-    'range': level => 200 + 25 * level,
+    'range': level => 200 + 35 * level,
     'bulletSpeedMod': 5,
     'price': 20,
     'spriteBase': 0,
@@ -145,7 +145,7 @@ export const Sniper: TowerConfig = {
 
 export const Multishot: TowerConfig = {
     'name': "Multishot",
-    'damage': level => 3 + 6*level,
+    'damage': level => 5 + 10*(level-1),
     'firerate': level => Math.max(1300 - 50*level, 1000),
     'range': level => 90,
     'bulletSpeedMod': 4,
