@@ -1,4 +1,5 @@
 import { TDScene } from "./scenes/tdScene";
+// import { Enemy, FatEnemy} from "./enemy";
 
 export class WaveManager {
     scene: TDScene
@@ -8,8 +9,6 @@ export class WaveManager {
     deadEnemies: integer = 0
 
     numEnemies: integer
-    enemyHealth: integer
-    enemySpeed: number
     enemyInterval: integer
 
     constructor(scene) {
@@ -22,16 +21,12 @@ export class WaveManager {
 
     private getNestedWaveDifficulty() {
         //TODO: add difficulty scaling for nested levels
-        this.enemyHealth = 20;
-        this.enemySpeed = 1/20000;
-        this.enemyInterval = 500;
+        this.enemyInterval = 2000;
     }
 
     private getWaveDifficulty() {
         //TODO: add difficulty scaling and balancing for waves
         this.numEnemies = this.currentWave;
-        this.enemyHealth = 20;
-        this.enemySpeed = 1/20000;
         this.enemyInterval = 200;
     }
 
@@ -45,21 +40,24 @@ export class WaveManager {
 
     public update(time, delta) {
         if ((this.scene.sceneLevel > 0 || this.spawnedEnemies < this.numEnemies) && time > this.nextEnemy) {
-            var enemy = this.scene.enemies.get();
+            if (this.currentWave % 2 === 0) {
+                var enemy = this.scene.allEnemies['FatEnemy'].get();
+            } else {
+                var enemy = this.scene.allEnemies['BasicEnemy'].get();
+            }
             if (enemy) {
                 enemy.setActive(true);
                 enemy.setVisible(true);
 
                 // place the enemy at the start of the path
-                enemy.startOnPath(this.enemySpeed, this.enemyHealth);
+                enemy.startOnPath();
                 this.spawnedEnemies++;
 
                 this.nextEnemy = time + this.enemyInterval;
             }
         }
         if (this.scene.sceneLevel === 0 && this.deadEnemies === this.numEnemies) {
-            //next wave
-            this.nextWave();
+            this.nextWave();  // no waves in nested layers
         }
     }
 }

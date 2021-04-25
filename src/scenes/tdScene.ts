@@ -1,4 +1,4 @@
-import { Enemy } from "../enemy";
+import { BasicEnemy, FatEnemy } from "../enemy";
 import { Tower } from "../towers";
 import { Bullet } from "../bullet";
 import { WaveManager } from "../waves"
@@ -14,7 +14,7 @@ export const SCENE_TRANSITION_MS = 500
 
 export class TDScene extends Phaser.Scene {
     path: Phaser.Curves.Path
-    enemies: Phaser.Physics.Arcade.Group
+    allEnemies: { [key:string]: Phaser.Physics.Arcade.Group} = {}
     nextEnemy: number = 0
     metaScene: MetaScene
 
@@ -57,14 +57,18 @@ export class TDScene extends Phaser.Scene {
         this.waveManager = new WaveManager(this);
         this.towerManager = new TowerManager(this);
 
-        this.enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
+        for (let enemyType of [BasicEnemy, FatEnemy]) {
+            this.allEnemies[enemyType.name] = this.physics.add.group({ classType: enemyType, runChildUpdate: true });
+        }
 
         this.towers = this.add.group({ classType: Tower, runChildUpdate: true });
 
         this.input.on('pointerdown', this.onClick, this);
 
         this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
-        this.physics.add.overlap(this.enemies, this.bullets, this.damageEnemy);
+        for (let eName in this.allEnemies) {
+            this.physics.add.overlap(this.allEnemies[eName], this.bullets, this.damageEnemy);
+        }
 
         this.waveManager = new WaveManager(this);
 
@@ -118,9 +122,9 @@ export class TDScene extends Phaser.Scene {
         this.frameNumber++;
         this.waveManager.update(time, delta)
 
-        // if(this.frameNumber % 60 == 0) {
-        //     console.log(`Update th: ${this.scene.key} e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneParent?.scene.key}`)
-        // }
+        if(this.frameNumber % 60 == 0) {
+            // console.log(`Update th: ${this.scene.key} e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneParent?.scene.key}`)
+        }
     }
 
     addBullet(x, y, angle) {
