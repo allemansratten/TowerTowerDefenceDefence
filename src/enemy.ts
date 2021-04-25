@@ -73,6 +73,10 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
 
         // set the x and y of our enemy to the received from the previous step
         this.setPosition(this.follower.vec.x, this.follower.vec.y);
+
+        this.alpha = 1
+        this.angle = 0
+        this.scale = 1
     }
 
     receiveDamage(damage: integer) {
@@ -81,7 +85,7 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
         // if hp drops below 0 we deactivate this enemy
         if (this.hp <= 0) {
             this.setActive(false);
-            this.setVisible(false);
+            // this.setVisible(false);
             this.onDeath()
         }
     }
@@ -91,6 +95,15 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
             this.scene.waveManager.deadDanger += this.stats.danger
             PlayerInfo.money += this.stats.money;
         }
+
+        this.scene.tweens.add({
+            targets: this,
+            alpha: 0,
+            angle: PlayerInfo.RNG.sign() * 180,
+            scale: 0.5,
+            duration: PlayerInfo.RNG.integerInRange(600, 800),
+            ease: 'Power2'
+          });
     }
 }
 
