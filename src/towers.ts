@@ -4,7 +4,7 @@ import { DAMAGE_TO_TOWER_HEALTH_COEF, TOWER_HEALTH_REGEN } from "./config";
 import { HealthBar } from "./healthBar";
 import { TDScene } from "./scenes/tdScene";
 import { Terrain, TILE_SIZE } from "./terrain";
-import { TowerConfig } from "./config";
+import { TowerConfig, RANGE_INDICATOR_CONFIG } from "./config";
 import { PlayerInfo } from "./playerInfo";
 
 
@@ -70,7 +70,12 @@ export class Tower extends Phaser.GameObjects.Container {
         this.towerMid.setTint(this.config.tintMid);
         this.add(this.towerMid);
 
-        this.rangeIndicator = this.scene.add.circle(xCoord, yCoord, config.range(1), 0xeeeeff, 0x40);
+        this.rangeIndicator = this.scene.add.circle(
+            xCoord, yCoord, config.range(1),
+            RANGE_INDICATOR_CONFIG.colour,
+            RANGE_INDICATOR_CONFIG.alpha
+        );
+        this.rangeIndicator.setStrokeStyle(RANGE_INDICATOR_CONFIG.edgeWidth, RANGE_INDICATOR_CONFIG.edgeColour);
         this.rangeIndicator.setVisible(false);
         this.add(this.rangeIndicator);
 

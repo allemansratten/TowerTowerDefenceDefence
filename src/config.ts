@@ -8,6 +8,13 @@ export const TOWER_HEALTH_REGEN = 0.00001 * 2
 
 export const PAUSE_AFTER_WAVE_TIME = 3000;
 
+export const RANGE_INDICATOR_CONFIG = {
+    'colour': 0xbbbbff,
+    'alpha': 0x40,
+    'edgeColour': 0x8080ff,
+    'edgeWidth': 4
+};
+
 export const WaveConfig = {
     // ------------------- outer -----------------------
     // How much time between consecutive spawns in a wave

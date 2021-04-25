@@ -180,6 +180,11 @@ export class TDScene extends Phaser.Scene {
         if (potentialExistingTower) {
             this.metaScene.switchToScene(potentialExistingTower.innerTowerScene, true, i, j)
         }
+
+        const end = this.terrain.pathTiles[this.terrain.pathTiles.length - 1]
+        if (i === end[0] && j === end[1] && this.sceneParent) {
+            this.metaScene.switchToScene(this.sceneParent, false, i, j)
+        }
     }
 
     onEnemyReachedEnd(callback) {

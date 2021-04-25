@@ -1,4 +1,4 @@
-import { TowerConfig, TOWER_CONFIGS } from "../config";
+import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG } from "../config";
 import { PlayerInfo } from "../playerInfo";
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
 import { MetaScene } from "./MetaScene";
@@ -192,7 +192,15 @@ class BuyTowerIcon {
         let towerTop = hudScene.add.sprite(0, 0, 'towertops', config.spriteTop);
         towerTop.setTint(config.tintTop);
 
-        let towerRange = hudScene.add.circle(0, 0, config.range(1), 0xeeeeff, 0x40);
+        let towerRange = hudScene.add.circle(
+            0, 0, config.range(1),
+            RANGE_INDICATOR_CONFIG.colour,
+            RANGE_INDICATOR_CONFIG.alpha
+        );
+        towerRange.setStrokeStyle(
+            RANGE_INDICATOR_CONFIG.edgeWidth,
+            RANGE_INDICATOR_CONFIG.edgeColour
+        );
         towerRange.setVisible(false);
 
         var sprites = [
