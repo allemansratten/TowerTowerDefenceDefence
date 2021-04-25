@@ -23,7 +23,7 @@ export class Enemy extends Phaser.GameObjects.Image {
     static stats = EnemyConfig.Basic;
 
     follower: any
-    hp: integer = Enemy.stats.get('hp');
+    hp: integer = Enemy.stats.hp;
     yOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     xOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     scene: TDScene // type assertion
@@ -31,7 +31,7 @@ export class Enemy extends Phaser.GameObjects.Image {
 
 
     constructor(scene) {
-        super(scene, 0, 0, 'enemy1');
+        super(scene, 0, 0, Enemy.stats.spriteName);
 
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
     }
@@ -51,7 +51,7 @@ export class Enemy extends Phaser.GameObjects.Image {
             this.setActive(false);
             this.setVisible(false);
             if (this.scene.sceneLevel === 0)
-                PlayerInfo.hp -= Enemy.stats.get('damage');
+                PlayerInfo.hp -= Enemy.stats.damage;
         }
     }
 
@@ -59,8 +59,8 @@ export class Enemy extends Phaser.GameObjects.Image {
         // set the t parameter at the start of the path
         this.follower.t = 0;
 
-        this.hp = Enemy.stats.get('hp');
-        this.speed = Enemy.stats.get('speed');
+        this.hp = Enemy.stats.hp;
+        this.speed = Enemy.stats.speed;
 
         // get x and y of the given t point
         this.scene.terrain.path.getPoint(this.follower.t, this.follower.vec);
@@ -70,7 +70,7 @@ export class Enemy extends Phaser.GameObjects.Image {
     }
 
     receiveDamage(damage) {
-        this.hp -= damage - Enemy.stats.get('armor');
+        this.hp -= damage - Enemy.stats.armor;
 
         // if hp drops below 0 we deactivate this enemy
         if (this.hp <= 0) {
@@ -83,7 +83,7 @@ export class Enemy extends Phaser.GameObjects.Image {
     onDeath() {
         if (this.scene.sceneLevel === 0) {  // Add gold in base layer only
             this.scene.waveManager.deadEnemies++;
-            PlayerInfo.money += Enemy.stats.get('money');
+            PlayerInfo.money += Enemy.stats.money;
         }
     }
 }
