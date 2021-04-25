@@ -1,10 +1,11 @@
 import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG } from "../config";
 import { PlayerInfo } from "../playerInfo";
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
+import { Tower } from "../towers";
 import { MetaScene } from "./MetaScene";
 import { TDScene, TD_SCENE_HEIGHT, TD_SCENE_WIDTH } from "./tdScene";
 
-const HUD_BG_COLOR = 0xffaa7d
+const HUD_BG_COLOR = 0xff8a6d  //0xffaa7d
 export const HUD_WIDTH = TILE_SIZE * 3
 
 export class HudScene extends Phaser.Scene {
@@ -15,6 +16,7 @@ export class HudScene extends Phaser.Scene {
     hpRedness: number // 0 to 1
     depthText: Phaser.GameObjects.Text
     goUpText: Phaser.GameObjects.Text
+    descriptionText: Phaser.GameObjects.Text
 
     metaScene: MetaScene;
     backToRootSceneButton: Phaser.GameObjects.Text;
@@ -63,6 +65,9 @@ export class HudScene extends Phaser.Scene {
         this.goUpText = this.add.text(xRight, 50, "Go up to:", { fontSize: '20px' });
         this.goUpText.setOrigin(0.5)
         this.goUpText.setVisible(false)
+
+        this.descriptionText = this.add.text(5, 300, "Description", { fontSize: '10pt' });
+        this.descriptionText.setWordWrapWidth(HUD_WIDTH - 10, false);
 
         this.buyTowerIcons = [];
         let towerTypeIndex = 0;
@@ -165,6 +170,27 @@ export class HudScene extends Phaser.Scene {
 
         }
     }
+
+    setDescription(config: TowerConfig, tower: Tower = null) {
+        let level = 0
+        let text = ""
+
+        if (tower === null) {
+            text = `${config.name}: ${config.description}\n`
+            text += `Damage: ${config.damage(0)}.\n`
+            text += `Fire rate: ${config.firerate(0)}.\n`
+
+            this.descriptionText.setText(text)
+        } else {
+            text = `Level ${tower.level} ${config.name} tower.\n`
+            level = tower.level
+        }
+
+        text += `Damage: ${config.damage(level)}.\n`
+        text += `Fire rate: ${config.firerate(level)}.\n`
+
+        this.descriptionText.setText(text)
+    }
 }
 
 class BuyTowerIcon {
@@ -228,6 +254,9 @@ class BuyTowerIcon {
         // this.input.on('pointerdown', () => console.log("foobar"), this);
         hudScene.input.setDraggable(this.spriteContainer)
 
+        this.spriteContainer.on('pointerover', () => {
+            this.hudScene.setDescription(config)
+        });
 
         hudScene.input.on('dragstart', (pointer, gameObject) => {
             if (gameObject != this.spriteContainer) { return; }

@@ -109,6 +109,7 @@ export type TowerConfig = {
     tintBase: integer
     tintMid: integer
     tintTop: integer
+    description: string,
 }
 
 export const Basic: TowerConfig = {
@@ -124,6 +125,7 @@ export const Basic: TowerConfig = {
     'tintBase': 0xffffff,
     'tintMid': 0xffffff,
     'tintTop': 0xaaaaff,
+    'description': "Nothing fancy. Damage and fire rate grow with level.",
 }
 
 
@@ -140,6 +142,7 @@ export const Sniper: TowerConfig = {
     'tintBase': 0xbbffbb,
     'tintMid': 0xffffff,
     'tintTop': 0x00ff00,
+    'description': "Long range, but fires slowly. Damage and range grow with level.",
 }
 
 
@@ -156,6 +159,7 @@ export const Multishot: TowerConfig = {
     'tintBase': 0xffffff,
     'tintMid': 0xffffff,
     'tintTop': 0xff0000,
+    'description': "Can shoot at multiple enemies at once. Damage and fire rate grow with level.",
 }
 
 export const TOWER_CONFIGS = [Basic, Multishot, Sniper]
