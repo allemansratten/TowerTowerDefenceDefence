@@ -72,7 +72,20 @@ export const Armoured: EnemyConfig = {
     'tint': 0xaaaaff,
 }
 
-export const ENEMY_CONFIGS = [Weak, Fat, Armoured]
+export const Fast: EnemyConfig = {
+    'name': 'Fast',
+    'class': enem.FastEnemy,
+    'hp': 10,
+    'speed': 1 / 10000,
+    'money': 2,
+    'damage': 1,
+    'armor': 0,
+    'danger': 20,
+    'spriteName': 'enemy1',
+    'tint': 0xff00aa,
+}
+
+export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast]
 
 
 export type TowerConfig = {
