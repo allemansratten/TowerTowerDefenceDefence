@@ -1,21 +1,9 @@
-// import { Enemy } from "./enemy";
 // import { GridPosition } from "./terrain";
 
 import { TDScene } from "./scenes/tdScene";
 import { Terrain, TileType, TILE_SIZE } from "./terrain";
 import { TowerConfig } from "./config";
 
-// export abstract class Tower {
-//     pos: GridPosition
-
-//     abstract step(enemies: Array<Enemy>): void;
-// }
-
-// export class BasicTower extends Tower {
-//     step(enemies: Array<Enemy>) {
-//         // shoot enemies if applicable
-//     }
-// }
 
 // todo: move to scene?
 function getEnemy(x, y, range, enemies) {
@@ -36,7 +24,7 @@ export class Tower extends Phaser.GameObjects.Container {
 
     scene: TDScene
 
-    towerTurret: TowerTurret
+    towerTurret: _TowerTurret
     towerMid: Phaser.GameObjects.Sprite
     towerBase: Phaser.GameObjects.Sprite
 
@@ -45,10 +33,11 @@ export class Tower extends Phaser.GameObjects.Container {
     constructor(towerScene: TDScene) {
         super(towerScene, 0, 0)
         this.scene = towerScene;
-        this.towerTurret = new TowerTurret(towerScene, this.config);
     }
 
-    public make(i: number, j: number, innerTowerScene: TDScene) {
+    public make(i: number, j: number, innerTowerScene: TDScene, towerClassName) {
+        this.towerTurret = new towerClassName(this.scene, this.config);
+
         this.towerTurret.setActive(true);
         this.towerTurret.setVisible(true);
 
@@ -76,20 +65,17 @@ export class Tower extends Phaser.GameObjects.Container {
 }
 
 
-export class TowerTurret extends Phaser.GameObjects.Image {
+abstract class _TowerTurret extends Phaser.GameObjects.Image {
     nextTic: number
     x: number
     y: number
-    config: any
+    abstract config: any
 
     scene: TDScene
-    bulletDamage: integer;
 
-    constructor(scene, config) {
-        super(scene, 0, 0, config.spriteTop);
-        this.setTint(config.tintTop);
-        this.bulletDamage = config.damage;
-        this.config = config;
+    constructor(scene: TDScene, sprite: string, tint: number) {
+        super(scene, 0, 0, sprite);
+        this.setTint(tint);
         this.nextTic = 0;
     }
 
@@ -99,10 +85,10 @@ export class TowerTurret extends Phaser.GameObjects.Image {
     }
 
     fire() {
-        var enemy = getEnemy(this.x, this.y, 200, this.scene.allEnemies);
+        var enemy = getEnemy(this.x, this.y, this.config.range, this.scene.allEnemies);
         if (enemy) {
             var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-            this.scene.addBullet(this.x, this.y, angle, this.bulletDamage);
+            this.scene.addBullet(this.x, this.y, angle, this.config.damage);
             this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
             return true;
         }
@@ -116,5 +102,14 @@ export class TowerTurret extends Phaser.GameObjects.Image {
             else
                 this.nextTic = time + 50;
         }
+    }
+}
+
+export class BasicTurret extends _TowerTurret {
+    config: any
+
+    constructor(scene: TDScene, config) {
+        super(scene, config.spriteTop, config.tintTop);
+        this.config = config;
     }
 }
