@@ -1,3 +1,4 @@
+import { PlayerInfo } from "./playerInfo"
 import { TDScene } from "./scenes/tdScene"
 
 export const RADIUS = 10
@@ -64,7 +65,9 @@ export class Bullet extends Phaser.GameObjects.Container {
         this.emitter.explode(10, this.bulletImage.x, this.bulletImage.y)
     }
 
-    update(time, delta) {
+    update(_, delta) {
+        delta *= PlayerInfo.timeScale;
+
         this.lifespan -= delta;
 
         this.bulletImage.x += this.dx * (this.speed * delta);

@@ -65,8 +65,11 @@ export class HudScene extends Phaser.Scene {
         this.parentScenesTexts = []
     }
 
+    lastTime: number = 0
+    public update(_, delta) {
+        delta *= PlayerInfo.timeScale;
+        this.lastTime += delta;
 
-    public update(time, delta) {
         this.moneyText.setText('Money: ' + PlayerInfo.money)
         this.hpText.setText('HP: ' + PlayerInfo.hp)
 
@@ -79,7 +82,7 @@ export class HudScene extends Phaser.Scene {
         this.updateInfoBasedOnActiveScene();
 
         for (const icon of this.buyTowerIcons) {
-            icon.update(time, delta)
+            icon.update(this.lastTime, delta)
         }
     }
 
