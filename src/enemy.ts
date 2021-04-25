@@ -1,40 +1,27 @@
 // import { GridPosition, Position, Terrain } from "./terrain";
-
 import { TDScene } from "./scenes/tdScene";
 import { PlayerInfo } from "./player" ;
 import { EnemyConfig } from "./config";
 
-// export abstract class Enemy {
-//     gridPos: GridPosition  // position in grid coordinates
-//     pos: Position // fine position - can be within tiles
 
-//     // move enemy, return true if end reached
-//     abstract step(terrain: Terrain): boolean;
-// }
-
-// export class BasicEnemy extends Enemy {
-//     step(terrain: Terrain): boolean {
-//         return false
-//     }
-// }
-
-
-export class Enemy extends Phaser.GameObjects.Image {
-    static stats = EnemyConfig.Basic;
+abstract class EnemyBase extends Phaser.GameObjects.Image {
+    stats: any;  // { [key:string]: any }
 
     follower: any
-    hp: integer = Enemy.stats.hp;
+    hp: integer
     yOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     xOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     scene: TDScene // type assertion
     speed: number;
 
 
-    constructor(scene) {
-        super(scene, 0, 0, Enemy.stats.spriteName);
+    constructor(scene: TDScene, stats) {
+        super(scene, 0, 0, stats.spriteName);
 
+        this.stats = stats;
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
     }
+
     update(time, delta) {
         // move the t point along the path, 0 is the start and 1 is the end
         this.follower.t += this.speed * delta;
@@ -51,16 +38,17 @@ export class Enemy extends Phaser.GameObjects.Image {
             this.setActive(false);
             this.setVisible(false);
             if (this.scene.sceneLevel === 0)
-                PlayerInfo.hp -= Enemy.stats.damage;
+                PlayerInfo.hp -= this.stats.damage;
         }
     }
 
-    startOnPath(speed, hp) {
+    startOnPath() {
         // set the t parameter at the start of the path
         this.follower.t = 0;
 
-        this.hp = Enemy.stats.hp;
-        this.speed = Enemy.stats.speed;
+        this.hp = this.stats.hp;
+        this.speed = this.stats.speed;
+        this.tint = this.stats.tint;
 
         // get x and y of the given t point
         this.scene.terrain.path.getPoint(this.follower.t, this.follower.vec);
@@ -69,8 +57,8 @@ export class Enemy extends Phaser.GameObjects.Image {
         this.setPosition(this.follower.vec.x, this.follower.vec.y);
     }
 
-    receiveDamage(damage) {
-        this.hp -= damage - Enemy.stats.armor;
+    receiveDamage(damage: integer) {
+        this.hp -= damage - this.stats.armor;
 
         // if hp drops below 0 we deactivate this enemy
         if (this.hp <= 0) {
@@ -80,14 +68,26 @@ export class Enemy extends Phaser.GameObjects.Image {
         }
     }
 
-    onDeath() {
+    onDeath() {  // override this for special on-death abilities
         if (this.scene.sceneLevel === 0) {  // Add gold in base layer only
             this.scene.waveManager.deadEnemies++;
-            PlayerInfo.money += Enemy.stats.money;
+            PlayerInfo.money += this.stats.money;
         }
     }
 }
 
-export class FatEnemy extends Enemy {
+export class BasicEnemy extends EnemyBase {
+    static stats = EnemyConfig.Basic
+
+    constructor(scene: TDScene) {
+        super(scene, BasicEnemy.stats)
+    }
+}
+
+export class FatEnemy extends EnemyBase {
     static stats = EnemyConfig.Fat
+
+    constructor(scene: TDScene) {
+        super(scene, FatEnemy.stats)
+    }
 }
