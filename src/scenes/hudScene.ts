@@ -268,10 +268,10 @@ class BuyTowerIcon {
         (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(this.towerConfig.tintTop);
     }
 
-    setShopIconTint(tint) {
-        (this.spriteContainer.list[0] as Phaser.GameObjects.Sprite).setTint(tint);
-        (this.spriteContainer.list[1] as Phaser.GameObjects.Sprite).setTint(tint);
-        // (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(tint);
+    setShopIconTint(tint: number) {
+        (this.spriteContainer.list[0] as Phaser.GameObjects.Sprite).setTint(tint & this.towerConfig.tintBase);
+        (this.spriteContainer.list[1] as Phaser.GameObjects.Sprite).setTint(tint & this.towerConfig.tintMid);
+        (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(tint & this.towerConfig.tintTop);
     }
 
     update(time, delta) {
@@ -282,7 +282,7 @@ class BuyTowerIcon {
             this.resetTint();
         } else {
             this.priceText.setTint(0xff0000);
-            this.setShopIconTint(0xff09090);
+            this.setShopIconTint(0x995555);
         }
     }
 }
