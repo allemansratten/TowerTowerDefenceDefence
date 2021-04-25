@@ -36,7 +36,7 @@ export class TDScene extends Phaser.Scene {
     private endHealthBar: HealthBar
 
     // happens when an enemy reaches the end
-    enemyEndCallback: () => void
+    enemyEndCallback: (number) => void
 
     constructor(config: TDSceneConfig, metaScene: MetaScene) {
         super({
