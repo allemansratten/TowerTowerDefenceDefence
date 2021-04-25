@@ -3,7 +3,7 @@
 import { TOWER_HEALTH_REGEN } from "./config";
 import { HealthBar } from "./healthBar";
 import { TDScene } from "./scenes/tdScene";
-import { Terrain, TileType, TILE_SIZE } from "./terrain";
+import { Terrain, TILE_SIZE } from "./terrain";
 import { TowerConfig } from "./config";
 
 
@@ -18,7 +18,6 @@ function getEnemy(x, y, range, enemies, numToGet) {
                 if (outEnemies.length === numToGet) {
                     return outEnemies
                 }
-                // return enemyUnits[i];
             }
         }
     }
@@ -29,7 +28,8 @@ function getEnemy(x, y, range, enemies, numToGet) {
 
 
 export class Tower extends Phaser.GameObjects.Container {
-    config: any = TowerConfig['Basic']
+    config: any
+    stats: any
 
     scene: TDScene
 
@@ -48,7 +48,9 @@ export class Tower extends Phaser.GameObjects.Container {
 
     public make(i: number, j: number, innerTowerScene: TDScene, towerClassName) {
         this.config = TowerConfig[towerClassName.name.replace('Turret', '')];
-        this.towerTurret = new towerClassName(this.scene, this.config);
+        this.stats = this.config;
+
+        this.towerTurret = new towerClassName(this.scene, this.config, this);
 
         this.towerTurret.setActive(true);
         this.towerTurret.setVisible(true);
@@ -79,7 +81,7 @@ export class Tower extends Phaser.GameObjects.Container {
 
     update(time, delta) {
         this.towerTurret.update(time, delta)
-        
+
         this.healthBar.health += TOWER_HEALTH_REGEN * delta
         this.healthBar.update(time, delta)
     }
@@ -90,12 +92,13 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     nextTic: number
     x: number
     y: number
-    abstract config: any
+    parent: Tower
 
     scene: TDScene
 
-    constructor(scene: TDScene, sprite: string, tint: number) {
+    constructor(scene: TDScene, sprite: string, tint: number, parent: Tower) {
         super(scene, 0, 0, 'towertops', sprite);
+        this.parent = parent;
         this.setTint(tint);
         this.nextTic = 0;
     }
@@ -106,10 +109,16 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     }
 
     fire() {
-        var enemy = getEnemy(this.x, this.y, this.config.range, this.scene.allEnemies, 1)[0];
+        var enemy = getEnemy(
+            this.x, this.y, this.parent.stats.range,
+             this.scene.allEnemies, 1
+        )[0];
         if (enemy) {
             var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-            this.scene.addBullet(this.x, this.y, angle, this.config.damage);
+            this.scene.addBullet(
+                this.x, this.y, angle,
+                this.parent.stats.damage
+            );
             this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
             return true;
         }
@@ -119,7 +128,7 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     update(time, delta) {
         if (time > this.nextTic) {
             if (this.fire())
-                this.nextTic = time + 1000;
+                this.nextTic = time + this.parent.stats.firerate;
             else
                 this.nextTic = time + 50;
         }
@@ -127,30 +136,26 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
 }
 
 export class BasicTurret extends _TowerTurret {
-    config: any
 
-    constructor(scene: TDScene, config) {
-        super(scene, config.spriteTop, config.tintTop);
-        this.config = config;
+    constructor(scene: TDScene, config, parent) {
+        super(scene, config.spriteTop, config.tintTop, parent);
     }
 }
 
 
 export class MultishotTurret extends _TowerTurret {
-    config: any
 
-    constructor(scene: TDScene, config) {
-        super(scene, config.spriteTop, config.tintTop);
-        this.config = config;
+    constructor(scene: TDScene, config, parent) {
+        super(scene, config.spriteTop, config.tintTop, parent);
     }
 
 
     fire() {
-        var enemies = getEnemy(this.x, this.y, this.config.range, this.scene.allEnemies, 3);
+        var enemies = getEnemy(this.x, this.y, this.parent.stats.range, this.scene.allEnemies, 3);
         if (enemies) {
             for(let enemy of enemies) {
                 var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-                this.scene.addBullet(this.x, this.y, angle, this.config.damage);
+                this.scene.addBullet(this.x, this.y, angle, this.parent.stats.damage);
                 this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
             }
             return true
