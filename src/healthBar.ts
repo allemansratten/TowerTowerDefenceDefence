@@ -2,6 +2,9 @@ import { TDScene } from "./scenes/tdScene"
 import { TILE_SIZE } from "./terrain"
 
 export class HealthBar extends Phaser.GameObjects.Container {
+    static HEALTH_COLOR = 0xf8ff36 //0xff4444
+    static HEALTH_LOSS_COLOR = 0x7d7d7d // 0x44ff44
+
     scene: TDScene
 
     private _health: number = 1  // 0 to 1
@@ -33,7 +36,7 @@ export class HealthBar extends Phaser.GameObjects.Container {
         this.slowHealthBar = this.scene.add.rectangle(
             0, 0,
             width, 4,
-            0xff4444
+            HealthBar.HEALTH_LOSS_COLOR,
         )
         this.add(this.slowHealthBar)
         
@@ -41,7 +44,7 @@ export class HealthBar extends Phaser.GameObjects.Container {
         this.healthBar = this.scene.add.rectangle(
             0, 0,
             width, 4,
-            0x44ff44
+            HealthBar.HEALTH_COLOR,
         )
         this.add(this.healthBar)
 

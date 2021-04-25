@@ -172,15 +172,11 @@ export class HudScene extends Phaser.Scene {
     }
 
     setDescription(config: TowerConfig, tower: Tower = null) {
-        let level = 0
+        let level = 1
         let text = ""
 
         if (tower === null) {
             text = `${config.name}: ${config.description}\n`
-            text += `Damage: ${config.damage(0)}.\n`
-            text += `Fire rate: ${config.firerate(0)}.\n`
-
-            this.descriptionText.setText(text)
         } else {
             text = `Level ${tower.level} ${config.name} tower.\n`
             level = tower.level
