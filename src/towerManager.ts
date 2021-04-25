@@ -6,6 +6,7 @@ export class TowerManager {
     scene: TDScene
     towerTypes: { [key:string]: any} = {
         'Basic': towers.BasicTurret,
+        'Multishot': towers.MultishotTurret,
     }
 
     constructor(scene: TDScene) {
