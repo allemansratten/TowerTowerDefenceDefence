@@ -7,6 +7,7 @@ import { Terrain, TILE_SIZE } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
 import { MetaScene } from "./MetaScene";
 import { HUD_WIDTH } from "./hudScene";
+import { UUID } from "../utils/guid";
 
 var BULLET_DAMAGE = 10;
 
@@ -24,23 +25,22 @@ export class TDScene extends Phaser.Scene {
     waveManager: WaveManager
     towerManager: TowerManager
 
-    sceneIndex: number
-    sceneIndexParent: number
+    sceneParent: TDScene;
     sceneLevel: number; // Level of recursion
+
 
     constructor(config: TDSceneConfig, metaScene: MetaScene) {
         super({
             active: false,
             visible: false,
-            key: `tdScene${config.sceneIndex}`,
+            key: `tdScene${UUID.uuidv4()}`,
         });
 
         this.terrain = config.terrain;
         this.metaScene = metaScene;
 
-        this.sceneIndex = config.sceneIndex;
-        this.sceneIndexParent = config.sceneIndexParent;
         this.sceneLevel = config.sceneLevel;
+        this.sceneParent = config.sceneParent;
     }
 
     public create() {
@@ -95,7 +95,7 @@ export class TDScene extends Phaser.Scene {
         this.waveManager.update(time, delta)
 
         if(this.frameNumber % 60 == 0) {
-            console.log(`Update ${this.sceneIndex} | e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneIndexParent}`)
+            console.log(`Update th: ${this.scene.key} e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneParent?.scene.key}`)
         }
     }
 
@@ -117,7 +117,7 @@ export class TDScene extends Phaser.Scene {
 
         let potentialExistingTower = this.terrain.tryGetExistingTower(i, j);
         if (potentialExistingTower){
-            this.metaScene.switchToScene(potentialExistingTower.innerTowerScene.sceneIndex)
+            this.metaScene.switchToScene(potentialExistingTower.innerTowerScene)
         }
     }
 }

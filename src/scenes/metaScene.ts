@@ -11,7 +11,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 export class MetaScene extends Phaser.Scene {
 
     public scenes: TDScene[]
-    public activeSceneIndex: number
+    public activeScene: TDScene
 
     constructor(){
         super(sceneConfig);
@@ -19,21 +19,18 @@ export class MetaScene extends Phaser.Scene {
     }
 
     public create() {
-        this.addScene();
+        this.activeScene = this.addScene();
         this.scenes[0].scene.setVisible(true);
-        this.activeSceneIndex = 0
-        this.scene.start("hudScene")
+        this.scene.start("hudScene");
     }
 
     // Creates new Scene, enables it, and sets it invisible
     public addScene(parentScene?: TDScene): TDScene {
-
-        let sceneIndexParent = parentScene?.sceneIndex ?? -1;
         let sceneLevel = (parentScene?.sceneLevel ?? -1) + 1 ;
 
         let sceneIndex = this.scenes.length;
         let newScene = new TDScene(
-            new TDSceneConfig(new Terrain(10, 8), sceneIndex, sceneLevel, sceneIndexParent),
+            new TDSceneConfig(new Terrain(10, 8), sceneLevel, parentScene),
             this);
 
         this.scene.add(
@@ -50,11 +47,11 @@ export class MetaScene extends Phaser.Scene {
 
 
     // makes current scene invisible, makes new scene visible; doesn't change activness
-    public switchToScene(switchToIndex: number) {
-        this.scenes[this.activeSceneIndex].setIsForeground(false);
-        this.scenes[switchToIndex].setIsForeground(true);
+    public switchToScene(switchToScene: TDScene) {
+        this.activeScene?.setIsForeground(false);
+        switchToScene.setIsForeground(true);
 
-        this.activeSceneIndex = switchToIndex;
+        this.activeScene = switchToScene;
     }
 
     update(time, delta) {
@@ -78,15 +75,15 @@ export class MetaScene extends Phaser.Scene {
     }
 
     getActiveScene() {
-        return this.scenes.length > 0 ? this.scenes[this.activeSceneIndex] : null;
+        return this.activeScene;
     }
 
     getParentScenesToRoot() {
         let parentScenes: TDScene[] = []
         let scene = this.getActiveScene();
 
-        while(scene && scene.sceneIndexParent > -1) {
-            let parent = this.scenes[scene.sceneIndexParent];
+        while(scene?.sceneParent) {
+            let parent = scene.sceneParent;
             parentScenes.push(parent);
             scene = parent;
         }

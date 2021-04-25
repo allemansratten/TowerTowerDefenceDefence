@@ -59,10 +59,6 @@ export class HudScene extends Phaser.Scene {
         this.updateInfoBasedOnActiveScene();
     }
 
-    public backToRootScene(sceneIndex: integer) {
-        this.metaScene.switchToScene(sceneIndex);
-    }
-
     updateInfoBasedOnActiveScene(){
         let activeScene = this.metaScene.getActiveScene();
         if (!activeScene) { return; }
@@ -82,7 +78,7 @@ export class HudScene extends Phaser.Scene {
             let sceneIndex = (parentScenes.length - 1) - i;
             let newButton = this.add.text(780, 50 + sceneIndex * 50, `GoLevel: ${sceneIndex}`, { fontSize: '20px' });
             newButton.setInteractive();
-            newButton.on('pointerdown', () => this.backToRootScene(sceneIndex), this)
+            newButton.on('pointerdown', () => this.metaScene.switchToScene(parentScenes[i]), this.metaScene)
             this.parentScenesTexts.push(
                 newButton
             )

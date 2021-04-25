@@ -1,17 +1,15 @@
 import { Terrain } from "../terrain";
+import { TDScene } from "./tdScene";
 
 export class TDSceneConfig {
     terrain: Terrain;
-    sceneIndex: number; // Current scene index
     sceneLevel: number; // Level of recursion 
-    sceneIndexParent: number // Scene index for the tower that created this scene
+    sceneParent: TDScene;
 
-
-    constructor(terrain: Terrain, sceneIndex: number, sceneLevel: number, sceneIndexParent: number){
+    constructor(terrain: Terrain, sceneLevel: number, sceneParent: TDScene){
         this.terrain = terrain;
 
-        this.sceneIndex = sceneIndex;
         this.sceneLevel = sceneLevel;
-        this.sceneIndexParent = sceneIndexParent;
+        this.sceneParent = sceneParent;
     }
 }
