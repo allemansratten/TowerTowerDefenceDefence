@@ -24,7 +24,7 @@ export class MetaScene extends Phaser.Scene {
         this.scenes[0].scene.setVisible(true);
         this.scene.start("hudScene");
 
-        this.mainSound = this.sound.add("main_music", {"loop": true});
+        this.mainSound = this.sound.add("main_music", {"loop": true, "volume": 0.1});
         this.mainSound.play();
     }
 
