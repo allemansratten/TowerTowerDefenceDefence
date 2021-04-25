@@ -26,6 +26,13 @@ export class MetaScene extends Phaser.Scene {
 
         this.mainSound = this.sound.add("main_music", {"loop": true, "volume": 0.1});
         this.mainSound.play();
+
+        this.anims.create({
+            key: 'enemy1_walk',
+            frames: this.anims.generateFrameNumbers('enemy1', { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
     }
 
     // Creates new Scene, enables it, and sets it invisible
@@ -73,7 +80,8 @@ export class MetaScene extends Phaser.Scene {
         // load the game assets
         this.load.setPath("../../assets/")
 
-        this.load.image('enemy1', 'enemy.png');
+        this.load.spritesheet('enemy1', 'enemy.png', { frameWidth: 48, frameHeight: 48 });
+        
         this.load.image('fatEnemy', 'chonk.png');
         this.load.image('bullet', 'bullet.png');
         this.load.spritesheet('tileset',
