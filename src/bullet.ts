@@ -28,8 +28,10 @@ export class Bullet extends Phaser.GameObjects.Container {
         this.bulletImage = this.scene.add.image(0, 0, 'bullet')
     }
 
-    fire(x, y, angle, damage) {
+    fire(x, y, angle, damage, towerRange, speedMod) {
         this.damage = damage;
+        this.speed = Phaser.Math.GetSpeed(towerRange * speedMod, 1);
+
 
         this.add(this.bulletImage)
 
@@ -48,7 +50,7 @@ export class Bullet extends Phaser.GameObjects.Container {
         this.dx = Math.cos(angle);
         this.dy = Math.sin(angle);
 
-        this.lifespan = 300;
+        this.lifespan = 500;
 
         this.emitter = this.particles.createEmitter({
             speed: 100,

@@ -48,6 +48,7 @@ export type TowerConfig = {
     damage: (integer) => number
     firerate: (integer) => number
     range: (integer) => number
+    bulletSpeedMod: number
     price: number
     spriteBase: integer
     spriteMid: integer
@@ -62,6 +63,7 @@ export const Basic: TowerConfig = {
     'damage': level => 10 * level,
     'firerate': level => 1000,
     'range': level => 150,
+    'bulletSpeedMod': 4,
     'price': 5,
     'spriteBase': 0,
     'spriteMid': 0,
@@ -71,11 +73,29 @@ export const Basic: TowerConfig = {
     'tintTop': 0xffffff,
 }
 
+
+export const Sniper = {
+    'name': "Sniper",
+    'damage': level => 20 * level,
+    'firerate': level => 4000,
+    'range': level => 500,
+    'bulletSpeedMod': 3.5,
+    'price': 20,
+    'spriteBase': 0,
+    'spriteMid': 0,
+    'spriteTop': 1,
+    'tintBase': 0xbbffbb,
+    'tintMid': 0xffffff,
+    'tintTop': 0x00ff00,
+}
+
+
 export const Multishot: TowerConfig = {
     'name': "Multishot",
     'damage': level => 5 * level,
     'firerate': level => 1000,
     'range': level => 100,
+    'bulletSpeedMod': 4,
     'price': 10,
     'spriteBase': 0,
     'spriteMid': 0,
@@ -85,4 +105,4 @@ export const Multishot: TowerConfig = {
     'tintTop': 0xff0000,
 }
 
-export const TOWER_CONFIGS = [Basic, Multishot]
+export const TOWER_CONFIGS = [Basic, Multishot, Sniper]

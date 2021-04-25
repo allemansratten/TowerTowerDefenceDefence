@@ -56,7 +56,7 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
         }
 
         if (this.scene.enemyEndCallback) {
-            this.scene.enemyEndCallback()
+            this.scene.enemyEndCallback(this.stats.damage)
         }
     }
 

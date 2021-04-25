@@ -1,14 +1,14 @@
-import { Basic, Multishot } from "./config";
+import * as cfg from "./config";
 import { PlayerInfo } from "./playerInfo";
 import { TDScene } from "./scenes/tdScene";
-import { TILE_SIZE } from "./terrain"
 import * as towers from "./towers";
 
 export class TowerManager {
     scene: TDScene
     towerTypes: { [key:string]: any} = {
-        'Basic': [towers.BasicTurret, Basic],
-        'Multishot': [towers.MultishotTurret, Multishot],
+        'Basic': [towers.BasicTurret, cfg.Basic],
+        'Multishot': [towers.MultishotTurret, cfg.Multishot],
+        'Sniper': [towers.SniperTurret, cfg.Sniper],
     }
 
     constructor(scene: TDScene) {

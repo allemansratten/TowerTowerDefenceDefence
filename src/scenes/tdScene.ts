@@ -36,7 +36,7 @@ export class TDScene extends Phaser.Scene {
     private endHealthBar: HealthBar
 
     // happens when an enemy reaches the end
-    enemyEndCallback: () => void
+    enemyEndCallback: (number) => void
 
     constructor(config: TDSceneConfig, metaScene: MetaScene) {
         super({
@@ -146,7 +146,7 @@ export class TDScene extends Phaser.Scene {
     frameNumber = 0;
     update(_, delta) {
         delta *= PlayerInfo.timeScale;
-        
+
         this.frameNumber++;
         this.waveManager.update(delta)
 
@@ -159,10 +159,10 @@ export class TDScene extends Phaser.Scene {
         }
     }
 
-    addBullet(x, y, angle, damage) {
+    addBullet(x, y, angle, damage, range, bulletSpeedMod) {
         var bullet = this.bullets.get();
         if (bullet) {
-            bullet.fire(x, y, angle, damage);
+            bullet.fire(x, y, angle, damage, range, bulletSpeedMod);
         }
     }
 
