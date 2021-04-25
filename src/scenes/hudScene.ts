@@ -1,4 +1,4 @@
-import { TowerConfig } from "../config";
+import { TowerConfig, TOWER_CONFIGS } from "../config";
 import { PlayerInfo } from "../playerInfo";
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
 import { MetaScene } from "./MetaScene";
@@ -55,9 +55,8 @@ export class HudScene extends Phaser.Scene {
 
         this.buyTowerIcons = [];
         let towerTypeIndex = 0;
-        for (let towerName in TowerConfig) {
-            let towerConfig = TowerConfig[towerName]
-            this.buyTowerIcons.push(new BuyTowerIcon(this, w / 2, 110 + 70 * towerTypeIndex, towerName, towerConfig))
+        for (let towerConfig of TOWER_CONFIGS) {
+            this.buyTowerIcons.push(new BuyTowerIcon(this, w / 2, 110 + 70 * towerTypeIndex, towerConfig))
             towerTypeIndex++;
         }
 
@@ -124,7 +123,7 @@ export class HudScene extends Phaser.Scene {
 
 class BuyTowerIcon {
     towerName: string
-    towerConfig: any
+    towerConfig: TowerConfig
 
     spriteContainer: Phaser.GameObjects.Container
     priceText: Phaser.GameObjects.Text
@@ -133,11 +132,11 @@ class BuyTowerIcon {
     origX: number
     origY: number
 
-    constructor(hudScene: HudScene, x, y, towerName, config) {
+    constructor(hudScene: HudScene, x, y, config) {
         this.hudScene = hudScene
         this.origX = x
         this.origY = y
-        this.towerName = towerName;
+        this.towerName = config.name
         this.towerConfig = config
 
         let towerBase = hudScene.add.sprite(0, 0, 'towerbases', config.spriteBase);
@@ -157,7 +156,7 @@ class BuyTowerIcon {
 
         const pad = 3
         this.priceText = hudScene.add.text(
-            x + 15, y, this.towerConfig.price,
+            x + 15, y, "" + this.towerConfig.price,
             {
                 fontSize: "20px",
                 color: "white",
