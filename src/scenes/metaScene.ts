@@ -113,4 +113,14 @@ export class MetaScene extends Phaser.Scene {
 
         return parentScenes;
     }
+
+    getRootTDScene() {
+        let scene = this.getActiveScene();
+
+        while (scene?.sceneParent) {
+            scene = scene.sceneParent;
+        }
+
+        return scene
+    }
 }
