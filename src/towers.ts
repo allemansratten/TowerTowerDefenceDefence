@@ -1,5 +1,7 @@
 // import { GridPosition } from "./terrain";
 
+import { TOWER_HEALTH_REGEN } from "./config";
+import { HealthBar } from "./healthBar";
 import { TDScene } from "./scenes/tdScene";
 import { Terrain, TileType, TILE_SIZE } from "./terrain";
 import { TowerConfig } from "./config";
@@ -34,11 +36,13 @@ export class Tower extends Phaser.GameObjects.Container {
     towerTurret: _TowerTurret
     towerMid: Phaser.GameObjects.Sprite
     towerBase: Phaser.GameObjects.Sprite
+    healthBar: HealthBar
 
     public innerTowerScene: TDScene
 
     constructor(towerScene: TDScene) {
         super(towerScene, 0, 0)
+        this.healthBar = new HealthBar(towerScene)
         this.scene = towerScene;
     }
 
@@ -64,11 +68,20 @@ export class Tower extends Phaser.GameObjects.Container {
 
         this.add(this.towerTurret);
 
-        this.innerTowerScene = innerTowerScene;
+        this.healthBar.make(xCoord, yCoord + TILE_SIZE / 2 - 8, TILE_SIZE - 14)
+        this.add(this.healthBar)
+
+        this.innerTowerScene = innerTowerScene
+        this.innerTowerScene.onEnemyReachedEnd(() => {
+            this.healthBar.health -= 0.2 // todo systematically
+        })
     }
 
     update(time, delta) {
         this.towerTurret.update(time, delta)
+        
+        this.healthBar.health += TOWER_HEALTH_REGEN * delta
+        this.healthBar.update(time, delta)
     }
 }
 
@@ -105,7 +118,7 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
 
     update(time, delta) {
         if (time > this.nextTic) {
-            if(this.fire())
+            if (this.fire())
                 this.nextTic = time + 1000;
             else
                 this.nextTic = time + 50;

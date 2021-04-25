@@ -1,3 +1,9 @@
+// enemy damage * DAMAGE_TO_TOWER_HEALTH_COEF = how much health tower loses
+// (tower health is from 0 to 1)
+export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.2
+
+export const TOWER_HEALTH_REGEN = 0.00001 * 2
+
 export class EnemyConfig {
     static Basic: { [key:string]: any } = {
         'hp': 20,
@@ -50,6 +56,4 @@ export class TowerConfig {
         'tintMid': 0x0000ff,
         'tintTop': 0xff0000,
     }
-
-
 }

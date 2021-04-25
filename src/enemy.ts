@@ -1,6 +1,6 @@
 // import { GridPosition, Position, Terrain } from "./terrain";
 import { TDScene } from "./scenes/tdScene";
-import { PlayerInfo } from "./player" ;
+import { PlayerInfo } from "./player";
 import { EnemyConfig } from "./config";
 
 
@@ -39,6 +39,10 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
             this.setVisible(false);
             if (this.scene.sceneLevel === 0)
                 PlayerInfo.hp -= this.stats.damage;
+
+            if (this.scene.enemyEndCallback) {
+                this.scene.enemyEndCallback()
+            }
         }
     }
 
