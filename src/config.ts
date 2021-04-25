@@ -17,8 +17,8 @@ export class EnemyConfig {
         'damage': 1,
         'armor': 0,
         'danger': 30,
-        'spriteName': 'enemy1',
-        'tint': 0xaaaaff,
+        'spriteName': 'fatEnemy',
+        'tint': 0xffffff,
     }
 
 
@@ -33,6 +33,9 @@ export class TowerConfig {
         'spriteBase': 'towerbase',
         'spriteMid': 'towermid',
         'spriteTop': 'towertop0',
+        'baseTint': 0xffffff,
+        'midTint': 0xffffff,
+        'topTint': 0xffffff,
     }
 
 

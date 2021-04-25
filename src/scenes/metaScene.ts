@@ -67,6 +67,7 @@ export class MetaScene extends Phaser.Scene {
         this.load.setPath("../../assets/")
 
         this.load.image('enemy1', 'enemy.png');
+        this.load.image('fatEnemy', 'chonk.png');
         this.load.image('bullet', 'bullet.png');
         this.load.image('towertop0', 'towertop0.png');
         this.load.image('towertop1', 'towertop1.png');
@@ -78,7 +79,7 @@ export class MetaScene extends Phaser.Scene {
         );
         this.load.image('particle_red', 'particle_red.png');
 
-        this.load.audio("main_music", "gamejam_LD48.ogg") 
+        this.load.audio("main_music", "gamejam_LD48.ogg")
     }
 
     getActiveScene() {
