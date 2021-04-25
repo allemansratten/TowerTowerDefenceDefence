@@ -24,7 +24,7 @@ export const WaveConfig = {
 
     // ------------------- inner -----------------------
     // How much danger per second is generatee in inner depths?
-    dangerPerSec: (level) => level * 5,
+    dangerPerSec: (level) => 5+ level*3,
 }
 
 export type EnemyConfig = {
@@ -56,12 +56,12 @@ export const Weak: EnemyConfig = {
 export const Fat: EnemyConfig = {
     'name': 'Fat',
     'class': enem.FatEnemy,
-    'hp': 50,
+    'hp': 70,
     'speed': 1 / 40000,
     'money': 2,
     'damage': 1,
     'armor': 0,
-    'danger': 30,
+    'danger': 120,
     // 'spriteName': 'fatEnemy',
     'spriteName': 'enemy1',
     'tint': 0x0000ff,
@@ -70,12 +70,12 @@ export const Fat: EnemyConfig = {
 export const Armoured: EnemyConfig = {
     'name': 'Armoured',
     'class': enem.ArmouredEnemy,
-    'hp': 20,
+    'hp': 30,
     'speed': 1 / 30000,
     'money': 2,
     'damage': 1,
     'armor': 2,
-    'danger': 30,
+    'danger': 80,
     'spriteName': 'enemy1',
     'tint': 0xaaaaff,
 }
@@ -83,12 +83,12 @@ export const Armoured: EnemyConfig = {
 export const Fast: EnemyConfig = {
     'name': 'Fast',
     'class': enem.FastEnemy,
-    'hp': 10,
+    'hp': 20,
     'speed': 1 / 10000,
-    'money': 2,
+    'money': 1,
     'damage': 1,
     'armor': 0,
-    'danger': 20,
+    'danger': 40,
     'spriteName': 'enemy1',
     'tint': 0xff00aa,
 }
@@ -113,7 +113,7 @@ export type TowerConfig = {
 
 export const Basic: TowerConfig = {
     'name': "Basic",
-    'damage': level => 3 + 2 * level,
+    'damage': level => 5 + 2 * level,
     'firerate': level => Math.max( 1500 - 50 * level, 1000),
     'range': level => 165,
     'bulletSpeedMod': 4,
@@ -145,9 +145,9 @@ export const Sniper: TowerConfig = {
 
 export const Multishot: TowerConfig = {
     'name': "Multishot",
-    'damage': level => 2 + level,
+    'damage': level => 6 + level,
     'firerate': level => Math.max(1300 - 50*level, 1000),
-    'range': level => 80,
+    'range': level => 90,
     'bulletSpeedMod': 4,
     'price': 10,
     'spriteBase': 0,

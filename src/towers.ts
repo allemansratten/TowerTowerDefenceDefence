@@ -24,7 +24,7 @@ function getEnemy(x, y, range, enemies, numToGet): EnemyBase[] {
 
     if (outEnemies.length > 0) {
         outEnemies.sort((a, b) => b.follower.t - a.follower.t)
-        outEnemies.length = numToGet
+        outEnemies.length = Math.min(numToGet, outEnemies.length)
         return outEnemies
     }
     return null
@@ -209,8 +209,9 @@ export class MultishotTurret extends _TowerTurret {
 
 
     fire() {
-        var enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, 3);
-        if (enemies) {
+        let enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, 3);
+        
+        if (enemies && enemies.length > 0) {
             for (let enemy of enemies) {
                 var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
                 this.scene.addBullet(

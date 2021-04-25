@@ -46,6 +46,10 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         if (this.follower.t >= 1) {
             this.reachEnd()
         }
+
+        this.alpha = 1
+        this.angle = 0
+        this.scale = 1
     }
 
     reachEnd() {
@@ -84,10 +88,6 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
             key: 'enemy1_walk',
             frameRate: Math.min(60, this.stats.speed * 40000 * 15)
         });
-
-        this.alpha = 1
-        this.angle = 0
-        this.scale = 1
     }
 
     receiveDamage(damage: integer) {
