@@ -12,6 +12,7 @@ export class MetaScene extends Phaser.Scene {
 
     public scenes: TDScene[]
     public activeScene: TDScene
+    mainSound: Phaser.Sound.BaseSound;
 
     constructor(){
         super(sceneConfig);
@@ -22,6 +23,9 @@ export class MetaScene extends Phaser.Scene {
         this.activeScene = this.addScene();
         this.scenes[0].scene.setVisible(true);
         this.scene.start("hudScene");
+
+        this.mainSound = this.sound.add("main_music", {"loop": true});
+        this.mainSound.play();
     }
 
     // Creates new Scene, enables it, and sets it invisible
@@ -52,6 +56,7 @@ export class MetaScene extends Phaser.Scene {
         switchToScene.setIsForeground(true);
 
         this.activeScene = switchToScene;
+        this.sound.setRate(1/(Math.pow(1.25, switchToScene.sceneLevel)))
     }
 
     update(time, delta) {
@@ -72,6 +77,8 @@ export class MetaScene extends Phaser.Scene {
             { frameWidth: 64, frameHeight: 64 }
         );
         this.load.image('particle_red', 'particle_red.png');
+
+        this.load.audio("main_music", "gamejam_LD48.ogg") 
     }
 
     getActiveScene() {
