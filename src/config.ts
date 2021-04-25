@@ -34,7 +34,7 @@ export class TowerConfig {
         'spriteMid': 0,
         'spriteTop': 0,
         'tintBase': 0xffffff,
-        'tintMid': 0xffffff,
+        'tintMid': 0x0000ff,
         'tintTop': 0xffffff,
     }
 
@@ -47,7 +47,7 @@ export class TowerConfig {
         'spriteMid': 0,
         'spriteTop': 2,
         'tintBase': 0xffffff,
-        'tintMid': 0xffffff,
+        'tintMid': 0x0000ff,
         'tintTop': 0xff0000,
     }
 
