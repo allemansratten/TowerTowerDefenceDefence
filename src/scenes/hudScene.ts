@@ -287,5 +287,12 @@ class BuyTowerIcon {
     update(time, delta) {
         // Uncomment to prevent negative money:
         // this.hudScene.input.setDraggable(this.spriteContainer, PlayerInfo.money >= this.towerConfig.price)
+        if (PlayerInfo.money > this.towerConfig.price) {
+            this.priceText.setTint(0x00ff00);
+            this.resetTint;
+        } else {
+            this.priceText.setTint(0xff0000);
+            this.setShopIconTint(0xff0000);
+        }
     }
 }
