@@ -21,6 +21,8 @@ export class HudScene extends Phaser.Scene {
 
     lastActiveScene: TDScene
     parentScenesTexts: Phaser.GameObjects.Image[]
+    slowSpeedText: Phaser.GameObjects.Text;
+    fastSpeedText: Phaser.GameObjects.Text;
 
     constructor(metaScene: MetaScene) {
         super({
@@ -59,6 +61,13 @@ export class HudScene extends Phaser.Scene {
             this.buyTowerIcons.push(new BuyTowerIcon(this, w / 2, 110 + 70 * towerTypeIndex, towerConfig))
             towerTypeIndex++;
         }
+
+        this.slowSpeedText = this.add.text(10, 450, "Slow ", { fontSize: '20px' });
+        this.fastSpeedText = this.add.text(10, 475, "Fast ", { fontSize: '20px' });
+        this.slowSpeedText.setInteractive()
+        this.fastSpeedText.setInteractive()
+        this.slowSpeedText.on('pointerdown', () => PlayerInfo.timeScale = 1, null)
+        this.fastSpeedText.on('pointerdown', () => PlayerInfo.timeScale = 4, null)
 
 
         this.scene.bringToTop('hudScene');
