@@ -53,7 +53,7 @@ export class Bullet extends Phaser.GameObjects.Container {
             speed: 100,
             scale: { start: 0.3, end: 0 },
             blendMode: 'ADD',
-            lifespan: 300,
+            lifespan: 100,
         });
         this.emitter.startFollow(this.bulletImage);
     }
@@ -75,6 +75,7 @@ export class Bullet extends Phaser.GameObjects.Container {
         if (this.lifespan <= 0) {
             this.setActive(false);
             this.setVisible(false);
+            this.particles.destroy(); // disable emittor (also could explode it)
         }
     }
 }
