@@ -1,5 +1,5 @@
 import { TowerConfig } from "../config";
-import { PlayerInfo } from "../player";
+import { PlayerInfo } from "../playerInfo";
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
 import { MetaScene } from "./MetaScene";
 import { TDScene, TD_SCENE_HEIGHT, TD_SCENE_WIDTH } from "./tdScene";
@@ -60,7 +60,7 @@ export class HudScene extends Phaser.Scene {
             this.buyTowerIcons.push(new BuyTowerIcon(this, w / 2, 110 + 70 * towerTypeIndex, towerName, towerConfig))
             towerTypeIndex++;
         }
-    
+
 
         this.scene.bringToTop('hudScene');
         this.parentScenesTexts = []
@@ -78,6 +78,10 @@ export class HudScene extends Phaser.Scene {
         this.hpRedness = Math.max(0, this.hpRedness - delta / 1000 / secsToWhite)
 
         this.updateInfoBasedOnActiveScene();
+
+        for (const icon of this.buyTowerIcons) {
+            icon.update(time, delta)
+        }
     }
 
     updateInfoBasedOnActiveScene() {
@@ -123,12 +127,21 @@ class BuyTowerIcon {
     towerConfig: any
 
     spriteContainer: Phaser.GameObjects.Container
+    priceText: Phaser.GameObjects.Text
+    hudScene: HudScene
+
     origX: number
     origY: number
 
     constructor(hudScene: HudScene, x, y, towerName, config) {
+        this.hudScene = hudScene
+        this.origX = x
+        this.origY = y
+        this.towerName = towerName;
+        this.towerConfig = config
+
         let towerBase = hudScene.add.sprite(0, 0, 'towerbases', config.spriteBase);
-        towerBase.setTint(config.tintBase); 
+        towerBase.setTint(config.tintBase);
         let towerMid = hudScene.add.sprite(0, 0, 'towermids', config.spriteMid);
         towerMid.setTint(config.tintMid);
         let towerTop = hudScene.add.sprite(0, 0, 'towertops', config.spriteTop);
@@ -142,19 +155,25 @@ class BuyTowerIcon {
         this.spriteContainer = hudScene.add.container(x, y, sprites)
         this.spriteContainer.getAll()
 
-        this.towerName = towerName;
-        this.towerConfig = config
-
-        this.origX = x
-        this.origY = y
+        const pad = 3
+        this.priceText = hudScene.add.text(
+            x + 15, y, this.towerConfig.price,
+            {
+                fontSize: "20px",
+                color: "white",
+                backgroundColor: "black",
+                padding: { left: pad, right: pad, top: pad, bottom: pad }
+            }
+        )
 
         this.spriteContainer.setSize(TILE_SIZE, TILE_SIZE);
         this.spriteContainer.setInteractive()
         // this.input.on('pointerdown', () => console.log("foobar"), this);
-        hudScene.input.setDraggable(this.spriteContainer);
+        hudScene.input.setDraggable(this.spriteContainer)
 
         this.spriteContainer.on('pointerover', () => {
-            if (PlayerInfo.money < 10) {
+            if (PlayerInfo.money < config.price) {
+                // cannot afford
                 this.spriteContainer.list.forEach((sprite: Phaser.GameObjects.Sprite) => {
                     sprite.setTint(0xff0000);
                 });
@@ -168,7 +187,7 @@ class BuyTowerIcon {
         hudScene.input.on('dragstart', function (pointer, gameObject) {
             if (gameObject != this.spriteContainer) { return; }
 
-            gameObject.list.forEach((sprite:Phaser.GameObjects.Sprite) => {
+            gameObject.list.forEach((sprite: Phaser.GameObjects.Sprite) => {
             });
         }, this);
         hudScene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
@@ -180,8 +199,8 @@ class BuyTowerIcon {
         }, this);
         hudScene.input.on('dragend', function (pointer, gameObject) {
             if (gameObject != this.spriteContainer) { return; }
-            
-            gameObject.list.forEach((sprite:Phaser.GameObjects.Sprite) => {
+
+            gameObject.list.forEach((sprite: Phaser.GameObjects.Sprite) => {
             });
 
             const scene = hudScene.metaScene.getActiveScene()
@@ -192,9 +211,14 @@ class BuyTowerIcon {
         }, this);
     }
 
-    resetTint(){
+    resetTint() {
         (this.spriteContainer.list[0] as Phaser.GameObjects.Sprite).setTint(this.towerConfig.tintBase);
         (this.spriteContainer.list[1] as Phaser.GameObjects.Sprite).setTint(this.towerConfig.tintMid);
         (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(this.towerConfig.tintTop);
+    }
+
+    update(time, delta) {
+        // Uncomment to prevent negative money:
+        // this.hudScene.input.setDraggable(this.spriteContainer, PlayerInfo.money >= this.towerConfig.price)
     }
 }
