@@ -9,7 +9,7 @@ export const PAUSE_AFTER_WAVE_TIME = 3000;
 export class EnemyConfig {
     static Basic = {
         'hp': 20,
-        'speed': 1/20000,
+        'speed': 1 / 20000,
         'money': 1,
         'damage': 1,
         'armor': 0,
@@ -20,7 +20,7 @@ export class EnemyConfig {
 
     static Fat = {
         'hp': 50,
-        'speed': 1/40000,
+        'speed': 1 / 40000,
         'money': 2,
         'damage': 1,
         'armor': 0,
@@ -29,9 +29,9 @@ export class EnemyConfig {
         'tint': 0xffffff,
     }
 
-    static Armoured: { [key:string]: any } = {
+    static Armoured: { [key: string]: any } = {
         'hp': 20,
-        'speed': 1/30000,
+        'speed': 1 / 30000,
         'money': 2,
         'damage': 1,
         'armor': 2,
@@ -43,30 +43,46 @@ export class EnemyConfig {
 
 }
 
-export class TowerConfig {
-    static Basic = {
-        'damage': 10,
-        'firerate': 1000,
-        'range': 150,
-        'price': 5,
-        'spriteBase': 0,
-        'spriteMid': 0,
-        'spriteTop': 0,
-        'tintBase': 0xffffff,
-        'tintMid': 0xffffff,
-        'tintTop': 0xffffff,
-    }
-
-    static Multishot = {
-        'damage': 5,
-        'firerate': 1000,
-        'range': 100,
-        'price': 10,
-        'spriteBase': 0,
-        'spriteMid': 0,
-        'spriteTop': 2,
-        'tintBase': 0xffffff,
-        'tintMid': 0xffffff,
-        'tintTop': 0xff0000,
-    }
+export type TowerConfig = {
+    name: string
+    damage: (integer) => number
+    firerate: (integer) => number
+    range: (integer) => number
+    price: number
+    spriteBase: integer
+    spriteMid: integer
+    spriteTop: integer
+    tintBase: integer
+    tintMid: integer
+    tintTop: integer
 }
+
+export const Basic: TowerConfig = {
+    'name': "Basic",
+    'damage': level => 10 * level,
+    'firerate': level => 1000,
+    'range': level => 150,
+    'price': 5,
+    'spriteBase': 0,
+    'spriteMid': 0,
+    'spriteTop': 0,
+    'tintBase': 0xffffff,
+    'tintMid': 0xffffff,
+    'tintTop': 0xffffff,
+}
+
+export const Multishot: TowerConfig = {
+    'name': "Multishot",
+    'damage': level => 5 * level,
+    'firerate': level => 1000,
+    'range': level => 100,
+    'price': 10,
+    'spriteBase': 0,
+    'spriteMid': 0,
+    'spriteTop': 2,
+    'tintBase': 0xffffff,
+    'tintMid': 0xffffff,
+    'tintTop': 0xff0000,
+}
+
+export const TOWER_CONFIGS = [Basic, Multishot]
