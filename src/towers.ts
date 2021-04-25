@@ -38,6 +38,7 @@ export class Tower extends Phaser.GameObjects.Container {
     towerMid: Phaser.GameObjects.Sprite
     towerBase: Phaser.GameObjects.Sprite
     healthBar: HealthBar
+    rangeIndicator: Phaser.GameObjects.Shape
 
     level: integer
     levelText: Phaser.GameObjects.Text
@@ -68,6 +69,15 @@ export class Tower extends Phaser.GameObjects.Container {
         this.towerMid = this.scene.add.sprite(xCoord, yCoord, 'towermids', this.config.spriteMid);
         this.towerMid.setTint(this.config.tintMid);
         this.add(this.towerMid);
+
+        this.rangeIndicator = this.scene.add.circle(xCoord, yCoord, config.range(1), 0xeeeeff, 0x40);
+        this.rangeIndicator.setVisible(false);
+        this.add(this.rangeIndicator);
+
+        // this.setSize(TILE_SIZE, TILE_SIZE);
+        this.towerBase.setInteractive();
+        this.towerBase.on('pointerover', () => { this.rangeIndicator.setVisible(true) });
+        this.towerBase.on('pointerout', () => { this.rangeIndicator.setVisible(false) });
 
         this.towerTurret.place(i, j, this.scene.terrain);
         this.scene.terrain.placeTower(i, j, this);
