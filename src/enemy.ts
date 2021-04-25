@@ -86,9 +86,15 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
         // set the x and y of our enemy to the received from the previous step
         this.setPosition(this.follower.vec.x, this.follower.vec.y);
+        
+        let frameRate = Math.min(60, this.stats.speed * 40000 * 15)
+        if (this.stats.spriteName == "fatEnemy") { // hack
+            frameRate *= 0.5
+        }
+
         this.anims.play({
-            key: 'enemy1_walk',
-            frameRate: Math.min(60, this.stats.speed * 40000 * 15)
+            key: `${this.stats.spriteName}_walk`,
+            frameRate: frameRate
         });
     }
 
