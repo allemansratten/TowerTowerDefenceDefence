@@ -48,6 +48,7 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
 
         this.hp = this.stats.hp;
         this.speed = this.stats.speed;
+        this.tint = this.stats.tint;
 
         // get x and y of the given t point
         this.scene.terrain.path.getPoint(this.follower.t, this.follower.vec);

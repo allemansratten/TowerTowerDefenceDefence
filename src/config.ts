@@ -7,6 +7,7 @@ export class EnemyConfig {
         'armor': 0,
         'danger': 10,
         'spriteName': 'enemy1',
+        'tint': 0xffffff,
     }
 
     static Fat: { [key:string]: any } = {
@@ -17,6 +18,7 @@ export class EnemyConfig {
         'armor': 0,
         'danger': 30,
         'spriteName': 'enemy1',
+        'tint': 0xaaaaff,
     }
 
 
