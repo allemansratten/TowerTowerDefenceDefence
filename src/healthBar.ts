@@ -57,6 +57,11 @@ export class HealthBar extends Phaser.GameObjects.Container {
         return this._health
     }
 
+    public levelUp() {
+        this.slowHealth = 0;
+        this.health = 0;
+    }
+
     update(delta) {
         const coef = Math.pow(0.99, delta/1000 * 60)
         this.slowHealth = coef * this.slowHealth + (1 - coef) * this.health

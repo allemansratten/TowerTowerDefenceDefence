@@ -124,8 +124,8 @@ export class Tower extends Phaser.GameObjects.Container {
 
         this.healthBar.health += TOWER_HEALTH_REGEN * delta
 
-        if (this.healthBar.health === 1.0) {
-            this.healthBar.health = 0
+        if (this.healthBar.health >= 1.0) {
+            this.healthBar.levelUp();
             this.level++
             this.levelText.setText("" + this.level)
 
