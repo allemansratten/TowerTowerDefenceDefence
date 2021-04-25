@@ -86,7 +86,7 @@ export class Tower extends Phaser.GameObjects.Container {
         delta *= PlayerInfo.timeScale;
 
         this.towerTurret.update(delta)
-        
+
         this.healthBar.health += TOWER_HEALTH_REGEN * delta
         this.healthBar.update(delta)
     }
@@ -122,7 +122,9 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
             var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
             this.scene.addBullet(
                 this.x, this.y, angle,
-                this.parent.stats.damage(this.parent.level)
+                this.parent.stats.damage(this.parent.level),
+                this.parent.stats.range(this.parent.level),
+                this.parent.stats.bulletSpeedMod
             );
             this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
             return true;
@@ -133,7 +135,7 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     lastTime: number = 0
     update(delta) {
         this.lastTime += delta
-        
+
         if (this.lastTime > this.nextTic) {
             if (this.fire())
                 this.nextTic = this.lastTime + this.parent.stats.firerate(this.parent.level)
@@ -163,11 +165,23 @@ export class MultishotTurret extends _TowerTurret {
         if (enemies) {
             for(let enemy of enemies) {
                 var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-                this.scene.addBullet(this.x, this.y, angle, this.parent.stats.damage(this.parent.level));
+                this.scene.addBullet(
+                    this.x, this.y, angle,
+                    this.parent.stats.damage(this.parent.level),
+                    this.parent.stats.range(this.parent.level),
+                    this.parent.stats.bulletSpeedMod
+                );
                 this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
             }
             return true
         }
         return false
+    }
+}
+
+export class SniperTurret extends _TowerTurret {
+
+    constructor(scene: TDScene, config, parent) {
+        super(scene, config.spriteTop, config.tintTop, parent);
     }
 }
