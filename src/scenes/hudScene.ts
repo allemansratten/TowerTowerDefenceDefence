@@ -97,9 +97,9 @@ class BuyTowerIcon {
 
     constructor(hudScene: HudScene, x, y) {
         var sprites = [
-            hudScene.add.sprite(0, 0, "towerbase"),
-            hudScene.add.sprite(0, 0, "towermid"),
-            hudScene.add.sprite(0, 0, "towertop0"),
+            hudScene.add.sprite(0, 0, "towerbases", 0).setTint(0xffffff),
+            hudScene.add.sprite(0, 0, "towermids", 0).setTint(0xffffff),
+            hudScene.add.sprite(0, 0, "towertops", 0).setTint(0xffffff),
         ]
         this.spriteContainer = hudScene.add.container(x, y, sprites)
 
