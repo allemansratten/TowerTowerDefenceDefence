@@ -1,6 +1,6 @@
 // import { GridPosition } from "./terrain";
 
-import { TOWER_HEALTH_REGEN } from "./config";
+import { DAMAGE_TO_TOWER_HEALTH_COEF, TOWER_HEALTH_REGEN } from "./config";
 import { HealthBar } from "./healthBar";
 import { TDScene } from "./scenes/tdScene";
 import { Terrain, TILE_SIZE } from "./terrain";
@@ -38,7 +38,9 @@ export class Tower extends Phaser.GameObjects.Container {
     towerMid: Phaser.GameObjects.Sprite
     towerBase: Phaser.GameObjects.Sprite
     healthBar: HealthBar
+
     level: integer
+    levelText: Phaser.GameObjects.Text
 
     public innerTowerScene: TDScene
 
@@ -51,7 +53,6 @@ export class Tower extends Phaser.GameObjects.Container {
     public make(i: number, j: number, innerTowerScene: TDScene, config: TowerConfig, towerClassName) {
         this.config = config
         this.stats = this.config;
-        this.level = 1
 
         this.towerTurret = new towerClassName(this.scene, this.config, this);
 
@@ -76,9 +77,23 @@ export class Tower extends Phaser.GameObjects.Container {
         this.healthBar.make(xCoord, yCoord + TILE_SIZE / 2 - 8, TILE_SIZE - 14)
         this.add(this.healthBar)
 
+        this.level = 1
+
+        const pad = 3
+        this.levelText = this.scene.add.text(
+            xCoord + 15, yCoord, "" + this.level,
+            {
+                fontSize: "20px",
+                color: "white",
+                backgroundColor: "black",
+                padding: { left: pad, right: pad, top: pad, bottom: pad }
+            }
+        )
+        this.add(this.levelText)
+
         this.innerTowerScene = innerTowerScene
-        this.innerTowerScene.onEnemyReachedEnd(() => {
-            this.healthBar.health -= 0.2 // todo systematically
+        this.innerTowerScene.onEnemyReachedEnd((damage) => {
+            this.healthBar.health -= damage * DAMAGE_TO_TOWER_HEALTH_COEF
         })
     }
 
@@ -88,6 +103,13 @@ export class Tower extends Phaser.GameObjects.Container {
         this.towerTurret.update(delta)
 
         this.healthBar.health += TOWER_HEALTH_REGEN * delta
+
+        if (this.healthBar.health === 1.0) {
+            this.healthBar.health = 0
+            this.level++
+            this.levelText.setText("" + this.level)
+        }
+
         this.healthBar.update(delta)
     }
 }
@@ -116,7 +138,7 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     fire() {
         var enemy = getEnemy(
             this.x, this.y, this.parent.stats.range(this.parent.level),
-             this.scene.allEnemies, 1
+            this.scene.allEnemies, 1
         )[0];
         if (enemy) {
             var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
@@ -163,7 +185,7 @@ export class MultishotTurret extends _TowerTurret {
     fire() {
         var enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, 3);
         if (enemies) {
-            for(let enemy of enemies) {
+            for (let enemy of enemies) {
                 var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
                 this.scene.addBullet(
                     this.x, this.y, angle,
