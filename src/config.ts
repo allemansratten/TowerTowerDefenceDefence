@@ -17,7 +17,7 @@ export const WaveConfig = {
 
     // ------------------- inner -----------------------
     // How much danger per second is generatee in inner depths?
-    dangerPerSec: (level) => level * 5,    
+    dangerPerSec: (level) => level * 5,
 }
 
 export type EnemyConfig = {
@@ -28,7 +28,7 @@ export type EnemyConfig = {
     money: integer
     damage: integer
     armor: integer
-    danger: integer // must be multiple of 10
+    danger: integer
     spriteName: string
     tint: integer
 }

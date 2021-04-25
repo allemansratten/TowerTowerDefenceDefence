@@ -11,7 +11,7 @@ export class WaveManager {
     spawnedEnemies: integer = 0
     deadDanger: integer = 0
     remainingDanger: integer = 0
-    waveDifficulty: integer = 0  // MUST BE MULTIPLE OF 10!
+    waveDifficulty: integer = 0
 
     waveActive: boolean  // false for nested waves
     nextWaveTime: integer = 0
@@ -36,7 +36,7 @@ export class WaveManager {
 
     private getWaveDifficulty() {
         //TODO: add difficulty scaling and balancing for waves
-        this.waveDifficulty = WaveConfig.outerWaveDanger(this.currentWave)  // MUST BE MULTIPLE OF 10!
+        this.waveDifficulty = WaveConfig.outerWaveDanger(this.currentWave)
         this.remainingDanger = this.waveDifficulty
         this.enemyInterval = WaveConfig.outerEnemyInterval
     }
@@ -58,9 +58,8 @@ export class WaveManager {
             return this.scene.allEnemies[randEnemy.name].get();
         }
 
-        console.log('No available enemy to spawn, spawning Weak enemy!');
         this.remainingDanger = 0;
-        return this.scene.allEnemies['Weak'].get();
+        return null;
     }
 
     lastTime: number = 0
