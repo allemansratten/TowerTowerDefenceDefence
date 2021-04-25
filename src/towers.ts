@@ -6,25 +6,28 @@ import { TDScene } from "./scenes/tdScene";
 import { Terrain, TILE_SIZE } from "./terrain";
 import { TowerConfig, RANGE_INDICATOR_CONFIG } from "./config";
 import { PlayerInfo } from "./playerInfo";
+import { EnemyBase } from "./enemy";
 
 
 // todo: move to scene?
-function getEnemy(x, y, range, enemies, numToGet) {
-    let outEnemies = [];
+function getEnemy(x, y, range, enemies, numToGet): EnemyBase[] {
+    let outEnemies: EnemyBase[] = [];
+
     for (let enemyGroup in enemies) {
         let enemyUnits = enemies[enemyGroup].getChildren();
         for (let i = 0; i < enemyUnits.length; i++) {
             if (enemyUnits[i].active && Phaser.Math.Distance.Between(x, y, enemyUnits[i].x, enemyUnits[i].y) <= range) {
                 outEnemies.push(enemyUnits[i]);
-                if (outEnemies.length === numToGet) {
-                    return outEnemies
-                }
             }
         }
     }
-    if (outEnemies.length > 0)
-        return outEnemies;
-    return false;
+
+    if (outEnemies.length > 0) {
+        outEnemies.sort((a, b) => b.follower.t - a.follower.t)
+        outEnemies.length = numToGet
+        return outEnemies
+    }
+    return null
 }
 
 
@@ -155,12 +158,13 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     }
 
     fire() {
-        var enemy = getEnemy(
+        let enemies = getEnemy(
             this.x, this.y, this.parent.stats.range(this.parent.level),
             this.scene.allEnemies, 1
-        )[0];
-        if (enemy) {
-            var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+        );
+        if (enemies) {
+            let enemy = enemies[0]
+            let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
             this.scene.addBullet(
                 this.x, this.y, angle,
                 this.parent.stats.damage(this.parent.level),
