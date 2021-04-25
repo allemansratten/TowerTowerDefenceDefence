@@ -111,3 +111,9 @@ export class ArmouredEnemy extends EnemyBase {
         super(scene, cfg.Armoured)
     }
 }
+
+export class FastEnemy extends EnemyBase {
+    constructor(scene: TDScene) {
+        super(scene, cfg.Fast)
+    }
+}
