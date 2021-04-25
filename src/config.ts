@@ -33,9 +33,9 @@ export class TowerConfig {
         'spriteBase': 'towerbase',
         'spriteMid': 'towermid',
         'spriteTop': 'towertop0',
-        'baseTint': 0xffffff,
-        'midTint': 0xffffff,
-        'topTint': 0xffffff,
+        'tintBase': 0xffffff,
+        'tintMid': 0xffffff,
+        'tintTop': 0xffffff,
     }
 
 
