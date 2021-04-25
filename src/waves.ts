@@ -15,6 +15,7 @@ export class WaveManager {
 
     waveActive: boolean  // false for nested waves
     nextWaveTime: integer = 0
+    respawnQueue: EnemyConfig[] = [];
 
     enemyInterval: integer
 
@@ -49,6 +50,13 @@ export class WaveManager {
     }
 
     private spawnEnemy() {
+        // TODO: respawning shouldn't reset health
+        if (this.respawnQueue.length > 0) {
+            let respawn = this.respawnQueue.shift()
+            this.remainingDanger -= respawn.danger;
+            return this.scene.allEnemies[respawn.name].get()
+        }
+
         let randEnemy = this.getRandEnemy(
             (enemy) => enemy.danger <= this.remainingDanger
         )
@@ -61,6 +69,11 @@ export class WaveManager {
         this.remainingDanger = 0;
         return null;
     }
+
+    public respawn(respawn: EnemyConfig) {
+        this.respawnQueue.push(respawn);
+    }
+
 
     lastTime: number = 0
     public update(delta) {

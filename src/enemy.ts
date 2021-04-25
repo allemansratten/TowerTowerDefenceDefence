@@ -64,6 +64,8 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
             const metaScene = this.scene.scene.get("metaScene") as MetaScene
             metaScene.getActiveScene().cameras.main.shake(200, 0.005)
+
+            this.scene.waveManager.respawn(this.stats);
         }
 
         if (this.scene.enemyEndCallback) {
