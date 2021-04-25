@@ -1,3 +1,4 @@
+import { TowerConfig } from "../config";
 import { PlayerInfo } from "../player";
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
 import { MetaScene } from "./MetaScene";
@@ -45,8 +46,14 @@ export class HudScene extends Phaser.Scene {
 
         this.levelText = this.add.text(780, 10, "LEVEL: ", { fontSize: '20px' });
 
-        this.buyTowerIcons = []
-        this.buyTowerIcons.push(new BuyTowerIcon(this, w / 2, 200))
+        this.buyTowerIcons = [];
+        let towerTypeIndex = 0;
+        for (let towerName in TowerConfig) {
+            let towerConfig = TowerConfig[towerName]
+            this.buyTowerIcons.push(new BuyTowerIcon(this, w / 2, 110+70*towerTypeIndex, towerName, towerConfig))
+            towerTypeIndex++;
+        }
+
 
         this.scene.bringToTop('hudScene');
         this.parentScenesTexts = []
@@ -91,17 +98,19 @@ export class HudScene extends Phaser.Scene {
 }
 
 class BuyTowerIcon {
+    towerName: string
     spriteContainer: Phaser.GameObjects.Container
     origX: number
     origY: number
 
-    constructor(hudScene: HudScene, x, y) {
+    constructor(hudScene: HudScene, x, y, towerName, towerConfig) {
         var sprites = [
             hudScene.add.sprite(0, 0, "towerbases", 0).setTint(0xffffff),
             hudScene.add.sprite(0, 0, "towermids", 0).setTint(0xffffff),
             hudScene.add.sprite(0, 0, "towertops", 0).setTint(0xffffff),
         ]
         this.spriteContainer = hudScene.add.container(x, y, sprites)
+        this.towerName = towerName;
 
         this.origX = x
         this.origY = y
@@ -126,22 +135,28 @@ class BuyTowerIcon {
         });
 
         hudScene.input.on('dragstart', function (pointer, gameObject) {
+            if (gameObject != this.spriteContainer) { return; }
+
             gameObject.list.forEach((sprite:Phaser.GameObjects.Sprite) => {
                 sprite.setTint(0xff0000);
             });
-        });
+        }, this);
         hudScene.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+            if (gameObject != this.spriteContainer) { return; }
+
             gameObject.x = dragX;
             gameObject.y = dragY;
 
-        });
+        }, this);
         hudScene.input.on('dragend', function (pointer, gameObject) {
+            if (gameObject != this.spriteContainer) { return; }
+            
             gameObject.list.forEach((sprite:Phaser.GameObjects.Sprite) => {
                 sprite.clearTint();
             });
 
             const scene = hudScene.metaScene.getActiveScene()
-            scene.towerManager.placeTower(pointer, 'Multishot');
+            scene.towerManager.placeTower(pointer, this.towerName);
 
             gameObject.x = this.origX
             gameObject.y = this.origY

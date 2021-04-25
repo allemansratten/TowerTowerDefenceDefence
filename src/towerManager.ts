@@ -14,6 +14,7 @@ export class TowerManager {
     }
 
     public placeTower(pointer, towerType) {
+        console.log(`Placed new tower ${towerType}`)
         const [i, j] = this.scene.toGridPos(pointer.x, pointer.y)
         if (this.scene.terrain.canPlaceTower(i, j)) {
             var tower: towers.Tower = this.scene.towers.get();

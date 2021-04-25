@@ -5,7 +5,7 @@ export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.2
 export const TOWER_HEALTH_REGEN = 0.00001 * 2
 
 export class EnemyConfig {
-    static Basic: { [key:string]: any } = {
+    static Basic = {
         'hp': 20,
         'speed': 1/20000,
         'money': 1,
@@ -16,7 +16,7 @@ export class EnemyConfig {
         'tint': 0xffffff,
     }
 
-    static Fat: { [key:string]: any } = {
+    static Fat = {
         'hp': 50,
         'speed': 1/40000,
         'money': 2,
@@ -31,7 +31,7 @@ export class EnemyConfig {
 }
 
 export class TowerConfig {
-    static Basic: { [key:string]: any } = {
+    static Basic = {
         'damage': 10,
         'firerate': 1,
         'range': 150,
@@ -44,7 +44,7 @@ export class TowerConfig {
         'tintTop': 0xffffff,
     }
 
-    static Multishot: { [key:string]: any } = {
+    static Multishot = {
         'damage': 5,
         'firerate': 1,
         'range': 100,
