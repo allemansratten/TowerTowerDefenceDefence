@@ -70,7 +70,7 @@ export const Fat: EnemyConfig = {
 export const Armoured: EnemyConfig = {
     'name': 'Armoured',
     'class': enem.ArmouredEnemy,
-    'hp': (wave) => 50,
+    'hp': (wave) => 30,
     'speed': 1 / 30000,
     'money': 2,
     'damage': 1,
