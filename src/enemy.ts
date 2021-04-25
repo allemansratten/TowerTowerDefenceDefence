@@ -71,11 +71,11 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         }
     }
 
-    startOnPath() {
+    startOnPath(wave) {
         // set the t parameter at the start of the path
         this.follower.t = 0;
 
-        this.hp = this.stats.hp;
+        this.hp = this.stats.hp(wave);
         this.speed = this.stats.speed;
         this.tint = this.stats.tint;
 

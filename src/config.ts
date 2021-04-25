@@ -30,7 +30,7 @@ export const WaveConfig = {
 export type EnemyConfig = {
     name: string
     class: any
-    hp: integer
+    hp: (integer) => integer
     speed: number
     money: integer
     damage: integer
@@ -43,7 +43,7 @@ export type EnemyConfig = {
 export const Weak: EnemyConfig = {
     'name': 'Weak',
     'class': enem.WeakEnemy,
-    'hp': 20,
+    'hp': (wave) => 20,
     'speed': 1 / 20000,
     'money': 1,
     'damage': 1,
@@ -56,7 +56,7 @@ export const Weak: EnemyConfig = {
 export const Fat: EnemyConfig = {
     'name': 'Fat',
     'class': enem.FatEnemy,
-    'hp': 70,
+    'hp': (wave) => 70,
     'speed': 1 / 40000,
     'money': 2,
     'damage': 1,
@@ -70,7 +70,7 @@ export const Fat: EnemyConfig = {
 export const Armoured: EnemyConfig = {
     'name': 'Armoured',
     'class': enem.ArmouredEnemy,
-    'hp': 30,
+    'hp': (wave) => 30,
     'speed': 1 / 30000,
     'money': 2,
     'damage': 1,
@@ -83,7 +83,7 @@ export const Armoured: EnemyConfig = {
 export const Fast: EnemyConfig = {
     'name': 'Fast',
     'class': enem.FastEnemy,
-    'hp': 20,
+    'hp': (wave) => 20,
     'speed': 1 / 10000,
     'money': 1,
     'damage': 1,
