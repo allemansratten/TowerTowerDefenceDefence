@@ -5,11 +5,12 @@ import { MetaScene } from "./MetaScene";
 import { TDScene, TD_SCENE_HEIGHT, TD_SCENE_WIDTH } from "./tdScene";
 
 const HUD_BG_COLOR = 0xffaa7d
-export const HUD_WIDTH = TILE_SIZE * 2
+export const HUD_WIDTH = TILE_SIZE * 3
 
 export class HudScene extends Phaser.Scene {
 
     moneyText: Phaser.GameObjects.Text
+    waveText: Phaser.GameObjects.Text
     hpText: Phaser.GameObjects.Text
     hpRedness: number // 0 to 1
     depthText: Phaser.GameObjects.Text
@@ -20,7 +21,7 @@ export class HudScene extends Phaser.Scene {
     buyTowerIcons: BuyTowerIcon[]
 
     lastActiveScene: TDScene
-    parentScenesTexts: Phaser.GameObjects.Image[]
+    parentScenesImages: Phaser.GameObjects.Image[]
     slowSpeedText: Phaser.GameObjects.Text;
     fastSpeedText: Phaser.GameObjects.Text;
 
@@ -37,22 +38,30 @@ export class HudScene extends Phaser.Scene {
     public create() {
         let w = HUD_WIDTH
         let h = TILE_SIZE * MAX_HEIGHT
+        const xLeft = w / 2
+        const xRight = w + TD_SCENE_WIDTH + w / 2
+
         this.add.rectangle(w / 2, h / 2, w, h, HUD_BG_COLOR)
         this.add.rectangle(
-            w + TD_SCENE_WIDTH + w / 2,
-            h / 2,
-            w,
-            h,
+            xRight, h / 2,
+            w, h,
             HUD_BG_COLOR,
         )
 
-        this.moneyText = this.add.text(10, 10, "", { fontSize: '20px' });
-        this.hpText = this.add.text(10, 50, "", { fontSize: '20px' });
+        this.moneyText = this.add.text(xLeft, 20, "", { fontSize: '20px' });
+        this.moneyText.setOrigin(0.5)
+        this.hpText = this.add.text(xLeft, 40, "", { fontSize: '20px' });
+        this.hpText.setOrigin(0.5)
         this.hpRedness = 0
 
-        this.depthText = this.add.text(780, 10, "Depth: ", { fontSize: '20px' });
+        this.waveText = this.add.text(xLeft, 60, "", { fontSize: '20px' });
+        this.waveText.setOrigin(0.5)
 
-        this.goUpText = this.add.text(780, 50, "Go up to:", { fontSize: '20px' });
+        this.depthText = this.add.text(xRight, 20, "Depth: ", { fontSize: '20px' });
+        this.depthText.setOrigin(0.5)
+
+        this.goUpText = this.add.text(xRight, 50, "Go up to:", { fontSize: '20px' });
+        this.goUpText.setOrigin(0.5)
         this.goUpText.setVisible(false)
 
         this.buyTowerIcons = [];
@@ -62,16 +71,33 @@ export class HudScene extends Phaser.Scene {
             towerTypeIndex++;
         }
 
-        this.slowSpeedText = this.add.text(10, 450, "Slow ", { fontSize: '20px' });
-        this.fastSpeedText = this.add.text(10, 475, "Fast ", { fontSize: '20px' });
-        this.slowSpeedText.setInteractive()
-        this.fastSpeedText.setInteractive()
-        this.slowSpeedText.on('pointerdown', () => PlayerInfo.timeScale = 1, null)
-        this.fastSpeedText.on('pointerdown', () => PlayerInfo.timeScale = 4, null)
+        const pad = 3
+        this.slowSpeedText = this.add.text(xLeft, 450, ">Slow<", {
+            fontSize: '20px',
+            backgroundColor: "#000",
+            padding: { left: pad, right: pad, top: pad, bottom: pad }
+        });
+        this.fastSpeedText = this.add.text(xLeft, 475, "Fast", {
+            fontSize: '20px',
+            backgroundColor: "#000",
+            padding: { left: pad, right: pad, top: pad, bottom: pad }
+        });
+        this.slowSpeedText.setInteractive().setOrigin(0.5)
+        this.fastSpeedText.setInteractive().setOrigin(0.5)
+        this.slowSpeedText.on('pointerdown', () => {
+            PlayerInfo.timeScale = 1, null
+            this.slowSpeedText.setText(">Slow<")
+            this.fastSpeedText.setText("Fast")
+        })
+        this.fastSpeedText.on('pointerdown', () => {
+            PlayerInfo.timeScale = 4, null
+            this.slowSpeedText.setText("Slow")
+            this.fastSpeedText.setText(">Fast<")
+        })
 
 
         this.scene.bringToTop('hudScene');
-        this.parentScenesTexts = []
+        this.parentScenesImages = []
     }
 
     lastTime: number = 0
@@ -80,6 +106,10 @@ export class HudScene extends Phaser.Scene {
         this.lastTime += delta;
 
         this.moneyText.setText('Money: ' + PlayerInfo.money)
+
+        const currentWave = this.metaScene.getRootTDScene().waveManager.currentWave
+        this.waveText.setText(`Wave: ${currentWave}`)
+
         this.hpText.setText('HP: ' + PlayerInfo.hp)
 
         this.hpText.setColor(Phaser.Display.Color.RGBToString(
@@ -103,10 +133,10 @@ export class HudScene extends Phaser.Scene {
         this.lastActiveScene = activeScene;
         this.depthText.setText(`Depth: ${activeScene.sceneLevel}`)
 
-        let parentScenes = this.metaScene.getParentScenesToRoot()
+        const parentScenes = this.metaScene.getParentScenesToRoot()
 
-        for (let i = 0; i < this.parentScenesTexts.length; i++) {
-            const element = this.parentScenesTexts[i];
+        for (let i = 0; i < this.parentScenesImages.length; i++) {
+            const element = this.parentScenesImages[i];
             element.destroy();
         }
 
@@ -122,14 +152,14 @@ export class HudScene extends Phaser.Scene {
 
             let newButton = this.add.image(
                 TD_SCENE_WIDTH + HUD_WIDTH * 1.5,
-                100 + sceneIndex * scale * TD_SCENE_HEIGHT * 1.2, 
+                100 + sceneIndex * scale * TD_SCENE_HEIGHT * 1.2,
                 `snap-${parentScenes[i].scene.key}`
             );
             newButton.scaleX = scale
             newButton.scaleY = scale
             newButton.setInteractive();
             newButton.on('pointerdown', () => this.metaScene.switchToScene(parentScenes[i], false), this.metaScene)
-            this.parentScenesTexts.push(
+            this.parentScenesImages.push(
                 newButton
             )
 
