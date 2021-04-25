@@ -41,7 +41,6 @@ export class WaveManager {
     public update(time, delta) {
         if ((this.scene.sceneLevel > 0 || this.spawnedEnemies < this.numEnemies) && time > this.nextEnemy) {
             if (this.currentWave % 2 === 0) {
-                this.numEnemies /= 2;
                 var enemy = this.scene.allEnemies['FatEnemy'].get();
             } else {
                 var enemy = this.scene.allEnemies['BasicEnemy'].get();
