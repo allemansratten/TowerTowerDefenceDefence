@@ -24,7 +24,8 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
     }
 
-    update(time, delta) {
+    update(_, delta) {
+        delta *= PlayerInfo.timeScale;
         // move the t point along the path, 0 is the start and 1 is the end
         this.follower.t += this.speed * delta;
 

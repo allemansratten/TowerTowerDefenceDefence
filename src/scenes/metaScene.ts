@@ -69,9 +69,6 @@ export class MetaScene extends Phaser.Scene {
         this.sound.setRate(1/(Math.pow(1.05946309436, switchToScene.sceneLevel)))
     }
 
-    update(time, delta) {
-    }
-
     public preload() {
         // load the game assets
         this.load.setPath("../../assets/")

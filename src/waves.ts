@@ -66,11 +66,13 @@ export class WaveManager {
         return this.scene.allEnemies['BasicEnemy'].get();
     }
 
-    public update(time, delta) {
-        if (!this.waveActive && time > this.nextWaveTime) {
+    lastTime: number = 0
+    public update(delta) {
+        this.lastTime += delta
+        if (!this.waveActive && this.lastTime > this.nextWaveTime) {
             this.nextWave();  // no waves in nested layers
         } else {
-            if ((this.scene.sceneLevel > 0 || this.remainingDanger > 0) && time > this.nextEnemy) {
+            if ((this.scene.sceneLevel > 0 || this.remainingDanger > 0) && this.lastTime > this.nextEnemy) {
                 if  (this.scene.sceneLevel > 0)
                     var enemy = this.scene.allEnemies['BasicEnemy'].get();
                 else
@@ -83,14 +85,14 @@ export class WaveManager {
                     // place the enemy at the start of the path
                     enemy.startOnPath();
                     this.spawnedEnemies++;
-                    this.nextEnemy = time + this.enemyInterval;
+                    this.nextEnemy = this.lastTime + this.enemyInterval;
                 }
             }
             if (this.scene.sceneLevel === 0 && this.deadDanger === this.waveDifficulty) {
                 console.log("Wave complete! Next wave in " + PAUSE_AFTER_WAVE_TIME);
                 this.deadDanger = 0;
                 this.waveActive = false;
-                this.nextWaveTime = time + PAUSE_AFTER_WAVE_TIME;
+                this.nextWaveTime = this.lastTime + PAUSE_AFTER_WAVE_TIME;
             }
         }
     }

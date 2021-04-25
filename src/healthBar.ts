@@ -1,3 +1,4 @@
+import { PlayerInfo } from "./player"
 import { TDScene } from "./scenes/tdScene"
 import { TILE_SIZE } from "./terrain"
 
@@ -57,7 +58,7 @@ export class HealthBar extends Phaser.GameObjects.Container {
         return this._health
     }
 
-    update(time, delta) {
+    update(delta) {
         const coef = Math.pow(0.99, delta/1000 * 60)
         this.slowHealth = coef * this.slowHealth + (1 - coef) * this.health
 

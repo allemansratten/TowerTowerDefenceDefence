@@ -67,7 +67,9 @@ export class HudScene extends Phaser.Scene {
     }
 
 
-    public update(time, delta) {
+    public update(_, delta) {
+        delta *= PlayerInfo.timeScale;
+
         this.moneyText.setText('Money: ' + PlayerInfo.money)
         this.hpText.setText('HP: ' + PlayerInfo.hp)
 

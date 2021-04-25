@@ -9,6 +9,7 @@ import { MetaScene } from "./MetaScene";
 import { HUD_WIDTH } from "./hudScene";
 import { UUID } from "../utils/guid";
 import { HealthBar } from "../healthBar";
+import { PlayerInfo } from "../player";
 
 export const SCENE_TRANSITION_MS = 500
 export const TD_SCENE_WIDTH = MAX_WIDTH * TILE_SIZE
@@ -143,16 +144,18 @@ export class TDScene extends Phaser.Scene {
     }
 
     frameNumber = 0;
-    update(time, delta) {
+    update(_, delta) {
+        delta *= PlayerInfo.timeScale;
+        
         this.frameNumber++;
-        this.waveManager.update(time, delta)
+        this.waveManager.update(delta)
 
         if (this.frameNumber % 60 == 0) {
             // console.log(`Update th: ${this.scene.key} e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneParent?.scene.key}`)
         }
         if (this.endHealthBar) {
             this.endHealthBar.health = this.towerParent.healthBar.health
-            this.endHealthBar.update(time, delta)
+            this.endHealthBar.update(delta)
         }
     }
 

@@ -5,6 +5,7 @@ import { HealthBar } from "./healthBar";
 import { TDScene } from "./scenes/tdScene";
 import { Terrain, TileType, TILE_SIZE } from "./terrain";
 import { TowerConfig } from "./config";
+import { PlayerInfo } from "./player";
 
 
 // todo: move to scene?
@@ -77,11 +78,13 @@ export class Tower extends Phaser.GameObjects.Container {
         })
     }
 
-    update(time, delta) {
-        this.towerTurret.update(time, delta)
+    update(_, delta) {
+        delta *= PlayerInfo.timeScale;
+
+        this.towerTurret.update(delta)
         
         this.healthBar.health += TOWER_HEALTH_REGEN * delta
-        this.healthBar.update(time, delta)
+        this.healthBar.update(delta)
     }
 }
 
@@ -116,12 +119,15 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
         return false
     }
 
-    update(time, delta) {
-        if (time > this.nextTic) {
+    lastTime: number = 0
+    update(delta) {
+        this.lastTime += delta
+        
+        if (this.lastTime > this.nextTic) {
             if (this.fire())
-                this.nextTic = time + 1000;
+                this.nextTic = this.lastTime + 1000;
             else
-                this.nextTic = time + 50;
+                this.nextTic = this.lastTime + 50;
         }
     }
 }
