@@ -8,13 +8,14 @@ import { TDSceneConfig } from "./tdSceneConfig";
 import { MetaScene } from "./MetaScene";
 import { HUD_WIDTH } from "./hudScene";
 import { UUID } from "../utils/guid";
+import { HealthBar } from "../healthBar";
 
 const BULLET_DAMAGE = 10
 export const SCENE_TRANSITION_MS = 500
 
 export class TDScene extends Phaser.Scene {
     path: Phaser.Curves.Path
-    allEnemies: { [key:string]: Phaser.Physics.Arcade.Group} = {}
+    allEnemies: { [key: string]: Phaser.Physics.Arcade.Group } = {}
     nextEnemy: number = 0
     metaScene: MetaScene
 
@@ -29,6 +30,11 @@ export class TDScene extends Phaser.Scene {
     sceneParent: TDScene;
     sceneLevel: number; // Level of recursion
 
+    private towerParent: Tower  // to what tower does this scene correspond? undefined for root
+    private endHealthBar: HealthBar
+
+    // happens when an enemy reaches the end
+    enemyEndCallback: () => void
 
     constructor(config: TDSceneConfig, metaScene: MetaScene) {
         super({
@@ -122,8 +128,12 @@ export class TDScene extends Phaser.Scene {
         this.frameNumber++;
         this.waveManager.update(time, delta)
 
-        if(this.frameNumber % 60 == 0) {
+        if (this.frameNumber % 60 == 0) {
             // console.log(`Update th: ${this.scene.key} e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneParent?.scene.key}`)
+        }
+        if (this.endHealthBar) {
+            this.endHealthBar.health = this.towerParent.healthBar.health
+            this.endHealthBar.update(time, delta)
         }
     }
 
@@ -147,5 +157,20 @@ export class TDScene extends Phaser.Scene {
         if (potentialExistingTower) {
             this.metaScene.switchToScene(potentialExistingTower.innerTowerScene, true, i, j)
         }
+    }
+
+    onEnemyReachedEnd(callback) {
+        this.enemyEndCallback = callback
+    }
+
+    setTowerParent(parent: Tower) {
+        this.towerParent = parent
+        this.endHealthBar = new HealthBar(this)
+
+        let [i, j] = this.terrain.pathTiles[this.terrain.pathTiles.length - 1]
+        let [x, y] = this.terrain.fromGridPos(i, j)
+
+        this.endHealthBar.make(x, y, TILE_SIZE - 14, 0.5)
+        this.add.container(0, 0, this.endHealthBar)
     }
 }
