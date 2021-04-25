@@ -192,10 +192,14 @@ class BuyTowerIcon {
         let towerTop = hudScene.add.sprite(0, 0, 'towertops', config.spriteTop);
         towerTop.setTint(config.tintTop);
 
+        let towerRange = hudScene.add.circle(0, 0, config.range(1), 0xeeeeff, 0x40);
+        towerRange.setVisible(false);
+
         var sprites = [
             towerBase,
             towerMid,
             towerTop,
+            towerRange,
         ]
         this.spriteContainer = hudScene.add.container(x, y, sprites)
         this.spriteContainer.getAll()
@@ -219,9 +223,7 @@ class BuyTowerIcon {
         this.spriteContainer.on('pointerover', () => {
             if (PlayerInfo.money < config.price) {
                 // cannot afford
-                this.spriteContainer.list.forEach((sprite: Phaser.GameObjects.Sprite) => {
-                    sprite.setTint(0xff0000);
-                });
+                this.setShopIconTint(0xff0000);
             }
         });
 
@@ -229,8 +231,11 @@ class BuyTowerIcon {
             this.resetTint()
         });
 
-        hudScene.input.on('dragstart', function (pointer, gameObject) {
+        hudScene.input.on('dragstart', (pointer, gameObject) => {
             if (gameObject != this.spriteContainer) { return; }
+
+            // This makes range indicator visible
+            (this.spriteContainer.list[3] as Phaser.GameObjects.Shape).setVisible(true);
 
             gameObject.list.forEach((sprite: Phaser.GameObjects.Sprite) => {
             });
@@ -244,6 +249,9 @@ class BuyTowerIcon {
         }, this);
         hudScene.input.on('dragend', function (pointer, gameObject) {
             if (gameObject != this.spriteContainer) { return; }
+
+            // This makes range indicator visible
+            (this.spriteContainer.list[3] as Phaser.GameObjects.Shape).setVisible(false);
 
             gameObject.list.forEach((sprite: Phaser.GameObjects.Sprite) => {
             });
@@ -260,6 +268,12 @@ class BuyTowerIcon {
         (this.spriteContainer.list[0] as Phaser.GameObjects.Sprite).setTint(this.towerConfig.tintBase);
         (this.spriteContainer.list[1] as Phaser.GameObjects.Sprite).setTint(this.towerConfig.tintMid);
         (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(this.towerConfig.tintTop);
+    }
+
+    setShopIconTint(tint) {
+        (this.spriteContainer.list[0] as Phaser.GameObjects.Sprite).setTint(tint);
+        (this.spriteContainer.list[1] as Phaser.GameObjects.Sprite).setTint(tint);
+        (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(tint);
     }
 
     update(time, delta) {

@@ -6,7 +6,7 @@ import { HudScene } from "./scenes/hudScene";
 import { MetaScene } from "./scenes/MetaScene";
 
 
-abstract class EnemyBase extends Phaser.GameObjects.Image {
+abstract class EnemyBase extends Phaser.GameObjects.Sprite {
     stats: cfg.EnemyConfig;
 
     follower: any
@@ -31,6 +31,13 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
 
         // get the new x and y coordinates in vec
         this.scene.terrain.path.getPoint(this.follower.t, this.follower.vec);
+
+        if (this.follower.vec.x > this.x - this.xOffset) {
+            this.flipX = false
+        }
+        if (this.follower.vec.x < this.x - this.xOffset) {
+            this.flipX = true
+        }
 
         // update enemy x and y to the newly obtained x and y
         this.setPosition(this.follower.vec.x + this.xOffset, this.follower.vec.y + this.yOffset);
@@ -73,6 +80,10 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
 
         // set the x and y of our enemy to the received from the previous step
         this.setPosition(this.follower.vec.x, this.follower.vec.y);
+        this.anims.play({
+            key: 'enemy1_walk',
+            frameRate: Math.min(60, this.stats.speed * 40000 * 15)
+        });
 
         this.alpha = 1
         this.angle = 0
@@ -103,7 +114,7 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
             scale: 0.5,
             duration: PlayerInfo.RNG.integerInRange(600, 800),
             ease: 'Power2'
-          });
+        });
     }
 }
 

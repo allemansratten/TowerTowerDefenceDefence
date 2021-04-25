@@ -74,7 +74,6 @@ export class Tower extends Phaser.GameObjects.Container {
         this.rangeIndicator.setVisible(false);
         this.add(this.rangeIndicator);
 
-        // this.setSize(TILE_SIZE, TILE_SIZE);
         this.towerBase.setInteractive();
         this.towerBase.on('pointerover', () => { this.rangeIndicator.setVisible(true) });
         this.towerBase.on('pointerout', () => { this.rangeIndicator.setVisible(false) });
