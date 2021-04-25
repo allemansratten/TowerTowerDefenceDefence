@@ -27,6 +27,17 @@ export class EnemyConfig {
         'tint': 0xffffff,
     }
 
+    static Armoured: { [key:string]: any } = {
+        'hp': 20,
+        'speed': 1/30000,
+        'money': 2,
+        'damage': 1,
+        'armor': 2,
+        'danger': 30,
+        'spriteName': 'enemy1',
+        'tint': 0xaaaaff,
+    }
+
 
 }
 

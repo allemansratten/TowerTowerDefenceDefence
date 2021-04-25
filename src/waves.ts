@@ -26,7 +26,7 @@ export class WaveManager {
 
     private getWaveDifficulty() {
         //TODO: add difficulty scaling and balancing for waves
-        this.numEnemies = this.currentWave;
+        this.numEnemies = this.currentWave + 3;
         this.enemyInterval = 200;
     }
 
@@ -40,11 +40,11 @@ export class WaveManager {
 
     public update(time, delta) {
         if ((this.scene.sceneLevel > 0 || this.spawnedEnemies < this.numEnemies) && time > this.nextEnemy) {
-            if (this.currentWave % 2 === 0) {
-                var enemy = this.scene.allEnemies['FatEnemy'].get();
-            } else {
-                var enemy = this.scene.allEnemies['BasicEnemy'].get();
-            }
+            // if (this.currentWave % 2 === 0) {
+                // var enemy = this.scene.allEnemies['FatEnemy'].get();
+            // } else {
+                var enemy = this.scene.allEnemies['ArmouredEnemy'].get();
+            // }
             if (enemy) {
                 enemy.setActive(true);
                 enemy.setVisible(true);
