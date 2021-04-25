@@ -4,6 +4,8 @@ export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.2
 
 export const TOWER_HEALTH_REGEN = 0.00001 * 2
 
+export const PAUSE_AFTER_WAVE_TIME = 3000;
+
 export class EnemyConfig {
     static Basic = {
         'hp': 20,

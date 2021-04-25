@@ -34,7 +34,7 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
 
         // if we have reached the end of the path, remove the enemy
         if (this.follower.t >= 1) {
-            this.scene.waveManager.spawnedEnemies--;
+            this.scene.waveManager.remainingDanger += this.stats.danger;
             this.setActive(false);
             this.setVisible(false);
             if (this.scene.sceneLevel === 0)
@@ -74,7 +74,7 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
 
     onDeath() {  // override this for special on-death abilities
         if (this.scene.sceneLevel === 0) {  // Add gold in base layer only
-            this.scene.waveManager.deadEnemies++;
+            this.scene.waveManager.deadDanger += this.stats.danger
             PlayerInfo.money += this.stats.money;
         }
     }
