@@ -9,7 +9,8 @@ import { MetaScene } from "./MetaScene";
 import { HUD_WIDTH } from "./hudScene";
 import { UUID } from "../utils/guid";
 
-var BULLET_DAMAGE = 10;
+const BULLET_DAMAGE = 10
+export const SCENE_TRANSITION_MS = 500
 
 export class TDScene extends Phaser.Scene {
     path: Phaser.Curves.Path
@@ -72,11 +73,34 @@ export class TDScene extends Phaser.Scene {
     }
 
     // Only foreground scene has input enabled & is visible; all scenes are being updated
-    public setIsForeground(isForegroundScene) {
+    public setIsForeground(isForegroundScene, goingInside: boolean, i = null, j = null) {
         this.input.enabled = isForegroundScene;
-        this.scene.setVisible(isForegroundScene);
+
+        if (!isForegroundScene) {
+            this.fadeOut(goingInside, i, j)
+        } else {
+            this.fadeIn(goingInside, i, j)
+        }
     }
 
+    public fadeIn(goingInside: boolean, i, j) {
+        this.cameras.main.pan(this.terrain.w * TILE_SIZE / 2, this.terrain.h * TILE_SIZE / 2, 1)
+        this.cameras.main.setZoom((goingInside ? 1 / 3 : 3))
+
+        this.cameras.main.fadeIn(SCENE_TRANSITION_MS, 0, 0, 0)
+        this.cameras.main.zoomTo(1, SCENE_TRANSITION_MS, "Linear")
+    }
+
+    public fadeOut(goingInside: boolean, i, j) {
+        this.cameras.main.fadeOut(SCENE_TRANSITION_MS, 0, 0, 0)
+        if (goingInside) {
+            let [x, y] = this.terrain.fromGridPos(i, j)
+            this.cameras.main.zoomTo(3, SCENE_TRANSITION_MS, "Linear")
+            this.cameras.main.pan(x, y, SCENE_TRANSITION_MS, "Linear")
+        } else {
+            this.cameras.main.zoomTo(1 / 3, SCENE_TRANSITION_MS, "Linear")
+        }
+    }
 
     damageEnemy(enemy, bullet) {
         // only if both enemy and bullet are alive
@@ -94,9 +118,9 @@ export class TDScene extends Phaser.Scene {
         this.frameNumber++;
         this.waveManager.update(time, delta)
 
-        if(this.frameNumber % 60 == 0) {
-            console.log(`Update th: ${this.scene.key} e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneParent?.scene.key}`)
-        }
+        // if(this.frameNumber % 60 == 0) {
+        //     console.log(`Update th: ${this.scene.key} e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneParent?.scene.key}`)
+        // }
     }
 
     addBullet(x, y, angle) {
@@ -116,8 +140,8 @@ export class TDScene extends Phaser.Scene {
         const [i, j] = this.toGridPos(pointer.x, pointer.y)
 
         let potentialExistingTower = this.terrain.tryGetExistingTower(i, j);
-        if (potentialExistingTower){
-            this.metaScene.switchToScene(potentialExistingTower.innerTowerScene)
+        if (potentialExistingTower) {
+            this.metaScene.switchToScene(potentialExistingTower.innerTowerScene, true, i, j)
         }
     }
 }
