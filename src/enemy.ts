@@ -1,13 +1,13 @@
 // import { GridPosition, Position, Terrain } from "./terrain";
 import { TDScene } from "./scenes/tdScene";
 import { PlayerInfo } from "./playerInfo";
-import { EnemyConfig } from "./config";
+import * as cfg from "./config";
 import { HudScene } from "./scenes/hudScene";
 import { MetaScene } from "./scenes/MetaScene";
 
 
 abstract class EnemyBase extends Phaser.GameObjects.Image {
-    stats: any;  // { [key:string]: any }
+    stats: cfg.EnemyConfig;
 
     follower: any
     hp: integer
@@ -94,26 +94,26 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
     }
 }
 
-export class BasicEnemy extends EnemyBase {
-    static stats = EnemyConfig.Basic
-
+export class WeakEnemy extends EnemyBase {
     constructor(scene: TDScene) {
-        super(scene, BasicEnemy.stats)
+        super(scene, cfg.Weak)
     }
 }
 
 export class FatEnemy extends EnemyBase {
-    static stats = EnemyConfig.Fat
-
     constructor(scene: TDScene) {
-        super(scene, FatEnemy.stats)
+        super(scene, cfg.Fat)
     }
 }
 
 export class ArmouredEnemy extends EnemyBase {
-    static stats = EnemyConfig.Armoured
-
     constructor(scene: TDScene) {
-        super(scene, ArmouredEnemy.stats)
+        super(scene, cfg.Armoured)
+    }
+}
+
+export class FastEnemy extends EnemyBase {
+    constructor(scene: TDScene) {
+        super(scene, cfg.Fast)
     }
 }

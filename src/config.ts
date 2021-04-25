@@ -1,3 +1,5 @@
+import * as enem from "./enemy";
+
 // enemy damage * DAMAGE_TO_TOWER_HEALTH_COEF = how much health tower loses
 // (tower health is from 0 to 1)
 export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.2
@@ -6,42 +8,85 @@ export const TOWER_HEALTH_REGEN = 0.00001 * 2
 
 export const PAUSE_AFTER_WAVE_TIME = 3000;
 
-export class EnemyConfig {
-    static Basic = {
-        'hp': 20,
-        'speed': 1 / 20000,
-        'money': 1,
-        'damage': 1,
-        'armor': 0,
-        'danger': 10,
-        'spriteName': 'enemy1',
-        'tint': 0xffffff,
-    }
+export const WaveConfig = {
+    // ------------------- outer -----------------------
+    // How much time between consecutive spawns in a wave
+    outerEnemyInterval: 500,
+    // How much danger in a wave
+    outerWaveDanger: (wave) => wave * 10,
 
-    static Fat = {
-        'hp': 50,
-        'speed': 1 / 40000,
-        'money': 2,
-        'damage': 1,
-        'armor': 0,
-        'danger': 30,
-        'spriteName': 'fatEnemy',
-        'tint': 0xffffff,
-    }
-
-    static Armoured: { [key: string]: any } = {
-        'hp': 20,
-        'speed': 1 / 30000,
-        'money': 2,
-        'damage': 1,
-        'armor': 2,
-        'danger': 30,
-        'spriteName': 'enemy1',
-        'tint': 0xaaaaff,
-    }
-
-
+    // ------------------- inner -----------------------
+    // How much danger per second is generatee in inner depths?
+    dangerPerSec: (level) => level * 5,
 }
+
+export type EnemyConfig = {
+    name: string
+    class: any
+    hp: integer
+    speed: number
+    money: integer
+    damage: integer
+    armor: integer
+    danger: integer
+    spriteName: string
+    tint: integer
+}
+
+export const Weak: EnemyConfig = {
+    'name': 'Weak',
+    'class': enem.WeakEnemy,
+    'hp': 20,
+    'speed': 1 / 20000,
+    'money': 1,
+    'damage': 1,
+    'armor': 0,
+    'danger': 10,
+    'spriteName': 'enemy1',
+    'tint': 0xffffff,
+}
+
+export const Fat: EnemyConfig = {
+    'name': 'Fat',
+    'class': enem.FatEnemy,
+    'hp': 50,
+    'speed': 1 / 40000,
+    'money': 2,
+    'damage': 1,
+    'armor': 0,
+    'danger': 30,
+    'spriteName': 'fatEnemy',
+    'tint': 0xffffff,
+}
+
+export const Armoured: EnemyConfig = {
+    'name': 'Armoured',
+    'class': enem.ArmouredEnemy,
+    'hp': 20,
+    'speed': 1 / 30000,
+    'money': 2,
+    'damage': 1,
+    'armor': 2,
+    'danger': 30,
+    'spriteName': 'enemy1',
+    'tint': 0xaaaaff,
+}
+
+export const Fast: EnemyConfig = {
+    'name': 'Fast',
+    'class': enem.FastEnemy,
+    'hp': 10,
+    'speed': 1 / 10000,
+    'money': 2,
+    'damage': 1,
+    'armor': 0,
+    'danger': 20,
+    'spriteName': 'enemy1',
+    'tint': 0xff00aa,
+}
+
+export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast]
+
 
 export type TowerConfig = {
     name: string
@@ -70,11 +115,11 @@ export const Basic: TowerConfig = {
     'spriteTop': 0,
     'tintBase': 0xffffff,
     'tintMid': 0xffffff,
-    'tintTop': 0xffffff,
+    'tintTop': 0xaaaaff,
 }
 
 
-export const Sniper = {
+export const Sniper: TowerConfig = {
     'name': "Sniper",
     'damage': level => 20 * level,
     'firerate': level => 4000,

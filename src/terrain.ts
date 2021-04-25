@@ -24,6 +24,8 @@ export class Terrain {
     path: Phaser.Curves.Path  // The Phaser path (for enemy movement)
     pathTiles: GridPos[]  // The sequence of tiles making up the path
 
+    tint: integer // color as a 24-bit int
+
     w: number
     h: number
 
@@ -76,7 +78,7 @@ export class Terrain {
             } else if (pi == this.pathTiles.length - 1) {
                 this.tileSprites[i1][j1] = 7
             } else {
-                let d1 = (getDir(pi-1) + 2) % 4
+                let d1 = (getDir(pi - 1) + 2) % 4
                 let d2 = getDir(pi)
                 if (d1 > d2) {
                     [d1, d2] = [d2, d1]
@@ -93,15 +95,22 @@ export class Terrain {
             }
         }
 
+        this.tint = Phaser.Display.Color.GetColor(
+            PlayerInfo.RNG.integerInRange(180, 255),
+            PlayerInfo.RNG.integerInRange(180, 255),
+            PlayerInfo.RNG.integerInRange(180, 255),
+        )
+
         for (let i = 0; i < this.w; i++) {
             for (let j = 0; j < this.h; j++) {
                 const [x, y] = this.fromGridPos(i, j)
-                scene.add.sprite(x, y, 'tileset', this.tileSprites[i][j]);
+                const sprite = scene.add.sprite(x, y, 'tileset', this.tileSprites[i][j]);
+                if (this.tiles[i][j] == TileType.Buildable) {
+                    sprite.setTint(this.tint)
+                }
             }
         }
-
     }
-
 
     draw(graphics: Phaser.GameObjects.Graphics) {
         // this.drawGrid(graphics)
@@ -260,11 +269,11 @@ export class Terrain {
         return [(i + 0.5) * TILE_SIZE, (j + 0.5) * TILE_SIZE]
     }
 
-    inBounds(i: integer, j: integer, pad=0) {
+    inBounds(i: integer, j: integer, pad = 0) {
         return (i >= pad
-        && i < this.w - pad
-        && j >= pad
-        && j < this.h - pad)
+            && i < this.w - pad
+            && j >= pad
+            && j < this.h - pad)
     }
 }
 
@@ -277,7 +286,7 @@ function randomFreeSprite() {
     return nSpecialSprites + Math.floor(PlayerInfo.RNG.frac() * (N_TILESET_SPRITES - nSpecialSprites))
 }
 
-function init2DArray<TVal>(dim1, dim2, value:TVal): TVal[][] {
+function init2DArray<TVal>(dim1, dim2, value: TVal): TVal[][] {
     return new Array(dim1)
         .fill(false)
         .map(() => new Array(dim2)
