@@ -1,3 +1,5 @@
+import * as enem from "./enemy";
+
 // enemy damage * DAMAGE_TO_TOWER_HEALTH_COEF = how much health tower loses
 // (tower health is from 0 to 1)
 export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.2
@@ -9,6 +11,7 @@ export const PAUSE_AFTER_WAVE_TIME = 3000;
 
 export type EnemyConfig = {
     name: string
+    class: any
     hp: integer
     speed: number
     money: integer
@@ -21,6 +24,7 @@ export type EnemyConfig = {
 
 export const Weak: EnemyConfig = {
     'name': 'Weak',
+    'class': enem.WeakEnemy,
     'hp': 20,
     'speed': 1 / 20000,
     'money': 1,
@@ -33,6 +37,7 @@ export const Weak: EnemyConfig = {
 
 export const Fat: EnemyConfig = {
     'name': 'Fat',
+    'class': enem.FatEnemy,
     'hp': 50,
     'speed': 1 / 40000,
     'money': 2,
@@ -45,6 +50,7 @@ export const Fat: EnemyConfig = {
 
 export const Armoured: EnemyConfig = {
     'name': 'Armoured',
+    'class': enem.ArmouredEnemy,
     'hp': 20,
     'speed': 1 / 30000,
     'money': 2,

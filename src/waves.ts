@@ -60,12 +60,12 @@ export class WaveManager {
             let randEnemy = availEnemies[Math.floor(PlayerInfo.RNG.frac()*availEnemies.length)][1];
             // console.log("Spawning: " + randEnemy[0] + ", danger: " + randEnemy[1].danger);
             this.remainingDanger -= randEnemy.danger;
-            return this.scene.allEnemies[randEnemy.name + 'Enemy'].get();
+            return this.scene.allEnemies[randEnemy.name].get();
         }
 
-        console.log('No available enemy to spawn, spawning WeakEnemy!');
+        console.log('No available enemy to spawn, spawning Weak enemy!');
         this.remainingDanger = 0;
-        return this.scene.allEnemies['WeakEnemy'].get();
+        return this.scene.allEnemies['Weak'].get();
     }
 
     lastTime: number = 0
@@ -76,7 +76,7 @@ export class WaveManager {
         } else {
             if ((this.scene.sceneLevel > 0 || this.remainingDanger > 0) && this.lastTime > this.nextEnemy) {
                 if  (this.scene.sceneLevel > 0)
-                    var enemy = this.scene.allEnemies['WeakEnemy'].get();
+                    var enemy = this.scene.allEnemies['Weak'].get();
                 else
                     var enemy = this.spawnEnemy();
 

@@ -7,7 +7,7 @@ import { MetaScene } from "./scenes/MetaScene";
 
 
 abstract class EnemyBase extends Phaser.GameObjects.Image {
-    stats: any;  // { [key:string]: any }
+    stats: cfg.EnemyConfig;
 
     follower: any
     hp: integer
@@ -95,25 +95,19 @@ abstract class EnemyBase extends Phaser.GameObjects.Image {
 }
 
 export class WeakEnemy extends EnemyBase {
-    static stats = cfg.Weak
-
     constructor(scene: TDScene) {
-        super(scene, WeakEnemy.stats)
+        super(scene, cfg.Weak)
     }
 }
 
 export class FatEnemy extends EnemyBase {
-    static stats = cfg.Fat
-
     constructor(scene: TDScene) {
-        super(scene, FatEnemy.stats)
+        super(scene, cfg.Fat)
     }
 }
 
 export class ArmouredEnemy extends EnemyBase {
-    static stats = cfg.Armoured
-
     constructor(scene: TDScene) {
-        super(scene, ArmouredEnemy.stats)
+        super(scene, cfg.Armoured)
     }
 }

@@ -10,6 +10,7 @@ import { HUD_WIDTH } from "./hudScene";
 import { UUID } from "../utils/guid";
 import { HealthBar } from "../healthBar";
 import { PlayerInfo } from "../playerInfo";
+import { ENEMY_CONFIGS } from "../config";
 
 export const SCENE_TRANSITION_MS = 500
 export const TD_SCENE_WIDTH = MAX_WIDTH * TILE_SIZE
@@ -65,8 +66,8 @@ export class TDScene extends Phaser.Scene {
         this.waveManager = new WaveManager(this);
         this.towerManager = new TowerManager(this);
 
-        for (let enemyType of [enem.WeakEnemy, enem.FatEnemy, enem.ArmouredEnemy]) {
-            this.allEnemies[enemyType.name] = this.physics.add.group({ classType: enemyType, runChildUpdate: true });
+        for (let enemy of ENEMY_CONFIGS) {
+            this.allEnemies[enemy.name] = this.physics.add.group({ classType: enemy.class, runChildUpdate: true });
         }
 
         this.towers = this.add.group({ classType: Tower, runChildUpdate: true });
