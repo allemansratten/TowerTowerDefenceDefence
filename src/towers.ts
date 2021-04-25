@@ -117,6 +117,11 @@ export class Tower extends Phaser.GameObjects.Container {
             this.healthBar.health = 0
             this.level++
             this.levelText.setText("" + this.level)
+
+            if (this.stats.range(this.level - 1) < this.stats.range(this.level)) {
+                let rangeScale = this.stats.range(this.level) / this.stats.range(1);
+                this.rangeIndicator.setScale(rangeScale);
+            }
         }
 
         this.healthBar.update(delta)

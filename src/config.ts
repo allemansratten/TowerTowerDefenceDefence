@@ -123,7 +123,7 @@ export const Sniper: TowerConfig = {
     'name': "Sniper",
     'damage': level => 20 * level,
     'firerate': level => 4000,
-    'range': level => 300,
+    'range': level => 200 + level * 20,
     'bulletSpeedMod': 3.5,
     'price': 20,
     'spriteBase': 0,
