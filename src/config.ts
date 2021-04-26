@@ -209,9 +209,9 @@ export const Sniper: TowerConfig = {
 
 export const Multishot: TowerConfig = {
     'name': "Multishot",
-    'damage': level => 5 + 15*(level-1),
+    'damage': level => 10 + 15*(level-1),
     'firerate': level => 800,
-    'range': level => 90,
+    'range': level => 90 + 10*(level-1),
     'numTargets': level => 3,
     'bulletSpeedMod': 4,
     'price': 10,
@@ -221,7 +221,7 @@ export const Multishot: TowerConfig = {
     'tintBase': 0xffffff,
     'tintMid': 0x7f4d61,
     'tintTop': 0xaa4e61,
-    'description': "Can shoot at multiple enemies at once. Damage and fire rate grow with level.",
+    'description': "Can shoot at multiple enemies at once. Damage, range, and number of targets grow with level.",
 }
 
 export const TOWER_CONFIGS = [Basic, Multishot, Sniper]
