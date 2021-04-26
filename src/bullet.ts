@@ -1,5 +1,5 @@
-import { PlayerInfo } from "./playerInfo"
-import { TDScene } from "./scenes/tdScene"
+import {PlayerInfo} from "./playerInfo"
+import {TDScene} from "./scenes/tdScene"
 
 export const RADIUS = 10
 
@@ -50,11 +50,11 @@ export class Bullet extends Phaser.GameObjects.Container {
         this.dx = Math.cos(angle);
         this.dy = Math.sin(angle);
 
-        this.lifespan = 1000/speedMod;
+        this.lifespan = 1000 / speedMod;
 
         this.emitter = this.particles.createEmitter({
             speed: 100,
-            scale: { start: 0.3, end: 0 },
+            scale: {start: 0.3, end: 0},
             blendMode: 'ADD',
             lifespan: 100,
         });
@@ -81,6 +81,8 @@ export class Bullet extends Phaser.GameObjects.Container {
             this.setActive(false);
             this.setVisible(false);
             this.particles.destroy(); // disable emittor (also could explode it)
+            this.emitter.manager.removeEmitter(this.emitter)
+            this.destroy()
         }
     }
 }

@@ -1,4 +1,4 @@
-import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG, EnemyConfig } from "../config";
+import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG, EnemyConfig, WaveConfig } from "../config";
 import { EnemyBase } from "../enemy";
 import { PlayerInfo } from "../playerInfo";
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
@@ -203,10 +203,17 @@ export class HudScene extends Phaser.Scene {
     setDescriptionEnemy(enemy: EnemyBase) {
         let text = ""
         if (enemy) {
+            let wave: integer;
+            if(this.metaScene.activeScene.sceneLevel === 0)
+                wave = enemy.scene.waveManager.currentWave;
+            else
+                wave = WaveConfig.levelToWave(this.metaScene.activeScene.getTowerParent().level);
+
             text += `${enemy.stats.displayName}\n`;
-            text += `Health: ${enemy.hp}/${enemy.stats.hp(1)}\n`;
-            text += `Armour: ${enemy.stats.damage}\n`;
+            text += `Health: ${enemy.hp}/${enemy.stats.hp(wave)}\n`;
+            text += `Armour: ${enemy.stats.armour(wave)}\n`;
             text += `Speed: ${enemy.speed * 60000}\n`;
+            text += `Loot: ${enemy.stats.money}\n`;
             if(enemy.stats.blurb)
                 text += `\n${enemy.stats.blurb}\n`;
         }

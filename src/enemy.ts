@@ -69,6 +69,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
             const metaScene = this.scene.scene.get("metaScene") as MetaScene
             metaScene.getActiveScene().cameras.main.shake(200, 0.005)
+            this.scene.metaScene.damageSound.play();
 
             this.scene.waveManager.respawn(this.stats, this.hp);
         }
@@ -136,6 +137,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
             duration: PlayerInfo.RNG.integerInRange(600, 800),
             ease: 'Power2'
         });
+        this.scene.metaScene.enemiesSlain++;
     }
 
     onDeathSplit() {

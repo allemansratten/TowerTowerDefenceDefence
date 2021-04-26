@@ -98,7 +98,9 @@ export class WaveManager {
             wave = this.currentWave
         } else {
             if (!this.queuedEnemy) {
-                this.queuedEnemy = this.getRandEnemy(() => true)
+                this.queuedEnemy = this.getRandEnemy((enemy) => {
+                    return enemy.minWave <= 2 * WaveConfig.levelToWave(this.scene.getTowerParent().level)
+                })
             }
 
             const a = this.lastTime * (WaveConfig.dangerPerSec(this.scene.getTowerParent().level) * 0.001)
