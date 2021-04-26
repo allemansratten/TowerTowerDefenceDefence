@@ -1,7 +1,7 @@
 import { PLAYER_HEALTH_REGEN } from "./config";
 
 export class PlayerInfo {
-    static money: number = 10;
+    static money: number = 5;
     static hp: number = 10;
     static timeScale: number = 1;
     static RNG = new Phaser.Math.RandomDataGenerator(["42"])
