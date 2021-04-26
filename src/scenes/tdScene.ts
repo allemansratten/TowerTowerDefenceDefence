@@ -5,7 +5,7 @@ import { WaveManager } from "../waves"
 import { TowerManager } from "../towerManager"
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
 import { TDSceneConfig } from "./tdSceneConfig";
-import { MetaScene } from "./MetaScene";
+import { MetaScene } from "./metaScene";
 import { HUD_WIDTH } from "./hudScene";
 import { UUID } from "../utils/guid";
 import { HealthBar } from "../healthBar";

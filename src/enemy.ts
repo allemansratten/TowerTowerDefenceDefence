@@ -3,7 +3,7 @@ import { TDScene } from "./scenes/tdScene";
 import { PlayerInfo } from "./playerInfo";
 import * as cfg from "./config";
 import { HudScene } from "./scenes/hudScene";
-import { MetaScene } from "./scenes/MetaScene";
+import { MetaScene } from "./scenes/metaScene";
 
 
 export abstract class EnemyBase extends Phaser.GameObjects.Sprite {

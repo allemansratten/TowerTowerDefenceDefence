@@ -2,7 +2,7 @@ import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG } from "../config";
 import { PlayerInfo } from "../playerInfo";
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
 import { Tower } from "../towers";
-import { MetaScene } from "./MetaScene";
+import { MetaScene } from "./metaScene";
 import { TDScene, TD_SCENE_HEIGHT, TD_SCENE_WIDTH } from "./tdScene";
 
 const HUD_BG_COLOR = 0xff8a6d  //0xffaa7d
