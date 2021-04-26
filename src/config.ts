@@ -30,18 +30,18 @@ export const WaveConfig = {
 }
 
 export type EnemyConfig = {
-    name: string
-    class: any
-    hp: (integer) => integer
-    speed: number
-    money: integer
-    damage: integer
-    armor: integer
-    danger: integer
-    spriteName: string
+    name: string  // must be same as config object name
+    class: any  // class of the enemy as defined in ./enemy.ts
+    hp: (integer) => integer  // can scale with wave
+    speed: number  // fraction of path
+    money: integer  // on-kill reward
+    damage: integer  // damage dealt on reaching end
+    armour: integer  // flat reduction of incoming damage
+    danger: integer  // for calculating wave difficulty
+    spriteName: string  // sprite as imported in metaScene.preload
     tint: integer
-    split?: {
-        cfg: EnemyConfig
+    split?: {  // optional split info
+        cfg: EnemyConfig  // TODO: make split into multiple types possible?
         amount: integer
     }
 }
@@ -53,7 +53,7 @@ export const Weak: EnemyConfig = {
     'speed': 1 / 20000,
     'money': 1,
     'damage': 1,
-    'armor': 0,
+    'armour': 0,
     'danger': 20,
     'spriteName': 'enemy1',
     'tint': 0xffffff,
@@ -66,7 +66,7 @@ export const Fat: EnemyConfig = {
     'speed': 1 / 40000,
     'money': 2,
     'damage': 1,
-    'armor': 0,
+    'armour': 0,
     'danger': 240,
     'spriteName': 'fatEnemy',
     'tint': 0xffffff,
@@ -79,7 +79,7 @@ export const Armoured: EnemyConfig = {
     'speed': 1 / 30000,
     'money': 2,
     'damage': 1,
-    'armor': 4,
+    'armour': 4,
     'danger': 160,
     'spriteName': 'enemy1',
     'tint': 0xaaaaff,
@@ -92,10 +92,10 @@ export const Fast: EnemyConfig = {
     'speed': 1 / 10000,
     'money': 1,
     'damage': 1,
-    'armor': 0,
+    'armour': 0,
     'danger': 80,
-    'spriteName': 'enemy1',
-    'tint': 0xff00aa,
+    'spriteName': 'fastEnemy',
+    'tint': 0xffffff,
 }
 
 export const Splitter: EnemyConfig = {
@@ -105,7 +105,7 @@ export const Splitter: EnemyConfig = {
     'speed': 1 / 30000,
     'money': 1,
     'damage': 1,
-    'armor': 0,
+    'armour': 0,
     'danger': 60,
     'spriteName': 'enemy1',
     'tint': 0xff7070,
@@ -121,9 +121,9 @@ export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast, Splitter]
 export type TowerConfig = {
     name: string
     damage: (integer) => number
-    firerate: (integer) => number
+    firerate: (integer) => number  // miliseconds between each shot
     range: (integer) => number
-    bulletSpeedMod: number
+    bulletSpeedMod: number  // bullet will reach range in 1/bulletSpeedMod seconds
     price: number
     spriteBase: integer
     spriteMid: integer

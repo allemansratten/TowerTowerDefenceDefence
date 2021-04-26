@@ -34,6 +34,12 @@ export class MetaScene extends Phaser.Scene {
             repeat: -1
         });
         this.anims.create({
+            key: 'fastEnemy_walk',
+            frames: this.anims.generateFrameNumbers('fastEnemy', { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
             key: 'fatEnemy_walk',
             frames: this.anims.generateFrameNumbers('fatEnemy', { start: 0, end: 9 }),
             frameRate: 10,
@@ -87,6 +93,7 @@ export class MetaScene extends Phaser.Scene {
         this.load.setBaseURL('assets/')
 
         this.load.spritesheet('enemy1', 'enemy.png', { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet('fastEnemy', 'fastenemy.png', { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet('fatEnemy', 'chonk.png', { frameWidth: 56, frameHeight: 56 });
 
         this.load.image('bullet', 'bullet.png');

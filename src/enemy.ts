@@ -99,7 +99,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
     }
 
     receiveDamage(damage: integer) {
-        this.hp -= damage - this.stats.armor;
+        this.hp -= damage - this.stats.armour;
 
         // if hp drops below 0 we deactivate this enemy
         if (this.hp <= 0) {
