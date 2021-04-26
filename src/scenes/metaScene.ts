@@ -13,6 +13,7 @@ export class MetaScene extends Phaser.Scene {
     public scenes: TDScene[]
     public activeScene: TDScene
     mainSound: Phaser.Sound.BaseSound;
+    buildSound: Phaser.Sound.BaseSound;
 
     constructor() {
         super(sceneConfig);
@@ -26,6 +27,8 @@ export class MetaScene extends Phaser.Scene {
 
         this.mainSound = this.sound.add("main_music", { "loop": true, "volume": 0.1 });
         this.mainSound.play();
+
+        this.buildSound = this.sound.add('build_sound', { 'loop': false, 'volume': 1});
 
         this.anims.create({
             key: 'weakEnemy_walk',
@@ -153,7 +156,8 @@ export class MetaScene extends Phaser.Scene {
         )
         this.load.image('particle_red', 'particle_red.png');
 
-        this.load.audio("main_music", "gamejam_LD48.ogg")
+        this.load.audio("main_music", "gamejam_LD48.ogg");
+        this.load.audio('build_sound', 'build.wav');
     }
 
     getActiveScene() {
