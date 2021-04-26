@@ -156,6 +156,7 @@ export type TowerConfig = {
     damage: (integer) => number
     firerate: (integer) => number  // miliseconds between each shot
     range: (integer) => number
+    numTargets?: (integer) => integer  // set for towers that target multiple enemies
     bulletSpeedMod: number  // bullet will reach range in 1/bulletSpeedMod seconds
     price: number
     spriteBase: integer
@@ -206,6 +207,7 @@ export const Multishot: TowerConfig = {
     'damage': level => 5 + 15*(level-1),
     'firerate': level => 800,
     'range': level => 90,
+    'numTargets': level => 3,
     'bulletSpeedMod': 4,
     'price': 10,
     'spriteBase': 0,
