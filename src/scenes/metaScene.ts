@@ -24,7 +24,7 @@ export class MetaScene extends Phaser.Scene {
         this.scenes[0].scene.setVisible(true);
         this.scene.start("hudScene");
 
-        this.mainSound = this.sound.add("main_music", {"loop": true, "volume": 0.1});
+        this.mainSound = this.sound.add("main_music", { "loop": true, "volume": 0.1 });
         this.mainSound.play();
 
         this.anims.create({
@@ -54,16 +54,20 @@ export class MetaScene extends Phaser.Scene {
     }
 
     // Creates new Scene, enables it, and sets it invisible
-    public addScene(parentScene?: TDScene): TDScene {
+    public addScene(parentSceneKey?: string): TDScene {
+        let parentScene = this.getSceneByKey(parentSceneKey)
         let sceneLevel = (parentScene?.sceneLevel ?? -1) + 1;
 
         let sceneIndex = this.scenes.length;
+        const sceneKey = `tdScene${sceneIndex}`
+
         let newScene = new TDScene(
-            new TDSceneConfig(new Terrain(10, 8), sceneLevel, parentScene),
-            this);
+            new TDSceneConfig(new Terrain(10, 8), sceneLevel, parentSceneKey, sceneKey),
+            this,
+        );
 
         this.scene.add(
-            `tdScene${sceneIndex}`,
+            sceneKey,
             newScene,
             true
         );
@@ -74,24 +78,31 @@ export class MetaScene extends Phaser.Scene {
         return newScene;
     }
 
+    public getSceneByKey(key?: string): TDScene | undefined {
+        if (key) {
+            return this.scene.get(key) as TDScene
+        }
+    }
+
 
     // makes current scene invisible, makes new scene visible; doesn't change activness
-    public switchToScene(switchToScene: TDScene, goingInside: boolean, i = 0, j = 0) {
+    public switchToScene(newSceneKey: string, goingInside: boolean, i = 0, j = 0) {
         this.activeScene?.setIsForeground(false, goingInside, i, j);
+        let newScene = this.getSceneByKey(newSceneKey)
 
-        switchToScene.time.addEvent({
+        newScene.time.addEvent({
             delay: SCENE_TRANSITION_MS,
             loop: false,
             callback: () => {
                 this.activeScene?.scene.setVisible(false)
-                switchToScene.scene.setVisible(true)
-                this.activeScene = switchToScene
-                switchToScene.setIsForeground(true, goingInside, i, j);
+                newScene.scene.setVisible(true)
+                this.activeScene = newScene
+                newScene.setIsForeground(true, goingInside, i, j);
             }
         })
 
         // 1.05946309436 ~ 2^(1/12), i.e. one semitone
-        this.sound.setRate(1/(Math.pow(1.05946309436, switchToScene.sceneLevel)))
+        this.sound.setRate(1 / (Math.pow(1.05946309436, newScene.sceneLevel)))
     }
 
     public preload() {
@@ -133,8 +144,8 @@ export class MetaScene extends Phaser.Scene {
         let parentScenes: TDScene[] = []
         let scene = this.getActiveScene();
 
-        while (scene?.sceneParent) {
-            let parent = scene.sceneParent;
+        while (scene?.sceneParentKey) {
+            let parent = this.getSceneByKey(scene.sceneParentKey)
             parentScenes.push(parent);
             scene = parent;
         }
@@ -145,8 +156,8 @@ export class MetaScene extends Phaser.Scene {
     getRootTDScene() {
         let scene = this.getActiveScene();
 
-        while (scene?.sceneParent) {
-            scene = scene.sceneParent;
+        while (scene?.sceneParentKey) {
+            scene = this.getSceneByKey(scene.sceneParentKey)
         }
 
         return scene

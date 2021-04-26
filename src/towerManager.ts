@@ -20,9 +20,9 @@ export class TowerManager {
         if (this.scene.terrain.canPlaceTower(i, j)) {
             var tower: towers.Tower = this.scene.towers.get();
 
-            let newScene = this.scene.metaScene.addScene(this.scene)
+            let newScene = this.scene.metaScene.addScene(this.scene.scene.key)
             if (tower) {
-                tower.make(i, j, newScene, this.towerTypes[towerType][1], this.towerTypes[towerType][0]);
+                tower.make(i, j, newScene.scene.key, this.towerTypes[towerType][1], this.towerTypes[towerType][0]);
                 PlayerInfo.money -= tower.config.price
                 newScene.setTowerParent(tower)
             }

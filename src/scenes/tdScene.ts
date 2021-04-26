@@ -30,7 +30,7 @@ export class TDScene extends Phaser.Scene {
     waveManager: WaveManager
     towerManager: TowerManager
 
-    sceneParent: TDScene;
+    sceneParentKey: string;
     sceneLevel: number; // Level of recursion
 
     private towerParent: Tower  // to what tower does this scene correspond? undefined for root
@@ -43,14 +43,14 @@ export class TDScene extends Phaser.Scene {
         super({
             active: false,
             visible: false,
-            key: `tdScene${UUID.uuidv4()}`,
+            key: config.sceneKey, //`tdScene${UUID.uuidv4()}`,
         });
 
         this.terrain = config.terrain;
         this.metaScene = metaScene;
 
         this.sceneLevel = config.sceneLevel;
-        this.sceneParent = config.sceneParent;
+        this.sceneParentKey = config.sceneParentKey;
     }
 
     public create() {
@@ -178,12 +178,12 @@ export class TDScene extends Phaser.Scene {
 
         let potentialExistingTower = this.terrain.tryGetExistingTower(i, j);
         if (potentialExistingTower) {
-            this.metaScene.switchToScene(potentialExistingTower.innerTowerScene, true, i, j)
+            this.metaScene.switchToScene(potentialExistingTower.getInnerTowerSceneKey(), true, i, j)
         }
 
         const end = this.terrain.pathTiles[this.terrain.pathTiles.length - 1]
-        if (i === end[0] && j === end[1] && this.sceneParent) {
-            this.metaScene.switchToScene(this.sceneParent, false, i, j)
+        if (i === end[0] && j === end[1] && this.sceneParentKey) {
+            this.metaScene.switchToScene(this.sceneParentKey, false, i, j)
         }
     }
 

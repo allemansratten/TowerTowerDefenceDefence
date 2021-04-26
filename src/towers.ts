@@ -47,7 +47,7 @@ export class Tower extends Phaser.GameObjects.Container {
     level: integer
     levelText: Phaser.GameObjects.Text
 
-    public innerTowerScene: TDScene
+    private innerTowerSceneKey: string
 
     constructor(towerScene: TDScene) {
         super(towerScene, 0, 0)
@@ -55,7 +55,7 @@ export class Tower extends Phaser.GameObjects.Container {
         this.scene = towerScene;
     }
 
-    public make(i: number, j: number, innerTowerScene: TDScene, config: TowerConfig, towerClassName) {
+    public make(i: number, j: number, innerTowerSceneKey: string, config: TowerConfig, towerClassName) {
         this.config = config
         this.stats = this.config;
 
@@ -110,7 +110,7 @@ export class Tower extends Phaser.GameObjects.Container {
 
         const pad = 3
         this.levelText = this.scene.add.text(
-            xCoord + 15, yCoord, "" + this.level,
+            xCoord + 15, yCoord - 4, "" + this.level,
             {
                 fontSize: "20px",
                 color: "white",
@@ -120,8 +120,10 @@ export class Tower extends Phaser.GameObjects.Container {
         )
         this.add(this.levelText)
 
-        this.innerTowerScene = innerTowerScene
-        this.innerTowerScene.onEnemyReachedEnd((damage) => {
+        this.innerTowerSceneKey = innerTowerSceneKey
+        
+        let innerTowerScene = this.scene.scene.get(innerTowerSceneKey) as TDScene
+        innerTowerScene.onEnemyReachedEnd((damage) => {
             this.healthBar.health -= damage * DAMAGE_TO_TOWER_HEALTH_COEF
         })
     }
@@ -145,6 +147,10 @@ export class Tower extends Phaser.GameObjects.Container {
         }
 
         this.healthBar.update(delta)
+    }
+
+    getInnerTowerSceneKey() {
+        return this.innerTowerSceneKey
     }
 }
 
