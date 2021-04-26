@@ -97,6 +97,11 @@ export class MetaScene extends Phaser.Scene {
         this.activeScene?.setIsForeground(false, goingInside, i, j);
         let newScene = this.getSceneByKey(newSceneKey)
 
+        console.log(
+            `Switching from ${this.activeScene.scene.key} (parent ${this.activeScene.sceneParentKey}) to`
+            + ` ${newScene.scene.key} (parent ${newScene.sceneParentKey})`
+        )
+
         newScene.time.addEvent({
             delay: SCENE_TRANSITION_MS,
             loop: false,
