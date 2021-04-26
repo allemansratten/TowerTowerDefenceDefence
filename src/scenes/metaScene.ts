@@ -117,11 +117,11 @@ export class MetaScene extends Phaser.Scene {
         this.load.setBaseURL('assets/')
 
         this.load.spritesheet('enemy1', 'enemy.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('fastEnemy', 'fastenemy.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('armouredEnemy', 'armoredenemy.png', { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet('fastEnemy', 'enemy_fast.png', { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet('armouredEnemy', 'enemy_armored.png', { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet('splitterBigEnemy', 'enemy_split_big.png', { frameWidth: 48, frameHeight: 48 });
         // this.load.spritesheet('splitterSmallEnemy', 'enemy_split_small.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('fatEnemy', 'chonk.png', { frameWidth: 56, frameHeight: 56 });
+        this.load.spritesheet('fatEnemy', 'enemy_chonk.png', { frameWidth: 56, frameHeight: 56 });
 
         this.load.image('bullet', 'bullet.png');
         this.load.spritesheet('tileset',
