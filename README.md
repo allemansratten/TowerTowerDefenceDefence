@@ -11,7 +11,7 @@ Towers do all the work in TD games. But who will defend the defenders themselves
 - Bety @Lavialee (animation)
 - Vojta @DrCuketa (game balance)
 - Vašek @vvolhejn (dev)
-- Ondra Trhoň (music)
+- Ondra @OndrejTrhon (music)
 
 Additional help:
 - Bouča @Colanderr (testing, bugfix)
