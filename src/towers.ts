@@ -267,7 +267,7 @@ export class MultishotTurret extends _TowerTurret {
                 );
                 this.fireAnimation(angle, damage)
                 if (this.scene == this.scene.metaScene.activeScene)
-                    this.scene.metaScene.shootSound.play();
+                    this.scene.metaScene.multishotSound.play();  // this should be in config if this were done properly
             }
             return true
         }

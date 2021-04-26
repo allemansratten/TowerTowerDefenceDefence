@@ -15,9 +15,12 @@ export class MetaScene extends Phaser.Scene {
     public scenes: TDScene[]
     public activeScene: TDScene
     mainSound: Phaser.Sound.BaseSound;
+
+    // Why are these sounds here? Because we're out of time
     buildSound: Phaser.Sound.BaseSound;
     damageSound: Phaser.Sound.BaseSound;
     shootSound: Phaser.Sound.BaseSound;
+    multishotSound: Phaser.Sound.BaseSound;
 
     enemiesSlain: integer = 0;
 
@@ -38,7 +41,8 @@ export class MetaScene extends Phaser.Scene {
 
         this.buildSound = this.sound.add('build_sound', { 'loop': false, 'volume': 1});
         this.damageSound = this.sound.add('damage_sound', { 'loop': false, 'volume': 0.15});
-        this.shootSound = this.sound.add('shoot_sound', { 'loop': false, 'volume': 0.04});
+        this.shootSound = this.sound.add('shoot_sound', { 'loop': false, 'volume': 0.03});
+        this.multishotSound = this.sound.add('multishot_sound', { 'loop': false, 'volume': 0.03});
     }
 
   // Creates new Scene, enables it, and sets it invisible
@@ -151,7 +155,8 @@ export class MetaScene extends Phaser.Scene {
         this.load.audio("main_music", "gamejam_LD48.ogg");
         this.load.audio('build_sound', 'build.wav');
         this.load.audio('damage_sound', 'damage.wav');
-        this.load.audio('shoot_sound', 'laser.wav');
+        this.load.audio('shoot_sound', 'turretshot.wav');
+        this.load.audio('multishot_sound', 'multishot.wav');
     }
 
     createAnimations() { // TODO: Make this not dumb and ugly
