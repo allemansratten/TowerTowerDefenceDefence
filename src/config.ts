@@ -151,9 +151,28 @@ export const SplitterBig: EnemyConfig = {
 	'blurb': 'Eyes to meet you.'
 }
 
+export const SplitterFat: EnemyConfig = {
+    'name': 'SplitterFat',
+    'displayName': 'Splitter',
+    'class': enem.SplitterFatEnemy,
+    'hp': (wave) => 40 + 5*(wave-1),
+    'speed': 1 / 40000,
+    'money': 0,
+    'damage': 1,
+    'armour': (wave) => 0,
+    'danger': 200,
+    'spriteName': 'splitterFatEnemy',
+    'tint': 0xffffff,
+    'split': {
+        'cfg': SplitterBig,
+        'amount': 2
+    },
+    'minWave': 20
+}
 
 
-export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast, SplitterBig, SplitterSmall]
+
+export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast, SplitterBig, SplitterSmall, SplitterFat]
 
 
 export type TowerConfig = {
