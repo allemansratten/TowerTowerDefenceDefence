@@ -46,6 +46,7 @@ export class WaveManager {
         this.waveActive = true;
         this.currentWave++;
         this.getWaveDifficulty();
+        PlayerInfo.waveHealthRegen();
         console.log('Starting wave ' + this.currentWave + ', wave difficulty: ' + this.waveDifficulty);
     }
 

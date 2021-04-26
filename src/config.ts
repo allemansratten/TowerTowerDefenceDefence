@@ -8,6 +8,8 @@ export const TOWER_HEALTH_REGEN = 0.00001 * 2
 
 export const PAUSE_AFTER_WAVE_TIME = 3000;
 
+export const PLAYER_HEALTH_REGEN: number = 0;  // how much health per wave, can be < 1
+
 export const RANGE_INDICATOR_CONFIG = {
     'colour': 0xbbbbff,
     'alpha': 210,
