@@ -72,7 +72,7 @@ export const Fat: EnemyConfig = {
     'danger': 100,
     'spriteName': 'fatEnemy',
     'tint': 0xffffff,
-    'minWave': 0
+    'minWave': 8
 }
 
 export const Armoured: EnemyConfig = {
@@ -86,7 +86,7 @@ export const Armoured: EnemyConfig = {
     'danger': 100,
     'spriteName': 'armouredEnemy',
     'tint': 0xffffff,
-    'minWave': 0
+    'minWave': 6
 }
 
 export const Fast: EnemyConfig = {
@@ -100,7 +100,7 @@ export const Fast: EnemyConfig = {
     'danger': 40,
     'spriteName': 'fastEnemy',
     'tint': 0xffffff,
-    'minWave': 0
+    'minWave': 2
 }
 
 export const SplitterSmall: EnemyConfig = {
@@ -108,7 +108,7 @@ export const SplitterSmall: EnemyConfig = {
     'class': enem.SplitterSmallEnemy,
     'hp': (wave) => 10,
     'speed': 1 / 20000,
-    'money': 1,
+    'money': 0,
     'damage': 1,
     'armour': (wave) => 0,
     'danger': 20,
@@ -132,7 +132,7 @@ export const SplitterBig: EnemyConfig = {
         'cfg': SplitterSmall,
         'amount': 2
     },
-    'minWave': 0
+    'minWave': 4
 }
 
 
