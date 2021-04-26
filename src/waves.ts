@@ -53,7 +53,6 @@ export class WaveManager {
     private spawnEnemy() {
         if (this.respawnQueue.length > 0) {
             let respawn = this.respawnQueue.shift();
-            console.log(respawn);
             this.respawnHealth = respawn[1];
             this.remainingDanger -= respawn[0].danger;
             return this.scene.allEnemies[respawn[0].name].get();
