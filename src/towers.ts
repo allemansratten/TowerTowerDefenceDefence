@@ -246,8 +246,12 @@ export class MultishotTurret extends _TowerTurret {
     }
 
 
-    fire() {
-        let enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, 3);
+    fire() {  // this behaviour should be in _TowerTurret.fire btw
+        let numTargets = 3
+        if (this.parent.stats.numTargets) {
+            numTargets = this.parent.stats.numTargets(this.parent.level);
+        }
+        let enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, numTargets);
 
         if (enemies && enemies.length > 0) {
             for (let enemy of enemies) {
