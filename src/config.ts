@@ -98,24 +98,24 @@ export const Fast: EnemyConfig = {
     'tint': 0xffffff,
 }
 
-export const Splitter: EnemyConfig = {
-    'name': 'Splitter',
-    'class': enem.SplitterEnemy,
+export const SplitterBig: EnemyConfig = {
+    'name': 'SplitterBig',
+    'class': enem.SplitterBigEnemy,
     'hp': (wave) => 15,
     'speed': 1 / 30000,
     'money': 1,
     'damage': 1,
     'armour': (wave) => 0,
     'danger': 60,
-    'spriteName': 'enemy1',
-    'tint': 0xff7070,
+    'spriteName': 'splitterBigEnemy',
+    'tint': 0xffffff,
     'split': {
         'cfg': Weak,
         'amount': 2
     }
 }
 
-export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast, Splitter]
+export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast, SplitterBig]
 
 
 export type TowerConfig = {

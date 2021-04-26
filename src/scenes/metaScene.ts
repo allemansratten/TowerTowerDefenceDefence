@@ -51,6 +51,13 @@ export class MetaScene extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         });
+        this.anims.create({
+            key: 'splitterBigEnemy_walk',
+            frames: this.anims.generateFrameNumbers('splitterBigEnemy', { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
     }
 
     // Creates new Scene, enables it, and sets it invisible
@@ -112,6 +119,8 @@ export class MetaScene extends Phaser.Scene {
         this.load.spritesheet('enemy1', 'enemy.png', { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet('fastEnemy', 'fastenemy.png', { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet('armouredEnemy', 'armoredenemy.png', { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet('splitterBigEnemy', 'enemy_split_big.png', { frameWidth: 48, frameHeight: 48 });
+        // this.load.spritesheet('splitterSmallEnemy', 'enemy_split_small.png', { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet('fatEnemy', 'chonk.png', { frameWidth: 56, frameHeight: 56 });
 
         this.load.image('bullet', 'bullet.png');

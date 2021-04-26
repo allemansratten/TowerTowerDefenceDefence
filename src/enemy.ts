@@ -155,9 +155,9 @@ export class FastEnemy extends EnemyBase {
     }
 }
 
-export class SplitterEnemy extends EnemyBase {
+export class SplitterBigEnemy extends EnemyBase {
     constructor(scene: TDScene) {
-        super(scene, cfg.Splitter)
+        super(scene, cfg.SplitterBig)
     }
 
     onDeathAbility() {

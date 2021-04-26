@@ -8,7 +8,6 @@ export class WaveManager {
     scene: TDScene
     currentWave: integer = 0
     nextEnemy: integer = 0
-    spawnedEnemies: integer = 0
     deadDanger: integer = 0
     remainingDanger: integer = 0
     waveDifficulty: integer = 0
@@ -114,7 +113,6 @@ export class WaveManager {
 
             // place the enemy at the start of the path
             enemy.startOnPath(this.currentWave);
-            this.spawnedEnemies++;
             this.nextEnemy = this.lastTime + this.enemyInterval;
         }
     }
