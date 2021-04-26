@@ -86,6 +86,11 @@ export class Tower extends Phaser.GameObjects.Container {
         this.towerBase.setInteractive();
         this.towerBase.on('pointerover', () => {
             this.scene.children.bringToTop(this);
+            this.scene.children.list.forEach(child => {
+                if(child.constructor.name.match(/^.+Enemy$/)) {
+                    this.scene.children.bringToTop(child);
+                }
+            });
             this.rangeIndicator.setVisible(true);
 
             let hudScene = this.scene.scene.get("hudScene") as HudScene
@@ -214,7 +219,7 @@ export class MultishotTurret extends _TowerTurret {
 
     fire() {
         let enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, 3);
-        
+
         if (enemies && enemies.length > 0) {
             for (let enemy of enemies) {
                 var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
