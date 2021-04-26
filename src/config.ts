@@ -27,6 +27,8 @@ export const WaveConfig = {
     // ------------------- inner -----------------------
     // How much danger per second is generatee in inner depths?
     dangerPerSec: (level) => 10*level,
+    // To what wave number does a tower level correspond? (for enemy scaling)
+    levelToWave: (level) => 5 * level,
 }
 
 export type EnemyConfig = {

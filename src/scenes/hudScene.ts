@@ -128,6 +128,12 @@ export class HudScene extends Phaser.Scene {
         for (const icon of this.buyTowerIcons) {
             icon.update(this.lastTime, delta)
         }
+
+        if (PlayerInfo.hp <= 0) {
+            this.metaScene.gameOver()
+        }
+        
+    
     }
 
     updateInfoBasedOnActiveScene() {
