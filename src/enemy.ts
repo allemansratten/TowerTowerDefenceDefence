@@ -120,6 +120,8 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
     onDeath() {
         this.onDeathAbility();
+        if (this.stats.split)
+            this.onDeathSplit()
 
         if (this.scene.sceneLevel === 0) {  // Add gold in base layer only
             this.scene.waveManager.deadDanger += this.stats.danger
@@ -134,6 +136,17 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
             duration: PlayerInfo.RNG.integerInRange(600, 800),
             ease: 'Power2'
         });
+    }
+
+    onDeathSplit() {
+        for(let i = 0; i < this.stats.split.amount; i++) {
+            let newEnemy = this.scene.allEnemies[this.stats.split.cfg.name].get()
+            newEnemy.setVisible(true);
+            newEnemy.setActive(true);
+
+            this.scene.waveManager.deadDanger -= this.stats.split.cfg.danger;
+            newEnemy.startOnPath(this.scene.waveManager.currentWave, 0, this.follower.t);
+        }
     }
 
     onDeathAbility() {  // override this for special on-death abilities
@@ -167,21 +180,6 @@ export class FastEnemy extends EnemyBase {
 export class SplitterBigEnemy extends EnemyBase {
     constructor(scene: TDScene) {
         super(scene, cfg.SplitterBig)
-    }
-
-    onDeathAbility() {
-        if (!this.stats.split) {
-            console.log('ERROR missing split config on ' + this.constructor.name);
-            return;
-        }
-        for(let i = 0; i < this.stats.split.amount; i++) {
-            let newEnemy = this.scene.allEnemies[this.stats.split.cfg.name].get()
-            newEnemy.setVisible(true);
-            newEnemy.setActive(true);
-
-            this.scene.waveManager.deadDanger -= this.stats.split.cfg.danger;
-            newEnemy.startOnPath(this.scene.waveManager.currentWave, 0, this.follower.t);
-        }
     }
 }
 
