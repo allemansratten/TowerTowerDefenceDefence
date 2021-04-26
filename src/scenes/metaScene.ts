@@ -1,6 +1,8 @@
-import { Terrain } from "../terrain"
-import { SCENE_TRANSITION_MS, TDScene } from "./tdScene";
-import { TDSceneConfig } from "./tdSceneConfig"
+import { PlayerInfo } from "../playerInfo";
+import {Terrain} from "../terrain"
+import { GameOverScene } from "./gameOverScene";
+import {SCENE_TRANSITION_MS, TDScene} from "./tdScene";
+import {TDSceneConfig} from "./tdSceneConfig"
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: true,
@@ -13,6 +15,7 @@ export class MetaScene extends Phaser.Scene {
     public scenes: TDScene[]
     public activeScene: TDScene
     mainSound: Phaser.Sound.BaseSound;
+    buildSound: Phaser.Sound.BaseSound;
 
     constructor() {
         super(sceneConfig);
@@ -20,40 +23,19 @@ export class MetaScene extends Phaser.Scene {
     }
 
     public create() {
+        this.createAnimations()
+
         this.activeScene = this.addScene();
         this.scenes[0].scene.setVisible(true);
         this.scene.start("hudScene");
 
-        this.mainSound = this.sound.add("main_music", { "loop": true, "volume": 0.1 });
+        this.mainSound = this.sound.add("main_music", {"loop": true, "volume": 0.1});
         this.mainSound.play();
 
-        this.anims.create({
-            key: 'enemy1_walk',
-            frames: this.anims.generateFrameNumbers('enemy1', { start: 0, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'fastEnemy_walk',
-            frames: this.anims.generateFrameNumbers('fastEnemy', { start: 0, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'fatEnemy_walk',
-            frames: this.anims.generateFrameNumbers('fatEnemy', { start: 0, end: 9 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'armouredEnemy_walk',
-            frames: this.anims.generateFrameNumbers('armouredEnemy', { start: 0, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
+        this.buildSound = this.sound.add('build_sound', { 'loop': false, 'volume': 1});
     }
 
-    // Creates new Scene, enables it, and sets it invisible
+  // Creates new Scene, enables it, and sets it invisible
     public addScene(parentSceneKey?: string): TDScene {
         let parentScene = this.getSceneByKey(parentSceneKey)
         let sceneLevel = (parentScene?.sceneLevel ?? -1) + 1;
@@ -73,6 +55,7 @@ export class MetaScene extends Phaser.Scene {
         );
         this.scenes.push(newScene)
         newScene.scene.setVisible(false);
+        if (this.activeScene) this.scene.bringToTop(this.activeScene.scene.key);
         this.scene.bringToTop('hudScene');
 
         return newScene;
@@ -90,6 +73,11 @@ export class MetaScene extends Phaser.Scene {
         this.activeScene?.setIsForeground(false, goingInside, i, j);
         let newScene = this.getSceneByKey(newSceneKey)
 
+        console.log(
+            `Switching from ${this.activeScene.scene.key} (parent ${this.activeScene.sceneParentKey}) to`
+            + ` ${newScene.scene.key} (parent ${newScene.sceneParentKey})`
+        )
+
         newScene.time.addEvent({
             delay: SCENE_TRANSITION_MS,
             loop: false,
@@ -98,6 +86,8 @@ export class MetaScene extends Phaser.Scene {
                 newScene.scene.setVisible(true)
                 this.activeScene = newScene
                 newScene.setIsForeground(true, goingInside, i, j);
+                this.scene.bringToTop(newSceneKey);
+                this.scene.bringToTop('hudScene');
             }
         })
 
@@ -105,35 +95,109 @@ export class MetaScene extends Phaser.Scene {
         this.sound.setRate(1 / (Math.pow(1.05946309436, newScene.sceneLevel)))
     }
 
+    public isGameOver = false;
+    public gameOver() {
+        if (!this.isGameOver){
+            this.isGameOver = true;
+            let gameOverScene = this.scene.add("gameOverScene", new GameOverScene(this))
+            this.scene.start(gameOverScene);
+            this.activeScene.scene.pause()
+            this.scene.pause()
+        }
+    }
+
     public preload() {
         // load the game assets
         this.load.setBaseURL('assets/')
 
-        this.load.spritesheet('enemy1', 'enemy.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('fastEnemy', 'fastenemy.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('armouredEnemy', 'armoredenemy.png', { frameWidth: 48, frameHeight: 48 });
-        this.load.spritesheet('fatEnemy', 'chonk.png', { frameWidth: 56, frameHeight: 56 });
+        this.load.spritesheet('weakEnemy', 'enemy.png', {frameWidth: 48, frameHeight: 48});
+        this.load.spritesheet('fastEnemy', 'enemy_fast.png', {frameWidth: 48, frameHeight: 48});
+        this.load.spritesheet('armouredEnemy', 'enemy_armored.png', {frameWidth: 48, frameHeight: 48});
+        this.load.spritesheet('splitterBigEnemy', 'enemy_split_big.png', {frameWidth: 48, frameHeight: 48});
+        this.load.spritesheet('splitterSmallEnemy', 'enemy_split_small.png', {frameWidth: 48, frameHeight: 48});
+        this.load.spritesheet('fatEnemy', 'enemy_chonk.png', {frameWidth: 56, frameHeight: 56});
 
         this.load.image('bullet', 'bullet.png');
         this.load.spritesheet('tileset',
             'tileset.png',
-            { frameWidth: 64, frameHeight: 64 }
+            {frameWidth: 64, frameHeight: 64}
         );
         this.load.spritesheet('towertops',
             'towertop.png',
-            { frameWidth: 64, frameHeight: 64 }
+            {frameWidth: 64, frameHeight: 64}
         )
         this.load.spritesheet('towermids',
             'towermid.png',
-            { frameWidth: 64, frameHeight: 64 }
+            {frameWidth: 64, frameHeight: 64}
         )
         this.load.spritesheet('towerbases',
             'towerbase.png',
-            { frameWidth: 64, frameHeight: 64 }
+            {frameWidth: 64, frameHeight: 64}
         )
         this.load.image('particle_red', 'particle_red.png');
 
-        this.load.audio("main_music", "gamejam_LD48.ogg")
+        this.load.spritesheet('portalFrom', 'portal_from.png', {frameWidth: 40, frameHeight: 40});
+        this.load.spritesheet('portalTo', 'portal_to.png', {frameWidth: 40, frameHeight: 40});
+
+        this.load.audio("main_music", "gamejam_LD48.ogg");
+        this.load.audio('build_sound', 'build.wav');
+    }
+
+    createAnimations() {
+        this.anims.create({
+            key: 'weakEnemy_walk',
+            frames: this.anims.generateFrameNumbers('weakEnemy', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'fastEnemy_walk',
+            frames: this.anims.generateFrameNumbers('fastEnemy', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'fatEnemy_walk',
+            frames: this.anims.generateFrameNumbers('fatEnemy', {start: 0, end: 9}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'armouredEnemy_walk',
+            frames: this.anims.generateFrameNumbers('armouredEnemy', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'splitterBigEnemy_walk',
+            frames: this.anims.generateFrameNumbers('splitterBigEnemy', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'splitterSmallEnemy_walk',
+            frames: this.anims.generateFrameNumbers('splitterSmallEnemy', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'portalFrom_spin',
+            frames: this.anims.generateFrameNumbers('portalFrom', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'portalTo_spin',
+            frames: this.anims.generateFrameNumbers('portalTo', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'towerMids_spin',
+            frames: this.anims.generateFrameNumbers('towermids', {start: 0, end: 1}),
+            frameRate: 5,
+            repeat: -1
+        });
     }
 
     getActiveScene() {

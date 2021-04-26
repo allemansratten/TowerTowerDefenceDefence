@@ -72,6 +72,9 @@ export class Tower extends Phaser.GameObjects.Container {
         this.add(this.towerBase);
         this.towerMid = this.scene.add.sprite(xCoord, yCoord, 'towermids', this.config.spriteMid);
         this.towerMid.setTint(this.config.tintMid);
+        this.towerMid.anims.play({
+            key: `towerMids_spin`
+        })
         this.add(this.towerMid);
 
         this.rangeIndicator = this.scene.add.circle(
@@ -87,14 +90,14 @@ export class Tower extends Phaser.GameObjects.Container {
         this.towerBase.on('pointerover', () => {
             this.scene.children.bringToTop(this);
             this.scene.children.list.forEach(child => {
-                if(child.constructor.name.match(/^.+Enemy$/)) {
+                if (child.constructor.name.match(/^.+Enemy$/)) {
                     this.scene.children.bringToTop(child);
                 }
             });
             this.rangeIndicator.setVisible(true);
 
             let hudScene = this.scene.scene.get("hudScene") as HudScene
-            hudScene.setDescription(this.config, this)
+            hudScene.setDescriptionTower(this.config, this)
         });
         this.towerBase.on('pointerout', () => { this.rangeIndicator.setVisible(false) });
 
@@ -121,7 +124,7 @@ export class Tower extends Phaser.GameObjects.Container {
         this.add(this.levelText)
 
         this.innerTowerSceneKey = innerTowerSceneKey
-        
+
         let innerTowerScene = this.scene.scene.get(innerTowerSceneKey) as TDScene
         innerTowerScene.onEnemyReachedEnd((damage) => {
             this.healthBar.health -= damage * DAMAGE_TO_TOWER_HEALTH_COEF
@@ -159,6 +162,8 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     nextTic: number
     x: number
     y: number
+    baseX: number
+    baseY: number
     parent: Tower
 
     scene: TDScene
@@ -173,6 +178,8 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     // we will place the tower according to the grid
     place(i: integer, j: integer, terrain: Terrain) {
         [this.x, this.y] = terrain.fromGridPos(i, j)
+        this.baseX = this.x
+        this.baseY = this.y
     }
 
     fire() {
@@ -183,16 +190,32 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
         if (enemies) {
             let enemy = enemies[0]
             let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+            let damage = this.parent.stats.damage(this.parent.level)
             this.scene.addBullet(
                 this.x, this.y, angle,
-                this.parent.stats.damage(this.parent.level),
+                damage,
                 this.parent.stats.range(this.parent.level),
                 this.parent.stats.bulletSpeedMod
             );
-            this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+            this.fireAnimation(angle, damage)
             return true;
         }
         return false
+    }
+
+    fireAnimation(angle, damage) {
+        this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+        let recoil = Math.min(damage * 0.5, 25)
+        this.x = this.baseX
+        this.y = this.baseY
+        this.scene.tweens.add({
+            targets: this,
+            duration: Math.min(this.parent.config.firerate(this.parent.level) * 0.8, 100 + damage),
+            x: this.x + Math.cos(angle + Math.PI) * recoil,
+            y: this.y + Math.sin(angle + Math.PI) * recoil,
+            ease: 'Quad',
+            yoyo: true
+        })
     }
 
     lastTime: number = 0
@@ -223,20 +246,25 @@ export class MultishotTurret extends _TowerTurret {
     }
 
 
-    fire() {
-        let enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, 3);
+    fire() {  // this behaviour should be in _TowerTurret.fire btw
+        let numTargets = 3
+        if (this.parent.stats.numTargets) {
+            numTargets = this.parent.stats.numTargets(this.parent.level);
+        }
+        let enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, numTargets);
 
         if (enemies && enemies.length > 0) {
             for (let enemy of enemies) {
-                var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+                let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+                let damage = this.parent.stats.damage(this.parent.level)
                 this.scene.addBullet(
                     this.x, this.y, angle,
-                    this.parent.stats.damage(this.parent.level),
+                    damage,
                     this.parent.stats.range(this.parent.level),
                     this.parent.stats.bulletSpeedMod
                 );
-                this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
-            }
+                this.fireAnimation(angle, damage)
+                }
             return true
         }
         return false

@@ -3,7 +3,7 @@ import { TDScene } from "./scenes/tdScene";
 import { PlayerInfo } from "./playerInfo";
 import * as cfg from "./config";
 import { HudScene } from "./scenes/hudScene";
-import { MetaScene } from "./scenes/MetaScene";
+import { MetaScene } from "./scenes/metaScene";
 
 
 export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
@@ -22,6 +22,11 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
         this.stats = stats;
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
+
+        this.setInteractive();
+        this.on('pointerover', () => {
+            (this.scene.scene.get('hudScene') as HudScene).setDescriptionEnemy(this);
+        });
     }
 
     update(_, delta) {
@@ -65,7 +70,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
             const metaScene = this.scene.scene.get("metaScene") as MetaScene
             metaScene.getActiveScene().cameras.main.shake(200, 0.005)
 
-            this.scene.waveManager.respawn(this.stats);
+            this.scene.waveManager.respawn(this.stats, this.hp);
         }
 
         if (this.scene.enemyEndCallback) {
@@ -73,11 +78,15 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         }
     }
 
-    startOnPath(wave, start_t = 0) {
+    startOnPath(wave, respawnHealth, start_t = 0) {
         // set the t parameter at the start of the path
         this.follower.t = start_t;
 
-        this.hp = this.stats.hp(wave);
+        if (respawnHealth > 0)
+            this.hp = respawnHealth;
+        else
+            this.hp = this.stats.hp(wave);
+
         this.speed = this.stats.speed;
         this.tint = this.stats.tint;
 
@@ -155,9 +164,9 @@ export class FastEnemy extends EnemyBase {
     }
 }
 
-export class SplitterEnemy extends EnemyBase {
+export class SplitterBigEnemy extends EnemyBase {
     constructor(scene: TDScene) {
-        super(scene, cfg.Splitter)
+        super(scene, cfg.SplitterBig)
     }
 
     onDeathAbility() {
@@ -171,7 +180,13 @@ export class SplitterEnemy extends EnemyBase {
             newEnemy.setActive(true);
 
             this.scene.waveManager.deadDanger -= this.stats.split.cfg.danger;
-            newEnemy.startOnPath(this.scene.waveManager.currentWave, this.follower.t);
+            newEnemy.startOnPath(this.scene.waveManager.currentWave, 0, this.follower.t);
         }
+    }
+}
+
+export class SplitterSmallEnemy extends EnemyBase {
+    constructor(scene: TDScene) {
+        super(scene, cfg.SplitterSmall)
     }
 }

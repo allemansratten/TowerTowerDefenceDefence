@@ -1,4 +1,5 @@
 import { EnemyConfig, PAUSE_AFTER_WAVE_TIME, ENEMY_CONFIGS, WaveConfig } from "./config";
+import { EnemyBase } from "./enemy";
 import { PlayerInfo } from "./playerInfo";
 import { TDScene } from "./scenes/tdScene";
 // import { Enemy, FatEnemy} from "./enemy";
@@ -8,14 +9,14 @@ export class WaveManager {
     scene: TDScene
     currentWave: integer = 0
     nextEnemy: integer = 0
-    spawnedEnemies: integer = 0
     deadDanger: integer = 0
     remainingDanger: integer = 0
     waveDifficulty: integer = 0
 
     waveActive: boolean  // false for nested waves
     nextWaveTime: integer = 0
-    respawnQueue: EnemyConfig[] = [];
+    respawnQueue: [EnemyConfig, integer][] = [];
+    respawnHealth: integer  // zero unless respawning enemy, hack
 
     enemyInterval: integer
 
@@ -51,16 +52,16 @@ export class WaveManager {
     }
 
     private spawnEnemy() {
-        // TODO: respawning shouldn't reset health
         if (this.respawnQueue.length > 0) {
-            let respawn = this.respawnQueue.shift()
-            this.remainingDanger -= respawn.danger;
-            return this.scene.allEnemies[respawn.name].get()
+            let respawn = this.respawnQueue.shift();
+            this.respawnHealth = respawn[1];
+            this.remainingDanger -= respawn[0].danger;
+            return this.scene.allEnemies[respawn[0].name].get();
         }
 
-        let randEnemy = this.getRandEnemy(
-            (enemy) => enemy.danger <= this.remainingDanger
-        )
+        let randEnemy = this.getRandEnemy((enemy) => {
+            return (enemy.danger <= this.remainingDanger) && (enemy.minWave <= this.currentWave)
+        });
 
         if (randEnemy) {
             this.remainingDanger -= randEnemy.danger;
@@ -71,15 +72,16 @@ export class WaveManager {
         return null;
     }
 
-    public respawn(respawn: EnemyConfig) {
-        this.respawnQueue.push(respawn);
+    public respawn(respawn: EnemyConfig, remainingHealth: integer) {
+        this.respawnQueue.push([respawn, remainingHealth]);
     }
 
 
     lastTime: number = 0
     public update(delta) {
         this.lastTime += delta
-        let enemy
+        let enemy: EnemyBase
+        let wave: integer
         if (this.scene.sceneLevel === 0) {
             if (!this.waveActive && this.lastTime > this.nextWaveTime) {
                 this.nextWave();  // no waves in nested layers
@@ -93,6 +95,7 @@ export class WaveManager {
                 this.waveActive = false;
                 this.nextWaveTime = this.lastTime + PAUSE_AFTER_WAVE_TIME;
             }
+            wave = this.currentWave
         } else {
             if (!this.queuedEnemy) {
                 this.queuedEnemy = this.getRandEnemy(() => true)
@@ -106,6 +109,7 @@ export class WaveManager {
                 this.queuedEnemy = null
                 this.lastTime = 0
             }
+            wave = WaveConfig.levelToWave(this.scene.getTowerParent().level)
         }
 
         if (enemy) {
@@ -113,8 +117,9 @@ export class WaveManager {
             enemy.setVisible(true);
 
             // place the enemy at the start of the path
-            enemy.startOnPath(this.currentWave);
-            this.spawnedEnemies++;
+            enemy.startOnPath(wave, this.respawnHealth);
+            this.respawnHealth = 0;
+
             this.nextEnemy = this.lastTime + this.enemyInterval;
         }
     }
@@ -122,7 +127,7 @@ export class WaveManager {
     private getRandEnemy(filter_fn): EnemyConfig {
         let availEnemies = []
         for(let enemy of ENEMY_CONFIGS) {  // Select all enemies that can be spawned
-            if (filter_fn(enemy))
+            if (enemy.minWave >= 0 && filter_fn(enemy))
                 availEnemies.push(enemy);
         }
 

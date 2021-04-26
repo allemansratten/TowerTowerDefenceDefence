@@ -1,8 +1,9 @@
-import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG } from "../config";
+import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG, EnemyConfig } from "../config";
+import { EnemyBase } from "../enemy";
 import { PlayerInfo } from "../playerInfo";
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
 import { Tower } from "../towers";
-import { MetaScene } from "./MetaScene";
+import { MetaScene } from "./metaScene";
 import { TDScene, TD_SCENE_HEIGHT, TD_SCENE_WIDTH } from "./tdScene";
 
 const HUD_BG_COLOR = 0xff8a6d  //0xffaa7d
@@ -66,7 +67,7 @@ export class HudScene extends Phaser.Scene {
         this.goUpText.setOrigin(0.5)
         this.goUpText.setVisible(false)
 
-        this.descriptionText = this.add.text(5, 300, "Description", { fontSize: '10pt' });
+        this.descriptionText = this.add.text(5, 300, "", { fontSize: '10pt' });
         this.descriptionText.setWordWrapWidth(HUD_WIDTH - 10, false);
 
         this.buyTowerIcons = [];
@@ -107,6 +108,10 @@ export class HudScene extends Phaser.Scene {
 
     lastTime: number = 0
     public update(_, delta) {
+        if (this.metaScene.isGameOver){
+            this.scene.pause()
+        }
+
         delta *= PlayerInfo.timeScale;
         this.lastTime += delta;
 
@@ -128,6 +133,12 @@ export class HudScene extends Phaser.Scene {
         for (const icon of this.buyTowerIcons) {
             icon.update(this.lastTime, delta)
         }
+
+        if (PlayerInfo.hp <= 0) {
+            this.metaScene.gameOver()
+        }
+
+
     }
 
     updateInfoBasedOnActiveScene() {
@@ -171,7 +182,7 @@ export class HudScene extends Phaser.Scene {
         }
     }
 
-    setDescription(config: TowerConfig, tower: Tower = null) {
+    setDescriptionTower(config: TowerConfig, tower: Tower = null) {
         let level = 1
         let text = ""
 
@@ -186,6 +197,19 @@ export class HudScene extends Phaser.Scene {
         text += `Fire rate: ${config.firerate(level)/1000}s.\n`
         text += `Range: ${config.range(level)}.\n`
 
+        this.descriptionText.setText(text)
+    }
+
+    setDescriptionEnemy(enemy: EnemyBase) {
+        let text = ""
+        if (enemy) {
+            text += `${enemy.stats.displayName}\n`;
+            text += `Health: ${enemy.hp}/${enemy.stats.hp(1)}\n`;
+            text += `Armour: ${enemy.stats.damage}\n`;
+            text += `Speed: ${enemy.speed * 60000}\n`;
+            if(enemy.stats.blurb)
+                text += `\n${enemy.stats.blurb}\n`;
+        }
         this.descriptionText.setText(text)
     }
 }
@@ -252,7 +276,7 @@ class BuyTowerIcon {
         hudScene.input.setDraggable(this.spriteContainer)
 
         this.spriteContainer.on('pointerover', () => {
-            this.hudScene.setDescription(config)
+            this.hudScene.setDescriptionTower(config)
         });
 
         hudScene.input.on('dragstart', (pointer, gameObject) => {
@@ -276,9 +300,7 @@ class BuyTowerIcon {
 
             // This makes range indicator visible
             (this.spriteContainer.list[3] as Phaser.GameObjects.Shape).setVisible(false);
-
-            gameObject.list.forEach((sprite: Phaser.GameObjects.Sprite) => {
-            });
+            this.hudScene.metaScene.buildSound.play();
 
             const scene = hudScene.metaScene.getActiveScene()
             scene.towerManager.placeTower(pointer, this.towerName);
@@ -300,15 +322,24 @@ class BuyTowerIcon {
         (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(tint & this.towerConfig.tintTop);
     }
 
-    update(time, delta) {
+    updateShop() {
         // Uncomment to prevent negative money:
-        // this.hudScene.input.setDraggable(this.spriteContainer, PlayerInfo.money >= this.towerConfig.price)
+        this.hudScene.input.setDraggable(this.spriteContainer, PlayerInfo.money >= this.towerConfig.price)
+
         if (PlayerInfo.money >= this.towerConfig.price) {
             this.priceText.setTint(0x00ff00);
             this.resetTint();
         } else {
             this.priceText.setTint(0xff0000);
             this.setShopIconTint(0x995555);
+        }
+    }
+
+    oldMoney: integer = 0
+    update(time, delta) {
+        if (PlayerInfo.money != this.oldMoney) {
+            this.updateShop();
+            this.oldMoney = PlayerInfo.money;
         }
     }
 }
