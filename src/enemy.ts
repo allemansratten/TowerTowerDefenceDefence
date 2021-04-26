@@ -73,9 +73,9 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         }
     }
 
-    startOnPath(wave) {
+    startOnPath(wave, start_t = 0) {
         // set the t parameter at the start of the path
-        this.follower.t = 0;
+        this.follower.t = start_t;
 
         this.hp = this.stats.hp(wave);
         this.speed = this.stats.speed;
@@ -86,7 +86,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
         // set the x and y of our enemy to the received from the previous step
         this.setPosition(this.follower.vec.x, this.follower.vec.y);
-        
+
         let frameRate = Math.min(60, this.stats.speed * 40000 * 15)
         if (this.stats.spriteName == "fatEnemy") { // hack
             frameRate *= 0.5
@@ -109,7 +109,9 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         }
     }
 
-    onDeath() {  // override this for special on-death abilities
+    onDeath() {
+        this.onDeathAbility();
+
         if (this.scene.sceneLevel === 0) {  // Add gold in base layer only
             this.scene.waveManager.deadDanger += this.stats.danger
             PlayerInfo.money += this.stats.money;
@@ -123,6 +125,9 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
             duration: PlayerInfo.RNG.integerInRange(600, 800),
             ease: 'Power2'
         });
+    }
+
+    onDeathAbility() {  // override this for special on-death abilities
     }
 }
 
@@ -147,5 +152,26 @@ export class ArmouredEnemy extends EnemyBase {
 export class FastEnemy extends EnemyBase {
     constructor(scene: TDScene) {
         super(scene, cfg.Fast)
+    }
+}
+
+export class SplitterEnemy extends EnemyBase {
+    constructor(scene: TDScene) {
+        super(scene, cfg.Splitter)
+    }
+
+    onDeathAbility() {
+        if (!this.stats.split) {
+            console.log('ERROR missing split config on ' + this.constructor.name);
+            return;
+        }
+        for(let i = 0; i < this.stats.split.amount; i++) {
+            let newEnemy = this.scene.allEnemies[this.stats.split.cfg.name].get()
+            newEnemy.setVisible(true);
+            newEnemy.setActive(true);
+
+            this.scene.waveManager.deadDanger -= this.stats.split.cfg.danger;
+            newEnemy.startOnPath(this.scene.waveManager.currentWave, this.follower.t);
+        }
     }
 }

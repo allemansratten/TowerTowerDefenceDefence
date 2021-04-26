@@ -38,6 +38,10 @@ export type EnemyConfig = {
     danger: integer
     spriteName: string
     tint: integer
+    split?: {
+        cfg: EnemyConfig
+        amount: integer
+    }
 }
 
 export const Weak: EnemyConfig = {
@@ -92,7 +96,24 @@ export const Fast: EnemyConfig = {
     'tint': 0xff00aa,
 }
 
-export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast]
+export const Splitter: EnemyConfig = {
+    'name': 'Splitter',
+    'class': enem.SplitterEnemy,
+    'hp': (wave) => 15,
+    'speed': 1 / 30000,
+    'money': 1,
+    'damage': 1,
+    'armor': 0,
+    'danger': 60,
+    'spriteName': 'enemy1',
+    'tint': 0xff7070,
+    'split': {
+        'cfg': Weak,
+        'amount': 2
+    }
+}
+
+export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast, Splitter]
 
 
 export type TowerConfig = {
