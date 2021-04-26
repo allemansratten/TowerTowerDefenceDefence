@@ -72,6 +72,9 @@ export class Tower extends Phaser.GameObjects.Container {
         this.add(this.towerBase);
         this.towerMid = this.scene.add.sprite(xCoord, yCoord, 'towermids', this.config.spriteMid);
         this.towerMid.setTint(this.config.tintMid);
+        this.towerMid.anims.play({
+            key: `towerMids_spin`
+        })
         this.add(this.towerMid);
 
         this.rangeIndicator = this.scene.add.circle(

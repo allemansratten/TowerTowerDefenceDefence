@@ -190,6 +190,12 @@ export class MetaScene extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         });
+        this.anims.create({
+            key: 'towerMids_spin',
+            frames: this.anims.generateFrameNumbers('towermids', {start: 0, end: 1}),
+            frameRate: 5,
+            repeat: -1
+        });
     }
 
     getActiveScene() {
