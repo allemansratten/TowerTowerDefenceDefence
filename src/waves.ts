@@ -1,4 +1,5 @@
 import { EnemyConfig, PAUSE_AFTER_WAVE_TIME, ENEMY_CONFIGS, WaveConfig } from "./config";
+import { EnemyBase } from "./enemy";
 import { PlayerInfo } from "./playerInfo";
 import { TDScene } from "./scenes/tdScene";
 // import { Enemy, FatEnemy} from "./enemy";
@@ -79,7 +80,8 @@ export class WaveManager {
     lastTime: number = 0
     public update(delta) {
         this.lastTime += delta
-        let enemy
+        let enemy: EnemyBase
+        let wave: integer
         if (this.scene.sceneLevel === 0) {
             if (!this.waveActive && this.lastTime > this.nextWaveTime) {
                 this.nextWave();  // no waves in nested layers
@@ -93,6 +95,7 @@ export class WaveManager {
                 this.waveActive = false;
                 this.nextWaveTime = this.lastTime + PAUSE_AFTER_WAVE_TIME;
             }
+            wave = this.currentWave
         } else {
             if (!this.queuedEnemy) {
                 this.queuedEnemy = this.getRandEnemy(() => true)
@@ -106,6 +109,7 @@ export class WaveManager {
                 this.queuedEnemy = null
                 this.lastTime = 0
             }
+            wave = WaveConfig.levelToWave(this.scene.getTowerParent().level)
         }
 
         if (enemy) {
@@ -113,7 +117,7 @@ export class WaveManager {
             enemy.setVisible(true);
 
             // place the enemy at the start of the path
-            enemy.startOnPath(this.currentWave, this.respawnHealth);
+            enemy.startOnPath(wave, this.respawnHealth);
             this.respawnHealth = 0;
 
             this.nextEnemy = this.lastTime + this.enemyInterval;
