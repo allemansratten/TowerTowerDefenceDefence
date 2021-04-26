@@ -44,7 +44,7 @@ export type EnemyConfig = {
         cfg: EnemyConfig  // TODO: make split into multiple types possible?
         amount: integer
     }
-    preventSpawn?: boolean  // true to stop enemy from spawning naturally
+    minWave: integer  // first wave this can spawn, -1 to never spawn
 }
 
 export const Weak: EnemyConfig = {
@@ -58,6 +58,7 @@ export const Weak: EnemyConfig = {
     'danger': 20,
     'spriteName': 'weakEnemy',
     'tint': 0xffffff,
+    'minWave': 0
 }
 
 export const Fat: EnemyConfig = {
@@ -71,6 +72,7 @@ export const Fat: EnemyConfig = {
     'danger': 240,
     'spriteName': 'fatEnemy',
     'tint': 0xffffff,
+    'minWave': 0
 }
 
 export const Armoured: EnemyConfig = {
@@ -84,6 +86,7 @@ export const Armoured: EnemyConfig = {
     'danger': 160,
     'spriteName': 'armouredEnemy',
     'tint': 0xffffff,
+    'minWave': 0
 }
 
 export const Fast: EnemyConfig = {
@@ -97,6 +100,7 @@ export const Fast: EnemyConfig = {
     'danger': 80,
     'spriteName': 'fastEnemy',
     'tint': 0xffffff,
+    'minWave': 0
 }
 
 export const SplitterSmall: EnemyConfig = {
@@ -110,7 +114,7 @@ export const SplitterSmall: EnemyConfig = {
     'danger': 20,
     'spriteName': 'splitterSmallEnemy',
     'tint': 0xffffff,
-    'preventSpawn': true,
+    'minWave': -1
 }
 
 export const SplitterBig: EnemyConfig = {
@@ -127,7 +131,8 @@ export const SplitterBig: EnemyConfig = {
     'split': {
         'cfg': SplitterSmall,
         'amount': 2
-    }
+    },
+    'minWave': 0
 }
 
 

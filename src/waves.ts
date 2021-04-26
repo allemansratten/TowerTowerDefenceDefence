@@ -57,9 +57,10 @@ export class WaveManager {
             return this.scene.allEnemies[respawn.name].get()
         }
 
-        let randEnemy = this.getRandEnemy(
-            (enemy) => enemy.danger <= this.remainingDanger
-        )
+
+        let randEnemy = this.getRandEnemy((enemy) => {
+            return (enemy.danger <= this.remainingDanger) && (enemy.minWave <= this.currentWave)
+        });
 
         if (randEnemy) {
             this.remainingDanger -= randEnemy.danger;
@@ -120,7 +121,7 @@ export class WaveManager {
     private getRandEnemy(filter_fn): EnemyConfig {
         let availEnemies = []
         for(let enemy of ENEMY_CONFIGS) {  // Select all enemies that can be spawned
-            if (enemy.preventSpawn !== true && filter_fn(enemy))
+            if (enemy.minWave >= 0 && filter_fn(enemy))
                 availEnemies.push(enemy);
         }
 
