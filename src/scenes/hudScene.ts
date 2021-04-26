@@ -203,10 +203,12 @@ export class HudScene extends Phaser.Scene {
     setDescriptionEnemy(enemy: EnemyBase) {
         let text = ""
         if (enemy) {
+            let wave = enemy.scene.waveManager.currentWave
             text += `${enemy.stats.displayName}\n`;
-            text += `Health: ${enemy.hp}/${enemy.stats.hp(1)}\n`;
-            text += `Armour: ${enemy.stats.damage}\n`;
+            text += `Health: ${enemy.hp}/${enemy.stats.hp(wave)}\n`;
+            text += `Armour: ${enemy.stats.armour(wave)}\n`;
             text += `Speed: ${enemy.speed * 60000}\n`;
+            text += `Loot: ${enemy.stats.money}\n`;
             if(enemy.stats.blurb)
                 text += `\n${enemy.stats.blurb}\n`;
         }

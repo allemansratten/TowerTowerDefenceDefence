@@ -197,7 +197,9 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
                 this.parent.stats.range(this.parent.level),
                 this.parent.stats.bulletSpeedMod
             );
-            this.fireAnimation(angle, damage)
+            this.fireAnimation(angle, damage);
+            if (this.scene == this.scene.metaScene.activeScene)
+                this.scene.metaScene.shootSound.play();
             return true;
         }
         return false
@@ -264,7 +266,9 @@ export class MultishotTurret extends _TowerTurret {
                     this.parent.stats.bulletSpeedMod
                 );
                 this.fireAnimation(angle, damage)
-                }
+                if (this.scene == this.scene.metaScene.activeScene)
+                    this.scene.metaScene.shootSound.play();
+            }
             return true
         }
         return false
