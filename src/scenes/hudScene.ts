@@ -107,6 +107,10 @@ export class HudScene extends Phaser.Scene {
 
     lastTime: number = 0
     public update(_, delta) {
+        if (this.metaScene.isGameOver){
+            this.scene.pause()
+        }
+
         delta *= PlayerInfo.timeScale;
         this.lastTime += delta;
 
