@@ -14,7 +14,8 @@ export class WaveManager {
 
     waveActive: boolean  // false for nested waves
     nextWaveTime: integer = 0
-    respawnQueue: EnemyConfig[] = [];
+    respawnQueue: [EnemyConfig, integer][] = [];
+    respawnHealth: integer  // zero unless respawning enemy, hack
 
     enemyInterval: integer
 
@@ -50,13 +51,13 @@ export class WaveManager {
     }
 
     private spawnEnemy() {
-        // TODO: respawning shouldn't reset health
         if (this.respawnQueue.length > 0) {
-            let respawn = this.respawnQueue.shift()
-            this.remainingDanger -= respawn.danger;
-            return this.scene.allEnemies[respawn.name].get()
+            let respawn = this.respawnQueue.shift();
+            console.log(respawn);
+            this.respawnHealth = respawn[1];
+            this.remainingDanger -= respawn[0].danger;
+            return this.scene.allEnemies[respawn[0].name].get();
         }
-
 
         let randEnemy = this.getRandEnemy((enemy) => {
             return (enemy.danger <= this.remainingDanger) && (enemy.minWave <= this.currentWave)
@@ -71,8 +72,8 @@ export class WaveManager {
         return null;
     }
 
-    public respawn(respawn: EnemyConfig) {
-        this.respawnQueue.push(respawn);
+    public respawn(respawn: EnemyConfig, remainingHealth: integer) {
+        this.respawnQueue.push([respawn, remainingHealth]);
     }
 
 
@@ -113,7 +114,9 @@ export class WaveManager {
             enemy.setVisible(true);
 
             // place the enemy at the start of the path
-            enemy.startOnPath(this.currentWave);
+            enemy.startOnPath(this.currentWave, this.respawnHealth);
+            this.respawnHealth = 0;
+
             this.nextEnemy = this.lastTime + this.enemyInterval;
         }
     }
