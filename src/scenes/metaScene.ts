@@ -1,4 +1,6 @@
+import { PlayerInfo } from "../playerInfo";
 import {Terrain} from "../terrain"
+import { GameOverScene } from "./gameOverScene";
 import {SCENE_TRANSITION_MS, TDScene} from "./tdScene";
 import {TDSceneConfig} from "./tdSceneConfig"
 
@@ -33,7 +35,7 @@ export class MetaScene extends Phaser.Scene {
         this.buildSound = this.sound.add('build_sound', { 'loop': false, 'volume': 1});
     }
 
-    // Creates new Scene, enables it, and sets it invisible
+  // Creates new Scene, enables it, and sets it invisible
     public addScene(parentSceneKey?: string): TDScene {
         let parentScene = this.getSceneByKey(parentSceneKey)
         let sceneLevel = (parentScene?.sceneLevel ?? -1) + 1;
@@ -91,6 +93,15 @@ export class MetaScene extends Phaser.Scene {
 
         // 1.05946309436 ~ 2^(1/12), i.e. one semitone
         this.sound.setRate(1 / (Math.pow(1.05946309436, newScene.sceneLevel)))
+    }
+
+    isGameOver = false;
+    public gameOver() {
+        if (!this.isGameOver){
+            this.isGameOver = true;
+            this.scene.add("gameOverScene", new GameOverScene())
+            this.scene.start("gameOverScene");
+        }
     }
 
     public preload() {
