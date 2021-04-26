@@ -175,3 +175,9 @@ export class SplitterBigEnemy extends EnemyBase {
         }
     }
 }
+
+export class SplitterSmallEnemy extends EnemyBase {
+    constructor(scene: TDScene) {
+        super(scene, cfg.SplitterSmall)
+    }
+}

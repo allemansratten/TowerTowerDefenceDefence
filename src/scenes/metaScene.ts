@@ -28,8 +28,8 @@ export class MetaScene extends Phaser.Scene {
         this.mainSound.play();
 
         this.anims.create({
-            key: 'enemy1_walk',
-            frames: this.anims.generateFrameNumbers('enemy1', { start: 0, end: 7 }),
+            key: 'weakEnemy_walk',
+            frames: this.anims.generateFrameNumbers('weakEnemy', { start: 0, end: 7 }),
             frameRate: 10,
             repeat: -1
         });
@@ -54,6 +54,12 @@ export class MetaScene extends Phaser.Scene {
         this.anims.create({
             key: 'splitterBigEnemy_walk',
             frames: this.anims.generateFrameNumbers('splitterBigEnemy', { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'splitterSmallEnemy_walk',
+            frames: this.anims.generateFrameNumbers('splitterSmallEnemy', { start: 0, end: 7 }),
             frameRate: 10,
             repeat: -1
         });
@@ -121,11 +127,11 @@ export class MetaScene extends Phaser.Scene {
         // load the game assets
         this.load.setBaseURL('assets/')
 
-        this.load.spritesheet('enemy1', 'enemy.png', { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet('weakEnemy', 'enemy.png', { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet('fastEnemy', 'enemy_fast.png', { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet('armouredEnemy', 'enemy_armored.png', { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet('splitterBigEnemy', 'enemy_split_big.png', { frameWidth: 48, frameHeight: 48 });
-        // this.load.spritesheet('splitterSmallEnemy', 'enemy_split_small.png', { frameWidth: 48, frameHeight: 48 });
+        this.load.spritesheet('splitterSmallEnemy', 'enemy_split_small.png', { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet('fatEnemy', 'enemy_chonk.png', { frameWidth: 56, frameHeight: 56 });
 
         this.load.image('bullet', 'bullet.png');
