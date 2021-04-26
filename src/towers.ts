@@ -87,7 +87,7 @@ export class Tower extends Phaser.GameObjects.Container {
         this.towerBase.on('pointerover', () => {
             this.scene.children.bringToTop(this);
             this.scene.children.list.forEach(child => {
-                if(child.constructor.name.match(/^.+Enemy$/)) {
+                if (child.constructor.name.match(/^.+Enemy$/)) {
                     this.scene.children.bringToTop(child);
                 }
             });
@@ -121,7 +121,7 @@ export class Tower extends Phaser.GameObjects.Container {
         this.add(this.levelText)
 
         this.innerTowerSceneKey = innerTowerSceneKey
-        
+
         let innerTowerScene = this.scene.scene.get(innerTowerSceneKey) as TDScene
         innerTowerScene.onEnemyReachedEnd((damage) => {
             this.healthBar.health -= damage * DAMAGE_TO_TOWER_HEALTH_COEF
@@ -183,16 +183,30 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
         if (enemies) {
             let enemy = enemies[0]
             let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+            let damage = this.parent.stats.damage(this.parent.level)
             this.scene.addBullet(
                 this.x, this.y, angle,
-                this.parent.stats.damage(this.parent.level),
+                damage,
                 this.parent.stats.range(this.parent.level),
                 this.parent.stats.bulletSpeedMod
             );
-            this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+            this.fireAnimation(angle, damage)
             return true;
         }
         return false
+    }
+
+    fireAnimation(angle, damage) {
+        this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
+        let recoil = Math.min(damage * 0.5, 25)
+        this.scene.tweens.add({
+            targets: this,
+            duration: 100 + damage,
+            x: this.x + Math.cos(angle + Math.PI) * recoil,
+            y: this.y + Math.sin(angle + Math.PI) * recoil,
+            ease: 'Quad',
+            yoyo: true
+        })
     }
 
     lastTime: number = 0
@@ -228,15 +242,16 @@ export class MultishotTurret extends _TowerTurret {
 
         if (enemies && enemies.length > 0) {
             for (let enemy of enemies) {
-                var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+                let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+                let damage = this.parent.stats.damage(this.parent.level)
                 this.scene.addBullet(
                     this.x, this.y, angle,
-                    this.parent.stats.damage(this.parent.level),
+                    damage,
                     this.parent.stats.range(this.parent.level),
                     this.parent.stats.bulletSpeedMod
                 );
-                this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
-            }
+                this.fireAnimation(angle, damage)
+                }
             return true
         }
         return false
