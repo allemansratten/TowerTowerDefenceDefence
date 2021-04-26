@@ -159,6 +159,8 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     nextTic: number
     x: number
     y: number
+    baseX: number
+    baseY: number
     parent: Tower
 
     scene: TDScene
@@ -173,6 +175,8 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     // we will place the tower according to the grid
     place(i: integer, j: integer, terrain: Terrain) {
         [this.x, this.y] = terrain.fromGridPos(i, j)
+        this.baseX = this.x
+        this.baseY = this.y
     }
 
     fire() {
@@ -199,9 +203,11 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     fireAnimation(angle, damage) {
         this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;
         let recoil = Math.min(damage * 0.5, 25)
+        this.x = this.baseX
+        this.y = this.baseY
         this.scene.tweens.add({
             targets: this,
-            duration: 100 + damage,
+            duration: Math.min(this.parent.config.firerate(this.parent.level) * 0.8, 100 + damage),
             x: this.x + Math.cos(angle + Math.PI) * recoil,
             y: this.y + Math.sin(angle + Math.PI) * recoil,
             ease: 'Quad',
