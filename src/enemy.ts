@@ -165,13 +165,21 @@ export class SplitterBigEnemy extends EnemyBase {
             console.log('ERROR missing split config on ' + this.constructor.name);
             return;
         }
+        console.log('Splitting splitter into ' + this.stats.split.cfg.name);
         for(let i = 0; i < this.stats.split.amount; i++) {
             let newEnemy = this.scene.allEnemies[this.stats.split.cfg.name].get()
+            console.log(newEnemy.stats);
             newEnemy.setVisible(true);
             newEnemy.setActive(true);
 
             this.scene.waveManager.deadDanger -= this.stats.split.cfg.danger;
             newEnemy.startOnPath(this.scene.waveManager.currentWave, this.follower.t);
         }
+    }
+}
+
+export class SplitterSmallEnemy extends EnemyBase {
+    constructor(scene: TDScene) {
+        super(scene, cfg.SplitterSmall)
     }
 }

@@ -120,7 +120,7 @@ export class WaveManager {
     private getRandEnemy(filter_fn): EnemyConfig {
         let availEnemies = []
         for(let enemy of ENEMY_CONFIGS) {  // Select all enemies that can be spawned
-            if (filter_fn(enemy))
+            if (enemy.preventSpawn !== true && filter_fn(enemy))
                 availEnemies.push(enemy);
         }
 

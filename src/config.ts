@@ -44,6 +44,7 @@ export type EnemyConfig = {
         cfg: EnemyConfig  // TODO: make split into multiple types possible?
         amount: integer
     }
+    preventSpawn?: boolean  // true to stop enemy from spawning naturally
 }
 
 export const Weak: EnemyConfig = {
@@ -55,7 +56,7 @@ export const Weak: EnemyConfig = {
     'damage': 1,
     'armour': (wave) => 0,
     'danger': 20,
-    'spriteName': 'enemy1',
+    'spriteName': 'weakEnemy',
     'tint': 0xffffff,
 }
 
@@ -98,11 +99,25 @@ export const Fast: EnemyConfig = {
     'tint': 0xffffff,
 }
 
+export const SplitterSmall: EnemyConfig = {
+    'name': 'SplitterSmall',
+    'class': enem.SplitterSmallEnemy,
+    'hp': (wave) => 10,
+    'speed': 1 / 20000,
+    'money': 1,
+    'damage': 1,
+    'armour': (wave) => 0,
+    'danger': 20,
+    'spriteName': 'splitterSmallEnemy',
+    'tint': 0xffffff,
+    'preventSpawn': true,
+}
+
 export const SplitterBig: EnemyConfig = {
     'name': 'SplitterBig',
     'class': enem.SplitterBigEnemy,
     'hp': (wave) => 15,
-    'speed': 1 / 30000,
+    'speed': 1 / 20000,
     'money': 1,
     'damage': 1,
     'armour': (wave) => 0,
@@ -110,12 +125,14 @@ export const SplitterBig: EnemyConfig = {
     'spriteName': 'splitterBigEnemy',
     'tint': 0xffffff,
     'split': {
-        'cfg': Weak,
+        'cfg': SplitterSmall,
         'amount': 2
     }
 }
 
-export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast, SplitterBig]
+
+
+export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast, SplitterBig, SplitterSmall]
 
 
 export type TowerConfig = {
