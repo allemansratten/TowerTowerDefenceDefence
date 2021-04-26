@@ -36,7 +36,7 @@ export type EnemyConfig = {
     speed: number  // fraction of path
     money: integer  // on-kill reward
     damage: integer  // damage dealt on reaching end
-    armour: integer  // flat reduction of incoming damage
+    armour: (integer) => integer  // flat reduction of incoming damage
     danger: integer  // for calculating wave difficulty
     spriteName: string  // sprite as imported in metaScene.preload
     tint: integer
@@ -53,7 +53,7 @@ export const Weak: EnemyConfig = {
     'speed': 1 / 20000,
     'money': 1,
     'damage': 1,
-    'armour': 0,
+    'armour': (wave) => 0,
     'danger': 20,
     'spriteName': 'enemy1',
     'tint': 0xffffff,
@@ -66,7 +66,7 @@ export const Fat: EnemyConfig = {
     'speed': 1 / 40000,
     'money': 2,
     'damage': 1,
-    'armour': 0,
+    'armour': (wave) => 0,
     'danger': 240,
     'spriteName': 'fatEnemy',
     'tint': 0xffffff,
@@ -79,8 +79,8 @@ export const Armoured: EnemyConfig = {
     'speed': 1 / 30000,
     'money': 2,
     'damage': 1,
-    'armour': 4,
-    'danger': 5,
+    'armour': (wave) => 4,
+    'danger': 160,
     'spriteName': 'armouredEnemy',
     'tint': 0xffffff,
 }
@@ -92,7 +92,7 @@ export const Fast: EnemyConfig = {
     'speed': 1 / 10000,
     'money': 1,
     'damage': 1,
-    'armour': 0,
+    'armour': (wave) => 0,
     'danger': 80,
     'spriteName': 'fastEnemy',
     'tint': 0xffffff,
@@ -105,7 +105,7 @@ export const Splitter: EnemyConfig = {
     'speed': 1 / 30000,
     'money': 1,
     'damage': 1,
-    'armour': 0,
+    'armour': (wave) => 0,
     'danger': 60,
     'spriteName': 'enemy1',
     'tint': 0xff7070,
