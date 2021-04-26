@@ -2,7 +2,7 @@ import * as enem from "./enemy";
 
 // enemy damage * DAMAGE_TO_TOWER_HEALTH_COEF = how much health tower loses
 // (tower health is from 0 to 1)
-export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.3
+export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.4
 
 export const TOWER_HEALTH_REGEN = 0.00001 * 2
 
@@ -22,11 +22,11 @@ export const WaveConfig = {
     // How much time between consecutive spawns in a wave
     outerEnemyInterval: 500,
     // How much danger in a wave
-    outerWaveDanger: (wave) => wave * 40,
+    outerWaveDanger: (wave) => (wave +1)  * 10,
 
     // ------------------- inner -----------------------
     // How much danger per second is generatee in inner depths?
-    dangerPerSec: (level) => 20+ level*15,
+    dangerPerSec: (level) => 10*level,
 }
 
 export type EnemyConfig = {
@@ -50,13 +50,13 @@ export type EnemyConfig = {
 export const Weak: EnemyConfig = {
     'name': 'Weak',
     'class': enem.WeakEnemy,
-    'hp': (wave) => 25,
+    'hp': (wave) => 20 + 10*(Math.floor(wave/5)),
     'speed': 1 / 20000,
     'money': 1,
     'damage': 1,
     'armour': (wave) => 0,
-    'danger': 20,
-    'spriteName': 'weakEnemy',
+    'spriteName': 'enemy1',
+    'danger': 10,
     'tint': 0xffffff,
     'minWave': 0
 }
@@ -64,12 +64,12 @@ export const Weak: EnemyConfig = {
 export const Fat: EnemyConfig = {
     'name': 'Fat',
     'class': enem.FatEnemy,
-    'hp': (wave) => 100,
+    'hp': (wave) => 100 + 50 * (Math.floor(wave/5)),
     'speed': 1 / 40000,
     'money': 2,
     'damage': 1,
     'armour': (wave) => 0,
-    'danger': 240,
+    'danger': 100,
     'spriteName': 'fatEnemy',
     'tint': 0xffffff,
     'minWave': 0
@@ -78,12 +78,12 @@ export const Fat: EnemyConfig = {
 export const Armoured: EnemyConfig = {
     'name': 'Armoured',
     'class': enem.ArmouredEnemy,
-    'hp': (wave) => 30,
+    'hp': (wave) => 20 + 10*(Math.floor(wave/5)),
     'speed': 1 / 30000,
     'money': 2,
     'damage': 1,
-    'armour': (wave) => 4,
-    'danger': 160,
+    'armour': (wave) => 3 + (Math.floor(wave/5)),
+    'danger': 100,
     'spriteName': 'armouredEnemy',
     'tint': 0xffffff,
     'minWave': 0
@@ -92,12 +92,12 @@ export const Armoured: EnemyConfig = {
 export const Fast: EnemyConfig = {
     'name': 'Fast',
     'class': enem.FastEnemy,
-    'hp': (wave) => 15,
+    'hp': (wave) => 15 + 5*(Math.floor(wave/5)),
     'speed': 1 / 10000,
     'money': 1,
     'damage': 1,
     'armour': (wave) => 0,
-    'danger': 80,
+    'danger': 40,
     'spriteName': 'fastEnemy',
     'tint': 0xffffff,
     'minWave': 0
@@ -120,8 +120,8 @@ export const SplitterSmall: EnemyConfig = {
 export const SplitterBig: EnemyConfig = {
     'name': 'SplitterBig',
     'class': enem.SplitterBigEnemy,
-    'hp': (wave) => 15,
-    'speed': 1 / 20000,
+    'hp': (wave) => 15 + 5*(Math.floor(wave/5)),
+    'speed': 1 / 30000,
     'money': 1,
     'damage': 1,
     'armour': (wave) => 0,
@@ -159,7 +159,7 @@ export type TowerConfig = {
 export const Basic: TowerConfig = {
     'name': "Basic",
     'damage': level => 10 + 15 * (level-1),
-    'firerate': level => Math.max( 1500 - 50 * level, 1000),
+    'firerate': level => Math.max( 1200 - 100 * level, 800),
     'range': level => 125,
     'bulletSpeedMod': 4,
     'price': 5,
@@ -192,8 +192,8 @@ export const Sniper: TowerConfig = {
 
 export const Multishot: TowerConfig = {
     'name': "Multishot",
-    'damage': level => 5 + 10*(level-1),
-    'firerate': level => Math.max(1300 - 50*level, 1000),
+    'damage': level => 7 + 10*(level-1),
+    'firerate': level => Math.max(800 - 50*level, 500),
     'range': level => 90,
     'bulletSpeedMod': 4,
     'price': 10,
