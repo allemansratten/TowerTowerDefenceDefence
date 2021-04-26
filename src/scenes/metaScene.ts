@@ -18,6 +18,8 @@ export class MetaScene extends Phaser.Scene {
     buildSound: Phaser.Sound.BaseSound;
     damageSound: Phaser.Sound.BaseSound;
 
+    enemiesSlain: integer = 0;
+
     constructor() {
         super(sceneConfig);
         this.scenes = [];

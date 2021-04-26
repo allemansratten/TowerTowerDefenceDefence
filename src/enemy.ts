@@ -137,6 +137,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
             duration: PlayerInfo.RNG.integerInRange(600, 800),
             ease: 'Power2'
         });
+        this.scene.metaScene.enemiesSlain++;
     }
 
     onDeathSplit() {
