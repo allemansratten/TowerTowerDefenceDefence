@@ -55,7 +55,7 @@ export const Weak: EnemyConfig = {
     'money': 1,
     'damage': 1,
     'armour': (wave) => 0,
-    'spriteName': 'enemy1',
+    'spriteName': 'weakEnemy',
     'danger': 10,
     'tint': 0xffffff,
     'minWave': 0
