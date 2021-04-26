@@ -80,9 +80,9 @@ export const Armoured: EnemyConfig = {
     'money': 2,
     'damage': 1,
     'armour': 4,
-    'danger': 160,
-    'spriteName': 'enemy1',
-    'tint': 0xaaaaff,
+    'danger': 5,
+    'spriteName': 'armouredEnemy',
+    'tint': 0xffffff,
 }
 
 export const Fast: EnemyConfig = {
