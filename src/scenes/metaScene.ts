@@ -84,7 +84,7 @@ export class MetaScene extends Phaser.Scene {
 
     public preload() {
         // load the game assets
-        this.load.setPath("../../assets/")
+        this.load.setBaseURL('assets/')
 
         this.load.spritesheet('enemy1', 'enemy.png', { frameWidth: 48, frameHeight: 48 });
         this.load.spritesheet('fatEnemy', 'chonk.png', { frameWidth: 56, frameHeight: 56 });
