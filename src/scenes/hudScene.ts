@@ -66,7 +66,7 @@ export class HudScene extends Phaser.Scene {
         this.goUpText.setOrigin(0.5)
         this.goUpText.setVisible(false)
 
-        this.descriptionText = this.add.text(5, 300, "Description", { fontSize: '10pt' });
+        this.descriptionText = this.add.text(5, 300, "", { fontSize: '10pt' });
         this.descriptionText.setWordWrapWidth(HUD_WIDTH - 10, false);
 
         this.buyTowerIcons = [];
@@ -298,15 +298,24 @@ class BuyTowerIcon {
         (this.spriteContainer.list[2] as Phaser.GameObjects.Sprite).setTint(tint & this.towerConfig.tintTop);
     }
 
-    update(time, delta) {
+    updateShop() {
         // Uncomment to prevent negative money:
-        // this.hudScene.input.setDraggable(this.spriteContainer, PlayerInfo.money >= this.towerConfig.price)
+        this.hudScene.input.setDraggable(this.spriteContainer, PlayerInfo.money >= this.towerConfig.price)
+
         if (PlayerInfo.money >= this.towerConfig.price) {
             this.priceText.setTint(0x00ff00);
             this.resetTint();
         } else {
             this.priceText.setTint(0xff0000);
             this.setShopIconTint(0x995555);
+        }
+    }
+
+    oldMoney: integer = 0
+    update(time, delta) {
+        if (PlayerInfo.money != this.oldMoney) {
+            this.updateShop();
+            this.oldMoney = PlayerInfo.money;
         }
     }
 }
