@@ -16,6 +16,7 @@ export class MetaScene extends Phaser.Scene {
     public activeScene: TDScene
     mainSound: Phaser.Sound.BaseSound;
     buildSound: Phaser.Sound.BaseSound;
+    damageSound: Phaser.Sound.BaseSound;
 
     constructor() {
         super(sceneConfig);
@@ -29,10 +30,11 @@ export class MetaScene extends Phaser.Scene {
         this.scenes[0].scene.setVisible(true);
         this.scene.start("hudScene");
 
-        this.mainSound = this.sound.add("main_music", {"loop": true, "volume": 0.1});
+        this.mainSound = this.sound.add("main_music", {"loop": true, "volume": 0.07});
         this.mainSound.play();
 
         this.buildSound = this.sound.add('build_sound', { 'loop': false, 'volume': 1});
+        this.damageSound = this.sound.add('damage_sound', { 'loop': false, 'volume': 0.15});
     }
 
   // Creates new Scene, enables it, and sets it invisible
@@ -144,6 +146,7 @@ export class MetaScene extends Phaser.Scene {
 
         this.load.audio("main_music", "gamejam_LD48.ogg");
         this.load.audio('build_sound', 'build.wav');
+        this.load.audio('damage_sound', 'damage.wav');
     }
 
     createAnimations() { // TODO: Make this not dumb and ugly
