@@ -98,6 +98,8 @@ export class MetaScene extends Phaser.Scene {
     public isGameOver = false;
     public gameOver() {
         if (!this.isGameOver){
+            this.sound.setRate(1 / (Math.pow(1.05946309436, 15)))
+
             this.isGameOver = true;
             let gameOverScene = this.scene.add("gameOverScene", new GameOverScene(this))
             this.scene.start(gameOverScene);
