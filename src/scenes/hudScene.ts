@@ -163,7 +163,7 @@ export class HudScene extends Phaser.Scene {
             newButton.scaleX = scale
             newButton.scaleY = scale
             newButton.setInteractive();
-            newButton.on('pointerdown', () => this.metaScene.switchToScene(parentScenes[i], false), this.metaScene)
+            newButton.on('pointerdown', () => this.metaScene.switchToScene(parentScenes[i].scene.key, false), this.metaScene)
             this.parentScenesImages.push(
                 newButton
             )
