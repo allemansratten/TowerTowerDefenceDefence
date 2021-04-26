@@ -97,7 +97,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         this.setPosition(this.follower.vec.x, this.follower.vec.y);
 
         let frameRate = Math.min(60, this.stats.speed * 40000 * 15)
-        if (this.stats.spriteName == "fatEnemy") { // hack
+        if (this.stats.spriteName === "fatEnemy" || this.stats.spriteName === "splitterFatEnemy") { // hack
             frameRate *= 0.5
         }
 
@@ -188,5 +188,11 @@ export class SplitterBigEnemy extends EnemyBase {
 export class SplitterSmallEnemy extends EnemyBase {
     constructor(scene: TDScene) {
         super(scene, cfg.SplitterSmall)
+    }
+}
+
+export class SplitterFatEnemy extends EnemyBase {
+    constructor(scene: TDScene) {
+        super(scene, cfg.SplitterFat)
     }
 }
