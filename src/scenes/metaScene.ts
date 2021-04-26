@@ -21,6 +21,8 @@ export class MetaScene extends Phaser.Scene {
     }
 
     public create() {
+        this.createAnimations()
+
         this.activeScene = this.addScene();
         this.scenes[0].scene.setVisible(true);
         this.scene.start("hudScene");
@@ -29,44 +31,6 @@ export class MetaScene extends Phaser.Scene {
         this.mainSound.play();
 
         this.buildSound = this.sound.add('build_sound', { 'loop': false, 'volume': 1});
-
-        this.anims.create({
-            key: 'weakEnemy_walk',
-            frames: this.anims.generateFrameNumbers('weakEnemy', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'fastEnemy_walk',
-            frames: this.anims.generateFrameNumbers('fastEnemy', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'fatEnemy_walk',
-            frames: this.anims.generateFrameNumbers('fatEnemy', {start: 0, end: 9}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'armouredEnemy_walk',
-            frames: this.anims.generateFrameNumbers('armouredEnemy', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'splitterBigEnemy_walk',
-            frames: this.anims.generateFrameNumbers('splitterBigEnemy', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'splitterSmallEnemy_walk',
-            frames: this.anims.generateFrameNumbers('splitterSmallEnemy', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-
     }
 
     // Creates new Scene, enables it, and sets it invisible
@@ -159,8 +123,62 @@ export class MetaScene extends Phaser.Scene {
         )
         this.load.image('particle_red', 'particle_red.png');
 
+        this.load.spritesheet('portalFrom', 'portal_from.png', {frameWidth: 40, frameHeight: 40});
+        this.load.spritesheet('portalTo', 'portal_to.png', {frameWidth: 40, frameHeight: 40});
+
         this.load.audio("main_music", "gamejam_LD48.ogg");
         this.load.audio('build_sound', 'build.wav');
+    }
+
+    createAnimations() {
+        this.anims.create({
+            key: 'weakEnemy_walk',
+            frames: this.anims.generateFrameNumbers('weakEnemy', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'fastEnemy_walk',
+            frames: this.anims.generateFrameNumbers('fastEnemy', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'fatEnemy_walk',
+            frames: this.anims.generateFrameNumbers('fatEnemy', {start: 0, end: 9}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'armouredEnemy_walk',
+            frames: this.anims.generateFrameNumbers('armouredEnemy', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'splitterBigEnemy_walk',
+            frames: this.anims.generateFrameNumbers('splitterBigEnemy', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'splitterSmallEnemy_walk',
+            frames: this.anims.generateFrameNumbers('splitterSmallEnemy', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'portalFrom_spin',
+            frames: this.anims.generateFrameNumbers('portalFrom', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'portalTo_spin',
+            frames: this.anims.generateFrameNumbers('portalTo', {start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+        });
     }
 
     getActiveScene() {
