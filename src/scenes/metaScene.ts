@@ -116,6 +116,7 @@ export class MetaScene extends Phaser.Scene {
         this.load.spritesheet('splitterBigEnemy', 'enemy_split_big.png', {frameWidth: 48, frameHeight: 48});
         this.load.spritesheet('splitterSmallEnemy', 'enemy_split_small.png', {frameWidth: 48, frameHeight: 48});
         this.load.spritesheet('fatEnemy', 'enemy_chonk.png', {frameWidth: 56, frameHeight: 56});
+        this.load.spritesheet('splitterFatEnemy', 'enemy_split_chonk.png', {frameWidth: 56, frameHeight: 56});
 
         this.load.image('bullet', 'bullet.png');
         this.load.spritesheet('tileset',
@@ -143,7 +144,7 @@ export class MetaScene extends Phaser.Scene {
         this.load.audio('build_sound', 'build.wav');
     }
 
-    createAnimations() {
+    createAnimations() { // TODO: Make this not dumb and ugly
         this.anims.create({
             key: 'weakEnemy_walk',
             frames: this.anims.generateFrameNumbers('weakEnemy', {start: 0, end: 7}),
@@ -159,6 +160,12 @@ export class MetaScene extends Phaser.Scene {
         this.anims.create({
             key: 'fatEnemy_walk',
             frames: this.anims.generateFrameNumbers('fatEnemy', {start: 0, end: 9}),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'splitterFatEnemy_walk',
+            frames: this.anims.generateFrameNumbers('splitterFatEnemy', {start: 0, end: 9}),
             frameRate: 10,
             repeat: -1
         });

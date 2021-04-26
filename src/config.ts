@@ -4,7 +4,7 @@ import * as enem from "./enemy";
 // (tower health is from 0 to 1)
 export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.4
 
-export const TOWER_HEALTH_REGEN = 0.00001 * 3
+export const TOWER_HEALTH_REGEN = 0.00001 * 2
 
 export const PAUSE_AFTER_WAVE_TIME = 3000;
 
@@ -79,7 +79,8 @@ export const Fat: EnemyConfig = {
     'danger': 100,
     'spriteName': 'fatEnemy',
     'tint': 0xffffff,
-    'minWave': 14
+    'minWave': 14,
+	'blurb': 'Large and in charge.'
 }
 
 export const Armoured: EnemyConfig = {
@@ -94,7 +95,8 @@ export const Armoured: EnemyConfig = {
     'danger': 100,
     'spriteName': 'armouredEnemy',
     'tint': 0xffffff,
-    'minWave': 10
+    'minWave': 10,
+	'blurb': 'The hat is surprisingly sturdy.'
 }
 
 export const Fast: EnemyConfig = {
@@ -109,7 +111,8 @@ export const Fast: EnemyConfig = {
     'danger': 30,
     'spriteName': 'fastEnemy',
     'tint': 0xffffff,
-    'minWave': 6
+    'minWave': 6,
+	'blurb': 'The boots aren\'t just for show!'
 }
 
 export const SplitterSmall: EnemyConfig = {
@@ -124,7 +127,8 @@ export const SplitterSmall: EnemyConfig = {
     'danger': 20,
     'spriteName': 'splitterSmallEnemy',
     'tint': 0xffffff,
-    'minWave': -1
+    'minWave': -1,
+	'blurb': 'Aww, look, they\'re just babies!'
 }
 
 export const SplitterBig: EnemyConfig = {
@@ -143,12 +147,32 @@ export const SplitterBig: EnemyConfig = {
         'cfg': SplitterSmall,
         'amount': 2
     },
-    'minWave': 8
+    'minWave': 8,
+	'blurb': 'Eyes to meet you.'
+}
+
+export const SplitterFat: EnemyConfig = {
+    'name': 'SplitterFat',
+    'displayName': 'Splitter',
+    'class': enem.SplitterFatEnemy,
+    'hp': (wave) => 40 + 5*(wave-1),
+    'speed': 1 / 40000,
+    'money': 0,
+    'damage': 1,
+    'armour': (wave) => 0,
+    'danger': 200,
+    'spriteName': 'splitterFatEnemy',
+    'tint': 0xffffff,
+    'split': {
+        'cfg': SplitterBig,
+        'amount': 2
+    },
+    'minWave': 20
 }
 
 
 
-export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast, SplitterBig, SplitterSmall]
+export const ENEMY_CONFIGS = [Weak, Fat, Armoured, Fast, SplitterBig, SplitterSmall, SplitterFat]
 
 
 export type TowerConfig = {
@@ -204,9 +228,9 @@ export const Sniper: TowerConfig = {
 
 export const Multishot: TowerConfig = {
     'name': "Multishot",
-    'damage': level => 5 + 15*(level-1),
+    'damage': level => 10 + 15*(level-1),
     'firerate': level => 800,
-    'range': level => 90,
+    'range': level => 90 + 10*(level-1),
     'numTargets': level => 3,
     'bulletSpeedMod': 4,
     'price': 10,
@@ -216,7 +240,7 @@ export const Multishot: TowerConfig = {
     'tintBase': 0xffffff,
     'tintMid': 0x7f4d61,
     'tintTop': 0xaa4e61,
-    'description': "Can shoot at multiple enemies at once. Damage and fire rate grow with level.",
+    'description': "Can shoot at multiple enemies at once. Damage, range, and number of targets grow with level.",
 }
 
 export const TOWER_CONFIGS = [Basic, Multishot, Sniper]
