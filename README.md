@@ -2,7 +2,7 @@
 
 Towers do all the work in TD games. But who will defend the defenders themselves?
 
-[Playable here.](https://allemansratten.github.io/LD48/dist/)
+[Playable here.](https://allemansratten.github.io/LD48/dist/index.html)
 
 ## Credits
 
@@ -30,4 +30,4 @@ and go to https://localhost:8080/.
 
 ## Deployment
 
-The branch `gh-pages` is deployed at https://allemansratten.github.io/LD48/dist/.
+The branch `gh-pages` is deployed at https://allemansratten.github.io/LD48/dist/index.html.
