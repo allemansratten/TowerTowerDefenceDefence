@@ -4,7 +4,7 @@ import * as enem from "./enemy";
 // (tower health is from 0 to 1)
 export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.4
 
-export const TOWER_HEALTH_REGEN = 0.00001 * 2
+export const TOWER_HEALTH_REGEN = 0.00001 * 3
 
 export const PAUSE_AFTER_WAVE_TIME = 3000;
 
@@ -28,11 +28,12 @@ export const WaveConfig = {
     // How much danger per second is generatee in inner depths?
     dangerPerSec: (level) => 10*level,
     // To what wave number does a tower level correspond? (for enemy scaling)
-    levelToWave: (level) => 5 * level,
+    levelToWave: (level) => 3 * level,
 }
 
 export type EnemyConfig = {
     name: string  // must be same as config object name
+    displayName: string  // name to be displayed to player
     class: any  // class of the enemy as defined in ./enemy.ts
     hp: (integer) => integer  // can scale with wave
     speed: number  // fraction of path
@@ -47,12 +48,14 @@ export type EnemyConfig = {
         amount: integer
     }
     minWave: integer  // first wave this can spawn, -1 to never spawn
+    blurb?: string  // shown to player
 }
 
 export const Weak: EnemyConfig = {
     'name': 'Weak',
+    'displayName': 'Normal',
     'class': enem.WeakEnemy,
-    'hp': (wave) => 20 + 4*(wave-1),
+    'hp': (wave) => 20 + 9*(wave-1),
     'speed': 1 / 20000,
     'money': 1,
     'damage': 1,
@@ -60,13 +63,15 @@ export const Weak: EnemyConfig = {
     'spriteName': 'weakEnemy',
     'danger': 10,
     'tint': 0xffffff,
-    'minWave': 0
+    'minWave': 0,
+    'blurb': 'Too cute to kill... surely.'
 }
 
 export const Fat: EnemyConfig = {
     'name': 'Fat',
+    'displayName': 'Chonk',
     'class': enem.FatEnemy,
-    'hp': (wave) => 100 + 20 * (wave-1),
+    'hp': (wave) => 100 + 45 * (wave-1),
     'speed': 1 / 40000,
     'money': 2,
     'damage': 1,
@@ -79,12 +84,13 @@ export const Fat: EnemyConfig = {
 
 export const Armoured: EnemyConfig = {
     'name': 'Armoured',
+    'displayName': 'Armoured',
     'class': enem.ArmouredEnemy,
-    'hp': (wave) => 20 + 4*(wave-1),
+    'hp': (wave) => 20 + 9*(wave-1),
     'speed': 1 / 30000,
     'money': 2,
     'damage': 1,
-    'armour': (wave) => 3 + (Math.floor(wave/5)),
+    'armour': (wave) => Math.min(3 + (Math.floor(wave/5)),14),
     'danger': 100,
     'spriteName': 'armouredEnemy',
     'tint': 0xffffff,
@@ -93,8 +99,9 @@ export const Armoured: EnemyConfig = {
 
 export const Fast: EnemyConfig = {
     'name': 'Fast',
+    'displayName': 'Speedy',
     'class': enem.FastEnemy,
-    'hp': (wave) => 15 + 2*(wave-1),
+    'hp': (wave) => 15 + 7*(wave-1),
     'speed': 1 / 10000,
     'money': 1,
     'damage': 1,
@@ -107,8 +114,9 @@ export const Fast: EnemyConfig = {
 
 export const SplitterSmall: EnemyConfig = {
     'name': 'SplitterSmall',
+    'displayName': 'Splitter baby',
     'class': enem.SplitterSmallEnemy,
-    'hp': (wave) => 10+(wave-1),
+    'hp': (wave) => 10+5*(wave-1),
     'speed': 1 / 20000,
     'money': 0,
     'damage': 1,
@@ -121,8 +129,9 @@ export const SplitterSmall: EnemyConfig = {
 
 export const SplitterBig: EnemyConfig = {
     'name': 'SplitterBig',
+    'displayName': 'Splitter',
     'class': enem.SplitterBigEnemy,
-    'hp': (wave) => 15 + 2*(wave-1),
+    'hp': (wave) => 20 + 7*(wave-1),
     'speed': 1 / 30000,
     'money': 1,
     'damage': 1,
@@ -171,7 +180,7 @@ export const Basic: TowerConfig = {
     'tintBase': 0xffffff,
     'tintMid': 0x675a9c,
     'tintTop': 0xaaaaff,
-    'description': "Nothing fancy. Damage and fire rate grow with level.",
+    'description': "Nothing fancy. Damage grows with level.",
 }
 
 

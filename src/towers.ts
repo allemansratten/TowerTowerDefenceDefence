@@ -97,7 +97,7 @@ export class Tower extends Phaser.GameObjects.Container {
             this.rangeIndicator.setVisible(true);
 
             let hudScene = this.scene.scene.get("hudScene") as HudScene
-            hudScene.setDescription(this.config, this)
+            hudScene.setDescriptionTower(this.config, this)
         });
         this.towerBase.on('pointerout', () => { this.rangeIndicator.setVisible(false) });
 

@@ -1,4 +1,5 @@
-import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG } from "../config";
+import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG, EnemyConfig } from "../config";
+import { EnemyBase } from "../enemy";
 import { PlayerInfo } from "../playerInfo";
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
 import { Tower } from "../towers";
@@ -107,6 +108,10 @@ export class HudScene extends Phaser.Scene {
 
     lastTime: number = 0
     public update(_, delta) {
+        if (this.metaScene.isGameOver){
+            this.scene.pause()
+        }
+
         delta *= PlayerInfo.timeScale;
         this.lastTime += delta;
 
@@ -132,8 +137,8 @@ export class HudScene extends Phaser.Scene {
         if (PlayerInfo.hp <= 0) {
             this.metaScene.gameOver()
         }
-        
-    
+
+
     }
 
     updateInfoBasedOnActiveScene() {
@@ -177,7 +182,7 @@ export class HudScene extends Phaser.Scene {
         }
     }
 
-    setDescription(config: TowerConfig, tower: Tower = null) {
+    setDescriptionTower(config: TowerConfig, tower: Tower = null) {
         let level = 1
         let text = ""
 
@@ -192,6 +197,19 @@ export class HudScene extends Phaser.Scene {
         text += `Fire rate: ${config.firerate(level)/1000}s.\n`
         text += `Range: ${config.range(level)}.\n`
 
+        this.descriptionText.setText(text)
+    }
+
+    setDescriptionEnemy(enemy: EnemyBase) {
+        let text = ""
+        if (enemy) {
+            text += `${enemy.stats.displayName}\n`;
+            text += `Health: ${enemy.hp}/${enemy.stats.hp(1)}\n`;
+            text += `Armour: ${enemy.stats.damage}\n`;
+            text += `Speed: ${enemy.speed * 60000}\n`;
+            if(enemy.stats.blurb)
+                text += `\n${enemy.stats.blurb}\n`;
+        }
         this.descriptionText.setText(text)
     }
 }
@@ -258,7 +276,7 @@ class BuyTowerIcon {
         hudScene.input.setDraggable(this.spriteContainer)
 
         this.spriteContainer.on('pointerover', () => {
-            this.hudScene.setDescription(config)
+            this.hudScene.setDescriptionTower(config)
         });
 
         hudScene.input.on('dragstart', (pointer, gameObject) => {

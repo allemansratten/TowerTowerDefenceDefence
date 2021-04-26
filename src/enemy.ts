@@ -22,6 +22,11 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
         this.stats = stats;
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
+
+        this.setInteractive();
+        this.on('pointerover', () => {
+            (this.scene.scene.get('hudScene') as HudScene).setDescriptionEnemy(this);
+        });
     }
 
     update(_, delta) {
