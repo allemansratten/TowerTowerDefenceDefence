@@ -13,10 +13,12 @@ export class GameOverScene extends Phaser.Scene {
         console.log("CREATED")
     }
 
-    currentTime = 0
+    currentTime = 0;
+    reloaded = false;
     update(_, delta) {
         this.currentTime += delta
-        if (this.currentTime > 1000) {
+        if (this.currentTime > 1000 && !this.reloaded) {
+            this.reloaded = true;
             location.reload()
         }
     }
