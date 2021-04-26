@@ -145,7 +145,7 @@ export const Basic: TowerConfig = {
     'spriteMid': 0,
     'spriteTop': 0,
     'tintBase': 0xffffff,
-    'tintMid': 0xffffff,
+    'tintMid': 0x675a9c,
     'tintTop': 0xaaaaff,
     'description': "Nothing fancy. Damage and fire rate grow with level.",
 }
@@ -161,9 +161,9 @@ export const Sniper: TowerConfig = {
     'spriteBase': 0,
     'spriteMid': 0,
     'spriteTop': 1,
-    'tintBase': 0xbbffbb,
-    'tintMid': 0xffffff,
-    'tintTop': 0x00ff00,
+    'tintBase': 0xffffff,
+    'tintMid': 0x3a715d,
+    'tintTop': 0x48ac81,
     'description': "Long range, but fires slowly. Damage and range grow with level.",
 }
 
@@ -179,8 +179,8 @@ export const Multishot: TowerConfig = {
     'spriteMid': 0,
     'spriteTop': 2,
     'tintBase': 0xffffff,
-    'tintMid': 0xffffff,
-    'tintTop': 0xff0000,
+    'tintMid': 0x7f4d61,
+    'tintTop': 0xaa4e61,
     'description': "Can shoot at multiple enemies at once. Damage and fire rate grow with level.",
 }
 
