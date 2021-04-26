@@ -26,7 +26,7 @@ export const WaveConfig = {
 
     // ------------------- inner -----------------------
     // How much danger per second is generatee in inner depths?
-    dangerPerSec: (level) => 10*level,
+    dangerPerSec: (level) => 15*level,
     // To what wave number does a tower level correspond? (for enemy scaling)
     levelToWave: (level) => 3 * level,
 }
@@ -153,9 +153,9 @@ export const SplitterBig: EnemyConfig = {
 
 export const SplitterFat: EnemyConfig = {
     'name': 'SplitterFat',
-    'displayName': 'Splitter',
+    'displayName': 'The Big One',
     'class': enem.SplitterFatEnemy,
-    'hp': (wave) => 40 + 5*(wave-1),
+    'hp': (wave) => 100 + 15*(wave-1),
     'speed': 1 / 40000,
     'money': 0,
     'damage': 1,
@@ -167,7 +167,8 @@ export const SplitterFat: EnemyConfig = {
         'cfg': SplitterBig,
         'amount': 2
     },
-    'minWave': 20
+    'minWave': 20,
+	'blurb': 'Eyes to meet you... two.'
 }
 
 
@@ -231,7 +232,7 @@ export const Multishot: TowerConfig = {
     'damage': level => 10 + 15*(level-1),
     'firerate': level => 800,
     'range': level => 90 + 10*(level-1),
-    'numTargets': level => 3,
+    'numTargets': level => 2 + level,
     'bulletSpeedMod': 4,
     'price': 10,
     'spriteBase': 0,
