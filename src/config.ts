@@ -33,6 +33,7 @@ export const WaveConfig = {
 
 export type EnemyConfig = {
     name: string  // must be same as config object name
+    displayName: string  // name to be displayed to player
     class: any  // class of the enemy as defined in ./enemy.ts
     hp: (integer) => integer  // can scale with wave
     speed: number  // fraction of path
@@ -47,10 +48,12 @@ export type EnemyConfig = {
         amount: integer
     }
     minWave: integer  // first wave this can spawn, -1 to never spawn
+    blurb?: string  // shown to player
 }
 
 export const Weak: EnemyConfig = {
     'name': 'Weak',
+    'displayName': 'Normal',
     'class': enem.WeakEnemy,
     'hp': (wave) => 20 + 10*(Math.floor(wave/5)),
     'speed': 1 / 20000,
@@ -60,11 +63,13 @@ export const Weak: EnemyConfig = {
     'spriteName': 'weakEnemy',
     'danger': 10,
     'tint': 0xffffff,
-    'minWave': 0
+    'minWave': 0,
+    'blurb': 'Too cute to kill... surely.'
 }
 
 export const Fat: EnemyConfig = {
     'name': 'Fat',
+    'displayName': 'Chonk',
     'class': enem.FatEnemy,
     'hp': (wave) => 100 + 50 * (Math.floor(wave/5)),
     'speed': 1 / 40000,
@@ -79,6 +84,7 @@ export const Fat: EnemyConfig = {
 
 export const Armoured: EnemyConfig = {
     'name': 'Armoured',
+    'displayName': 'Armoured',
     'class': enem.ArmouredEnemy,
     'hp': (wave) => 20 + 10*(Math.floor(wave/5)),
     'speed': 1 / 30000,
@@ -93,6 +99,7 @@ export const Armoured: EnemyConfig = {
 
 export const Fast: EnemyConfig = {
     'name': 'Fast',
+    'displayName': 'Speedy',
     'class': enem.FastEnemy,
     'hp': (wave) => 15 + 5*(Math.floor(wave/5)),
     'speed': 1 / 10000,
@@ -107,6 +114,7 @@ export const Fast: EnemyConfig = {
 
 export const SplitterSmall: EnemyConfig = {
     'name': 'SplitterSmall',
+    'displayName': 'Splitter baby',
     'class': enem.SplitterSmallEnemy,
     'hp': (wave) => 10,
     'speed': 1 / 20000,
@@ -121,6 +129,7 @@ export const SplitterSmall: EnemyConfig = {
 
 export const SplitterBig: EnemyConfig = {
     'name': 'SplitterBig',
+    'displayName': 'Splitter',
     'class': enem.SplitterBigEnemy,
     'hp': (wave) => 15 + 5*(Math.floor(wave/5)),
     'speed': 1 / 30000,
