@@ -52,7 +52,7 @@ export type EnemyConfig = {
 export const Weak: EnemyConfig = {
     'name': 'Weak',
     'class': enem.WeakEnemy,
-    'hp': (wave) => 20 + 10*(Math.floor(wave/5)),
+    'hp': (wave) => 20 + 4*(wave-1),
     'speed': 1 / 20000,
     'money': 1,
     'damage': 1,
@@ -66,7 +66,7 @@ export const Weak: EnemyConfig = {
 export const Fat: EnemyConfig = {
     'name': 'Fat',
     'class': enem.FatEnemy,
-    'hp': (wave) => 100 + 50 * (Math.floor(wave/5)),
+    'hp': (wave) => 100 + 20 * (wave-1),
     'speed': 1 / 40000,
     'money': 2,
     'damage': 1,
@@ -74,13 +74,13 @@ export const Fat: EnemyConfig = {
     'danger': 100,
     'spriteName': 'fatEnemy',
     'tint': 0xffffff,
-    'minWave': 8
+    'minWave': 14
 }
 
 export const Armoured: EnemyConfig = {
     'name': 'Armoured',
     'class': enem.ArmouredEnemy,
-    'hp': (wave) => 20 + 10*(Math.floor(wave/5)),
+    'hp': (wave) => 20 + 4*(wave-1),
     'speed': 1 / 30000,
     'money': 2,
     'damage': 1,
@@ -88,27 +88,27 @@ export const Armoured: EnemyConfig = {
     'danger': 100,
     'spriteName': 'armouredEnemy',
     'tint': 0xffffff,
-    'minWave': 6
+    'minWave': 10
 }
 
 export const Fast: EnemyConfig = {
     'name': 'Fast',
     'class': enem.FastEnemy,
-    'hp': (wave) => 15 + 5*(Math.floor(wave/5)),
+    'hp': (wave) => 15 + 2*(wave-1),
     'speed': 1 / 10000,
     'money': 1,
     'damage': 1,
     'armour': (wave) => 0,
-    'danger': 40,
+    'danger': 30,
     'spriteName': 'fastEnemy',
     'tint': 0xffffff,
-    'minWave': 2
+    'minWave': 6
 }
 
 export const SplitterSmall: EnemyConfig = {
     'name': 'SplitterSmall',
     'class': enem.SplitterSmallEnemy,
-    'hp': (wave) => 10,
+    'hp': (wave) => 10+(wave-1),
     'speed': 1 / 20000,
     'money': 0,
     'damage': 1,
@@ -122,19 +122,19 @@ export const SplitterSmall: EnemyConfig = {
 export const SplitterBig: EnemyConfig = {
     'name': 'SplitterBig',
     'class': enem.SplitterBigEnemy,
-    'hp': (wave) => 15 + 5*(Math.floor(wave/5)),
+    'hp': (wave) => 15 + 2*(wave-1),
     'speed': 1 / 30000,
     'money': 1,
     'damage': 1,
     'armour': (wave) => 0,
-    'danger': 60,
+    'danger': 30,
     'spriteName': 'splitterBigEnemy',
     'tint': 0xffffff,
     'split': {
         'cfg': SplitterSmall,
         'amount': 2
     },
-    'minWave': 4
+    'minWave': 8
 }
 
 
@@ -160,8 +160,8 @@ export type TowerConfig = {
 
 export const Basic: TowerConfig = {
     'name': "Basic",
-    'damage': level => 10 + 15 * (level-1),
-    'firerate': level => Math.max( 1200 - 100 * level, 800),
+    'damage': level => 15 + 30 * (level-1),
+    'firerate': level => 1000,
     'range': level => 125,
     'bulletSpeedMod': 4,
     'price': 5,
@@ -194,8 +194,8 @@ export const Sniper: TowerConfig = {
 
 export const Multishot: TowerConfig = {
     'name': "Multishot",
-    'damage': level => 7 + 10*(level-1),
-    'firerate': level => Math.max(800 - 50*level, 500),
+    'damage': level => 5 + 15*(level-1),
+    'firerate': level => 800,
     'range': level => 90,
     'bulletSpeedMod': 4,
     'price': 10,
