@@ -21,6 +21,7 @@ export class MetaScene extends Phaser.Scene {
     damageSound: Phaser.Sound.BaseSound;
     shootSound: Phaser.Sound.BaseSound;
     multishotSound: Phaser.Sound.BaseSound;
+    levelupSound: Phaser.Sound.BaseSound;
 
     enemiesSlain: integer = 0;
 
@@ -43,6 +44,7 @@ export class MetaScene extends Phaser.Scene {
         this.damageSound = this.sound.add('damage_sound', { 'loop': false, 'volume': 0.15});
         this.shootSound = this.sound.add('shoot_sound', { 'loop': false, 'volume': 0.03});
         this.multishotSound = this.sound.add('multishot_sound', { 'loop': false, 'volume': 0.03});
+        this.levelupSound = this.sound.add('levelup_sound', { 'loop': false, 'volume': 0.02});
     }
 
   // Creates new Scene, enables it, and sets it invisible
@@ -157,6 +159,7 @@ export class MetaScene extends Phaser.Scene {
         this.load.audio('damage_sound', 'damage.wav');
         this.load.audio('shoot_sound', 'turretshot.wav');
         this.load.audio('multishot_sound', 'multishot.wav');
+        this.load.audio('levelup_sound', 'levelup.wav');
     }
 
     createAnimations() { // TODO: Make this not dumb and ugly

@@ -47,12 +47,29 @@ export class Tower extends Phaser.GameObjects.Container {
     level: integer
     levelText: Phaser.GameObjects.Text
 
+    xCoord: number
+    yCoord: number
+
     private innerTowerSceneKey: string
 
     constructor(towerScene: TDScene) {
         super(towerScene, 0, 0)
         this.healthBar = new HealthBar(towerScene)
         this.scene = towerScene;
+    }
+
+    public levelUp() {
+        this.level++;
+        if (this.scene == this.scene.metaScene.activeScene)
+            this.scene.metaScene.levelupSound.play();
+        var particle = this.scene.add.particles('particle_red');  // these might not be dying
+        var emitter = particle.createEmitter({
+            lifespan: 200,
+            blendMode: 'ADD',
+            speed: 0,
+            scale: {start: 0, end: 1},
+        });
+        emitter.explode(20, this.xCoord, this.yCoord);  // this.x doesn't work btw
     }
 
     public make(i: number, j: number, innerTowerSceneKey: string, config: TowerConfig, towerClassName) {
@@ -64,13 +81,13 @@ export class Tower extends Phaser.GameObjects.Container {
         this.towerTurret.setActive(true);
         this.towerTurret.setVisible(true);
 
-        let xCoord = i * TILE_SIZE + TILE_SIZE / 2
-        let yCoord = j * TILE_SIZE + TILE_SIZE / 2
+        this.xCoord = i * TILE_SIZE + TILE_SIZE / 2
+        this.yCoord = j * TILE_SIZE + TILE_SIZE / 2
 
-        this.towerBase = this.scene.add.sprite(xCoord, yCoord, 'towerbases', this.config.spriteBase);
+        this.towerBase = this.scene.add.sprite(this.xCoord, this.yCoord, 'towerbases', this.config.spriteBase);
         this.towerBase.setTint(this.config.tintBase);
         this.add(this.towerBase);
-        this.towerMid = this.scene.add.sprite(xCoord, yCoord, 'towermids', this.config.spriteMid);
+        this.towerMid = this.scene.add.sprite(this.xCoord, this.yCoord, 'towermids', this.config.spriteMid);
         this.towerMid.setTint(this.config.tintMid);
         this.towerMid.anims.play({
             key: `towerMids_spin`
@@ -78,7 +95,7 @@ export class Tower extends Phaser.GameObjects.Container {
         this.add(this.towerMid);
 
         this.rangeIndicator = this.scene.add.circle(
-            xCoord, yCoord, config.range(1),
+            this.xCoord, this.yCoord, config.range(1),
             RANGE_INDICATOR_CONFIG.colour,
             RANGE_INDICATOR_CONFIG.alpha
         );
@@ -106,14 +123,14 @@ export class Tower extends Phaser.GameObjects.Container {
 
         this.add(this.towerTurret);
 
-        this.healthBar.make(xCoord, yCoord + TILE_SIZE / 2 - 8, TILE_SIZE - 14)
+        this.healthBar.make(this.xCoord, this.yCoord + TILE_SIZE / 2 - 8, TILE_SIZE - 14)
         this.add(this.healthBar)
 
         this.level = 1
 
         const pad = 3
         this.levelText = this.scene.add.text(
-            xCoord + 15, yCoord - 4, "" + this.level,
+            this.xCoord + 15, this.yCoord - 4, "" + this.level,
             {
                 fontSize: "20px",
                 color: "white",
@@ -140,7 +157,7 @@ export class Tower extends Phaser.GameObjects.Container {
 
         if (this.healthBar.health >= 1.0) {
             this.healthBar.levelUp();
-            this.level++
+            this.levelUp()
             this.levelText.setText("" + this.level)
 
             if (this.stats.range(this.level - 1) < this.stats.range(this.level)) {
