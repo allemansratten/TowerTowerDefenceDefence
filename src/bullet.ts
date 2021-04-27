@@ -26,19 +26,22 @@ export class Bullet extends Phaser.GameObjects.Container {
 
         this.speed = Phaser.Math.GetSpeed(600, 1);
         this.bulletImage = this.scene.add.image(0, 0, 'bullet')
+        this.add(this.bulletImage)
+
+        this.particles = this.scene.add.particles('particle_red')
+        this.emitter = this.particles.createEmitter({
+            speed: 100,
+            scale: {start: 0.3, end: 0},
+            blendMode: 'ADD',
+            lifespan: 100,
+        });
     }
 
-    fire(x, y, angle, damage, towerRange, speedMod) {
+    fire(x, y, angle, damage, towerRange, speedMod, scene) {
         this.damage = damage;
         this.speed = Phaser.Math.GetSpeed(towerRange * speedMod, 1);
 
-
-        this.add(this.bulletImage)
-
-        this.particles = this.scene.add.particles('particle_red');
-
         this.setActive(true);
-        this.setVisible(true);
 
         //  Bullets fire from the middle of the screen to the given x/y
         this.bulletImage.setPosition(x, y);
@@ -52,13 +55,14 @@ export class Bullet extends Phaser.GameObjects.Container {
 
         this.lifespan = 1000 / speedMod;
 
-        this.emitter = this.particles.createEmitter({
-            speed: 100,
-            scale: {start: 0.3, end: 0},
-            blendMode: 'ADD',
-            lifespan: 100,
-        });
-        this.emitter.startFollow(this.bulletImage);
+        if (this.scene.scene.isVisible()) {
+            this.emitter.flow(0)  // argument: frequency (0 = always)
+            this.emitter.startFollow(this.bulletImage);
+            // this.scene.children.bringToTop(this.bulletImage);
+            this.scene.children.bringToTop(this.particles);
+            this.setVisible(true);
+        }
+        
     }
 
     hit() {
