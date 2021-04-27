@@ -50,26 +50,31 @@ export class Tower extends Phaser.GameObjects.Container {
     xCoord: number
     yCoord: number
 
+    particles: Phaser.GameObjects.Particles.ParticleEmitterManager
+    emitter: Phaser.GameObjects.Particles.ParticleEmitter
+
     private innerTowerSceneKey: string
 
     constructor(towerScene: TDScene) {
         super(towerScene, 0, 0)
         this.healthBar = new HealthBar(towerScene)
         this.scene = towerScene;
+
+        this.particles = this.scene.add.particles('particle_red');  // these might not be dying
+        this.emitter = this.particles.createEmitter({
+            lifespan: 200,
+            blendMode: 'ADD',
+            speed: 0,
+            scale: {start: 0, end: 1},
+            on: false
+        });
     }
 
     public levelUp() {
         this.level++;
         if (this.scene == this.scene.metaScene.activeScene)
             this.scene.metaScene.levelupSound.play();
-        var particle = this.scene.add.particles('particle_red');  // these might not be dying
-        var emitter = particle.createEmitter({
-            lifespan: 200,
-            blendMode: 'ADD',
-            speed: 0,
-            scale: {start: 0, end: 1},
-        });
-        emitter.explode(20, this.xCoord, this.yCoord);  // this.x doesn't work btw
+        this.emitter.explode(20, this.xCoord, this.yCoord);  // this.x doesn't work btw
     }
 
 
