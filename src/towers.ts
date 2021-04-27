@@ -72,6 +72,7 @@ export class Tower extends Phaser.GameObjects.Container {
         emitter.explode(20, this.xCoord, this.yCoord);  // this.x doesn't work btw
     }
 
+
     public make(i: number, j: number, innerTowerSceneKey: string, config: TowerConfig, towerClassName) {
         this.config = config
         this.stats = this.config;
