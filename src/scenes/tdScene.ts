@@ -1,16 +1,16 @@
 import * as enem from "../enemy";
-import { Tower } from "../towers";
-import { Bullet } from "../bullet";
-import { WaveManager } from "../waves"
-import { TowerManager } from "../towerManager"
-import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
-import { TDSceneConfig } from "./tdSceneConfig";
-import { MetaScene } from "./MetaScene";
-import { HUD_WIDTH } from "./hudScene";
-import { UUID } from "../utils/guid";
-import { HealthBar } from "../healthBar";
-import { PlayerInfo } from "../playerInfo";
-import { ENEMY_CONFIGS } from "../config";
+import {Tower} from "../towers";
+import {Bullet} from "../bullet";
+import {WaveManager} from "../waves"
+import {TowerManager} from "../towerManager"
+import {MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE} from "../terrain";
+import {TDSceneConfig} from "./tdSceneConfig";
+import {MetaScene} from "./metaScene";
+import {HUD_WIDTH} from "./hudScene";
+import {UUID} from "../utils/guid";
+import {HealthBar} from "../healthBar";
+import {PlayerInfo} from "../playerInfo";
+import {ENEMY_CONFIGS} from "../config";
 
 export const SCENE_TRANSITION_MS = 500
 export const TD_SCENE_WIDTH = MAX_WIDTH * TILE_SIZE
@@ -67,14 +67,14 @@ export class TDScene extends Phaser.Scene {
         this.towerManager = new TowerManager(this);
 
         for (let enemy of ENEMY_CONFIGS) {
-            this.allEnemies[enemy.name] = this.physics.add.group({ classType: enemy.class, runChildUpdate: true });
+            this.allEnemies[enemy.name] = this.physics.add.group({classType: enemy.class, runChildUpdate: true});
         }
 
-        this.towers = this.add.group({ classType: Tower, runChildUpdate: true });
+        this.towers = this.add.group({classType: Tower, runChildUpdate: true});
 
         this.input.on('pointerdown', this.onClick, this);
 
-        this.bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+        this.bullets = this.physics.add.group({classType: Bullet, runChildUpdate: true});
         for (let eName in this.allEnemies) {
             this.physics.add.overlap(this.allEnemies[eName], this.bullets, this.damageEnemy);
         }
@@ -145,6 +145,7 @@ export class TDScene extends Phaser.Scene {
     }
 
     frameNumber = 0;
+
     update(_, delta) {
         delta *= PlayerInfo.timeScale;
 
@@ -174,15 +175,19 @@ export class TDScene extends Phaser.Scene {
     }
 
     onClick(pointer: Phaser.Input.Pointer) {
+        this.input.stopPropagation()
+        // console.log(`onclick on scene ${this.scene.key}`)
         const [i, j] = this.toGridPos(pointer.x, pointer.y)
-
+        // console.log(`clicked coordinates: ${i} ${j}`)
         let potentialExistingTower = this.terrain.tryGetExistingTower(i, j);
         if (potentialExistingTower) {
+            // console.log("switching to an existing tower")
             this.metaScene.switchToScene(potentialExistingTower.getInnerTowerSceneKey(), true, i, j)
         }
 
         const end = this.terrain.pathTiles[this.terrain.pathTiles.length - 1]
         if (i === end[0] && j === end[1] && this.sceneParentKey) {
+            // console.log("switching via end")
             this.metaScene.switchToScene(this.sceneParentKey, false, i, j)
         }
     }

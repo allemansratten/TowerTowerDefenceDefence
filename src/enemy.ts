@@ -3,7 +3,7 @@ import { TDScene } from "./scenes/tdScene";
 import { PlayerInfo } from "./playerInfo";
 import * as cfg from "./config";
 import { HudScene } from "./scenes/hudScene";
-import { MetaScene } from "./scenes/MetaScene";
+import { MetaScene } from "./scenes/metaScene";
 
 
 export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
@@ -22,6 +22,12 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
         this.stats = stats;
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
+
+        this.setInteractive();
+        this.on('pointerover', () => {
+            if (this.scene == this.scene.metaScene.activeScene)
+                (this.scene.scene.get('hudScene') as HudScene).setDescriptionEnemy(this);
+        });
     }
 
     update(_, delta) {
@@ -64,8 +70,9 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
             const metaScene = this.scene.scene.get("metaScene") as MetaScene
             metaScene.getActiveScene().cameras.main.shake(200, 0.005)
+            this.scene.metaScene.damageSound.play();
 
-            this.scene.waveManager.respawn(this.stats);
+            this.scene.waveManager.respawn(this.stats, this.hp);
         }
 
         if (this.scene.enemyEndCallback) {
@@ -73,11 +80,15 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         }
     }
 
-    startOnPath(wave, start_t = 0) {
+    startOnPath(wave, respawnHealth, start_t = 0) {
         // set the t parameter at the start of the path
         this.follower.t = start_t;
 
-        this.hp = this.stats.hp(wave);
+        if (respawnHealth > 0)
+            this.hp = respawnHealth;
+        else
+            this.hp = this.stats.hp(wave);
+
         this.speed = this.stats.speed;
         this.tint = this.stats.tint;
 
@@ -88,7 +99,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         this.setPosition(this.follower.vec.x, this.follower.vec.y);
 
         let frameRate = Math.min(60, this.stats.speed * 40000 * 15)
-        if (this.stats.spriteName == "fatEnemy") { // hack
+        if (this.stats.spriteName === "fatEnemy" || this.stats.spriteName === "splitterFatEnemy") { // hack
             frameRate *= 0.5
         }
 
@@ -111,6 +122,8 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
     onDeath() {
         this.onDeathAbility();
+        if (this.stats.split)
+            this.onDeathSplit()
 
         if (this.scene.sceneLevel === 0) {  // Add gold in base layer only
             this.scene.waveManager.deadDanger += this.stats.danger
@@ -125,6 +138,18 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
             duration: PlayerInfo.RNG.integerInRange(600, 800),
             ease: 'Power2'
         });
+        this.scene.metaScene.enemiesSlain++;
+    }
+
+    onDeathSplit() {
+        for(let i = 0; i < this.stats.split.amount; i++) {
+            let newEnemy = this.scene.allEnemies[this.stats.split.cfg.name].get()
+            newEnemy.setVisible(true);
+            newEnemy.setActive(true);
+
+            this.scene.waveManager.deadDanger -= this.stats.split.cfg.danger;
+            newEnemy.startOnPath(this.scene.waveManager.currentWave, 0, this.follower.t);
+        }
     }
 
     onDeathAbility() {  // override this for special on-death abilities
@@ -155,23 +180,20 @@ export class FastEnemy extends EnemyBase {
     }
 }
 
-export class SplitterEnemy extends EnemyBase {
+export class SplitterBigEnemy extends EnemyBase {
     constructor(scene: TDScene) {
-        super(scene, cfg.Splitter)
+        super(scene, cfg.SplitterBig)
     }
+}
 
-    onDeathAbility() {
-        if (!this.stats.split) {
-            console.log('ERROR missing split config on ' + this.constructor.name);
-            return;
-        }
-        for(let i = 0; i < this.stats.split.amount; i++) {
-            let newEnemy = this.scene.allEnemies[this.stats.split.cfg.name].get()
-            newEnemy.setVisible(true);
-            newEnemy.setActive(true);
+export class SplitterSmallEnemy extends EnemyBase {
+    constructor(scene: TDScene) {
+        super(scene, cfg.SplitterSmall)
+    }
+}
 
-            this.scene.waveManager.deadDanger -= this.stats.split.cfg.danger;
-            newEnemy.startOnPath(this.scene.waveManager.currentWave, this.follower.t);
-        }
+export class SplitterFatEnemy extends EnemyBase {
+    constructor(scene: TDScene) {
+        super(scene, cfg.SplitterFat)
     }
 }

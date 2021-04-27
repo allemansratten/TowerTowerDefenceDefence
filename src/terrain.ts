@@ -29,6 +29,9 @@ export class Terrain {
     w: number
     h: number
 
+    portalFrom: Phaser.GameObjects.Sprite
+    portalTo: Phaser.GameObjects.Sprite
+
     // todo: generate/load terrain
     constructor(width: integer, height: integer) {
         this.w = width
@@ -108,6 +111,12 @@ export class Terrain {
                 if (this.tiles[i][j] == TileType.Buildable) {
                     sprite.setTint(this.tint)
                 }
+                if (this.tiles[i][j] == TileType.Start) {
+                    this.portalFrom = scene.add.sprite(x, y, "portalFrom", 0)
+                }
+                if (this.tiles[i][j] == TileType.End) {
+                    this.portalTo = scene.add.sprite(x, y, "portalTo", 0)
+                }
             }
         }
     }
@@ -118,6 +127,15 @@ export class Terrain {
         graphics.lineStyle(3, 0xffffff, 1);
         // visualize the path
         this.path.draw(graphics);
+
+        this.portalFrom.anims.play({
+            key: "portalFrom_spin",
+            frameRate: 10
+        });
+        this.portalTo.anims.play({
+            key: "portalTo_spin",
+            frameRate: 10
+        });
     }
 
     drawGrid(graphics: Phaser.GameObjects.Graphics) {

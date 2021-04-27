@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser'
 import { HudScene, HUD_WIDTH } from './scenes/hudScene';
-import { MetaScene } from './scenes/MetaScene';
+import { MetaScene } from './scenes/metaScene';
 import { TDScene, TD_SCENE_HEIGHT, TD_SCENE_WIDTH } from './scenes/tdScene'
 import { TDSceneConfig } from './scenes/tdSceneConfig';
 import { Terrain } from './terrain';
