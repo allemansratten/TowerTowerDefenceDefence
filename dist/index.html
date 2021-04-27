@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Tower Tower Defence Defence</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta http-equiv="cleartype" content="on">
+    <link rel="icon" href="assets/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto" rel="stylesheet">
+    <style>
+      html,
+      body,
+      canvas {
+        font-family: 'Roboto', 'sans-serif';
+        margin: 0 !important;
+        padding: 0 !important;
+        /* overflow: hidden !important; */
+        background-color:  #FFC8A0;
+      }
+      #content {
+        width: 100%;
+        text-align: center;
+        margin-top: 2vh;
+      }
+      h1 {
+        text-align: center;
+      }
+      a {
+        color: rgb(100, 100, 100);
+        text-decoration: none;
+        /* color: white; */
+      }
+      p, ul, li {
+        text-align: left;
+      }
+      p, ul {
+        font-size: 1em;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>Tower Tower Defence Defence</h1>
+    <div id="content"></div>
+    <script src="vendors.app.bundle.js"></script>
+    <script src="app.bundle.js"></script>
+    <div id='about_text' style="width: 650px; margin-left: auto; margin-right: auto; margin-top: 2vh;">
+      Towers do all the work in TD games. <em>But who will defend the defenders themselves?</em>
+      <br>
+      A <a href='https://ldjam.com/events/ludum-dare/48/TODO'>LD48</a> game by <a href='https://github.com/allemansratten/'>Allemansrätten</a>.
+      <h2>Tutorial</h2>
+      <p>TLDR: Drag-and-drop to build towers, click on them to enter an inner TD game. If you kill most enemies in the inner game, the tower will level up.</p>
+      <p>
+        The goal is to <b>prevent the enemies from reaching the end</b>. If too many enemies do, you lose.
+        You do this by building towers via the drag-and-drop menu on the left.
+        Each tower you build starts at level 1. The yellow bar under the tower shows progress towards the next level.
+      </p>
+      <p>
+        But the yellow bar will not fill by itself! <b>Click on the built tower to go inside.</b>
+        There is another tower defence game! Every time an enemy reaches the end, the yellow bar shrinks.
+        <b>If you kill enough enemies in the inner world, the corresponding tower will upgrade.</b>
+      </p>
+    </div>
+  </body>
+</html>
