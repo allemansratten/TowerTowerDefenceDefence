@@ -4,7 +4,7 @@ import * as enem from "./enemy";
 // (tower health is from 0 to 1)
 export const DAMAGE_TO_TOWER_HEALTH_COEF = 0.4
 
-export const TOWER_HEALTH_REGEN = 0.00001 * 2
+export const TOWER_HEALTH_REGEN = 0.00001 * 20
 
 export const PAUSE_AFTER_WAVE_TIME = 3000;
 
