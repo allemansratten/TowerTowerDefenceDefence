@@ -307,7 +307,7 @@ class BuyTowerIcon {
 
             // This makes range indicator visible
             (this.spriteContainer.list[3] as Phaser.GameObjects.Shape).setVisible(false);
-            this.hudScene.metaScene.buildSound.play();
+            this.hudScene.metaScene.soundManager.buildSound.play();
 
             const scene = hudScene.metaScene.getActiveScene()
             scene.towerManager.placeTower(pointer, this.towerName);

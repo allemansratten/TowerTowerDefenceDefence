@@ -3,6 +3,7 @@ import {Terrain} from "../terrain"
 import { GameOverScene } from "./gameOverScene";
 import {SCENE_TRANSITION_MS, TDScene} from "./tdScene";
 import {TDSceneConfig} from "./tdSceneConfig"
+import {SoundManager} from "../soundManager"
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: true,
@@ -14,20 +15,14 @@ export class MetaScene extends Phaser.Scene {
 
     public scenes: TDScene[]
     public activeScene: TDScene
-    mainSound: Phaser.Sound.BaseSound;
-
-    // Why are these sounds here? Because we're out of time
-    buildSound: Phaser.Sound.BaseSound;
-    damageSound: Phaser.Sound.BaseSound;
-    shootSound: Phaser.Sound.BaseSound;
-    multishotSound: Phaser.Sound.BaseSound;
-    levelupSound: Phaser.Sound.BaseSound;
+    public soundManager: SoundManager;
 
     enemiesSlain: integer = 0;
 
     constructor() {
         super(sceneConfig);
         this.scenes = [];
+        this.soundManager = new SoundManager(this);
     }
 
     public create() {
@@ -37,14 +32,7 @@ export class MetaScene extends Phaser.Scene {
         this.scenes[0].scene.setVisible(true);
         this.scene.start("hudScene");
 
-        this.mainSound = this.sound.add("main_music", {"loop": true, "volume": 0.07});
-        this.mainSound.play();
-
-        this.buildSound = this.sound.add('build_sound', { 'loop': false, 'volume': 1});
-        this.damageSound = this.sound.add('damage_sound', { 'loop': false, 'volume': 0.15});
-        this.shootSound = this.sound.add('shoot_sound', { 'loop': false, 'volume': 0.03});
-        this.multishotSound = this.sound.add('multishot_sound', { 'loop': false, 'volume': 0.03});
-        this.levelupSound = this.sound.add('levelup_sound', { 'loop': false, 'volume': 0.02});
+        this.soundManager.addSounds();
     }
 
   // Creates new Scene, enables it, and sets it invisible
@@ -120,9 +108,12 @@ export class MetaScene extends Phaser.Scene {
         }
     }
 
+
     public preload() {
         // load the game assets
         this.load.setBaseURL('assets/')
+
+        this.soundManager.loadSounds();
 
         this.load.spritesheet('weakEnemy', 'enemy.png', {frameWidth: 48, frameHeight: 48});
         this.load.spritesheet('fastEnemy', 'enemy_fast.png', {frameWidth: 48, frameHeight: 48});
@@ -153,13 +144,6 @@ export class MetaScene extends Phaser.Scene {
 
         this.load.spritesheet('portalFrom', 'portal_from.png', {frameWidth: 40, frameHeight: 40});
         this.load.spritesheet('portalTo', 'portal_to.png', {frameWidth: 40, frameHeight: 40});
-
-        this.load.audio("main_music", "gamejam_LD48.ogg");
-        this.load.audio('build_sound', 'build.wav');
-        this.load.audio('damage_sound', 'damage.wav');
-        this.load.audio('shoot_sound', 'turretshot.wav');
-        this.load.audio('multishot_sound', 'multishot.wav');
-        this.load.audio('levelup_sound', 'levelup.wav');
     }
 
     createAnimations() { // TODO: Make this not dumb and ugly

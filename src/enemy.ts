@@ -70,7 +70,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
             const metaScene = this.scene.scene.get("metaScene") as MetaScene
             metaScene.getActiveScene().cameras.main.shake(200, 0.005)
-            this.scene.metaScene.damageSound.play();
+            this.scene.metaScene.soundManager.damageSound.play();
 
             this.scene.waveManager.respawn(this.stats, this.hp);
         }
