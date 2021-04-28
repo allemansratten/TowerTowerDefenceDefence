@@ -240,7 +240,7 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
         let msToHit = distance / speed * 1000
 
         // Shoot at the point where the enemy will be after msToHit milliseconds.
-        let t2 = enemy.follower.t + enemy.speed * msToHit
+        let t2 = enemy.follower.t + enemy.stats.speed * msToHit
         let res = this.scene.terrain.path.getPoint(Math.min(t2, 1))
         return [res.x + enemy.xOffset, res.y + enemy.yOffset]
     }

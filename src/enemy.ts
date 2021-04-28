@@ -14,13 +14,13 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
     yOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     xOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     scene: TDScene // type assertion
-    speed: number;
+    speedModifier: number = 1;
 
 
     constructor(scene: TDScene, stats) {
         super(scene, 0, 0, stats.spriteName);
 
-        this.stats = stats;
+        this.stats = {...stats}  // This makes a shallow copy of the config stats object
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
 
         this.setInteractive();
@@ -33,7 +33,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
     update(_, delta) {
         delta *= PlayerInfo.timeScale;
         // move the t point along the path, 0 is the start and 1 is the end
-        this.follower.t += this.speed * delta;
+        this.follower.t += this.stats.speed * this.speedModifier * delta;
 
         // get the new x and y coordinates in vec
         this.scene.terrain.path.getPoint(this.follower.t, this.follower.vec);
@@ -89,7 +89,6 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         else
             this.hp = this.stats.hp(wave);
 
-        this.speed = this.stats.speed;
         this.tint = this.stats.tint;
 
         // get x and y of the given t point

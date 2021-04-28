@@ -212,7 +212,7 @@ export class HudScene extends Phaser.Scene {
             text += `${enemy.stats.displayName}\n`;
             text += `Health: ${enemy.hp}/${enemy.stats.hp(wave)}\n`;
             text += `Armour: ${enemy.stats.armour(wave)}\n`;
-            text += `Speed: ${enemy.speed * 60000}\n`;
+            text += `Speed: ${(enemy.stats.speed * 60000).toPrecision(2)}\n`;
             text += `Loot: ${enemy.stats.money}\n`;
             if(enemy.stats.blurb)
                 text += `\n${enemy.stats.blurb}\n`;
