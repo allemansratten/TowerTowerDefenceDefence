@@ -212,7 +212,10 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
         );
         if (enemies) {
             let enemy = enemies[0]
-            let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+
+            let [xPred, yPred] = this.predictEnemyPositionForShot(enemy)
+            let angle = Phaser.Math.Angle.Between(this.x, this.y, xPred, yPred);
+
             let damage = this.parent.stats.damage(this.parent.level)
             this.scene.addBullet(
                 this.x, this.y, angle,
@@ -226,6 +229,20 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
             return true;
         }
         return false
+    }
+
+    predictEnemyPositionForShot(enemy: EnemyBase) {
+        // Approximate where the enemy is going to be when the bullet hits it.
+
+        // Compute the time to hit enemy when aiming directly at it
+        let distance = Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y)
+        let speed = this.parent.stats.bulletSpeedMod * this.parent.stats.range(this.parent.level)
+        let msToHit = distance / speed * 1000
+
+        // Shoot at the point where the enemy will be after msToHit milliseconds.
+        let t2 = enemy.follower.t + enemy.speed * msToHit
+        let res = this.scene.terrain.path.getPoint(Math.min(t2, 1))
+        return [res.x + enemy.xOffset, res.y + enemy.yOffset]
     }
 
     fireAnimation(angle, damage) {

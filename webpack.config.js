@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const distDir = "dist_post_ld"
 
 module.exports = {
   entry: {
@@ -26,13 +27,13 @@ module.exports = {
 
   output: {
     filename: 'app.bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, distDir)
   },
 
   mode: 'development',
 
   devServer: {
-    contentBase: path.resolve(__dirname, 'dist'),
+    contentBase: path.resolve(__dirname, distDir),
     // https: true
   },
 
@@ -40,11 +41,11 @@ module.exports = {
     new CopyWebpackPlugin([
       {
         from: path.resolve(__dirname, 'index.html'),
-        to: path.resolve(__dirname, 'dist')
+        to: path.resolve(__dirname, distDir)
       },
       {
         from: path.resolve(__dirname, 'assets', '**', '*'),
-        to: path.resolve(__dirname, 'dist')
+        to: path.resolve(__dirname, distDir)
       }
     ]),
     new webpack.DefinePlugin({
