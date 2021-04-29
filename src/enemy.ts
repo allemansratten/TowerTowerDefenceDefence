@@ -87,6 +87,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         this.follower.t = start_t;
 
         this.stats = {...this.config};
+        this.speedModifier = 1;
 
         if (respawnHealth > 0)
             this.hp = respawnHealth;
