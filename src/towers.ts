@@ -62,7 +62,7 @@ export class Tower extends Phaser.GameObjects.Container {
         this.healthBar = new HealthBar(towerScene)
         this.scene = towerScene;
 
-        this.particles = this.scene.add.particles('particle_red');  // these might not be dying
+        this.particles = this.scene.add.particles('particle_red');
         this.emitter = this.particles.createEmitter({
             lifespan: 200,
             blendMode: 'ADD',
@@ -74,7 +74,7 @@ export class Tower extends Phaser.GameObjects.Container {
 
     public levelUp() {
         this.level++;
-        if (this.scene == this.scene.metaScene.activeScene) {
+        if (this.scene.input.enabled) {
             this.scene.metaScene.soundManager.levelupSound.play();
             this.emitter.explode(20, this.xCoord, this.yCoord);  // this.x doesn't work btw
         }
@@ -227,7 +227,7 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
                 this.parent.stats.bulletSpeedMod
             );
             this.fireAnimation(angle, damage);
-            if (this.scene == this.scene.metaScene.activeScene) {
+            if (this.scene.input.enabled) {
                 if (this.parent.stats.name === "Sniper")  // temporary hack
                     this.scene.metaScene.soundManager.sniperSound.play();
                 else
