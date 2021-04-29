@@ -8,6 +8,7 @@ import { MetaScene } from "./scenes/metaScene";
 
 export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
     stats: cfg.EnemyConfig;
+    config: cfg.EnemyConfig;  // On spawn, stats are copied from config
 
     follower: any
     hp: integer
@@ -20,7 +21,8 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
     constructor(scene: TDScene, stats) {
         super(scene, 0, 0, stats.spriteName);
 
-        this.stats = {...stats}  // This makes a shallow copy of the config stats object
+        this.config = stats
+        this.stats = {...stats}  // shallow copy, idk how to do deep copy
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
 
         this.setInteractive();
@@ -83,6 +85,8 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
     startOnPath(wave, respawnHealth, start_t = 0) {
         // set the t parameter at the start of the path
         this.follower.t = start_t;
+
+        this.stats = {...this.config};
 
         if (respawnHealth > 0)
             this.hp = respawnHealth;
