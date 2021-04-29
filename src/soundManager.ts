@@ -16,13 +16,13 @@ export class SoundManager {
     }
 
     loadSounds() {
-        this.metaScene.load.audio("main_music", "gamejam_LD48.ogg");
-        this.metaScene.load.audio('build_sound', 'build.wav');
-        this.metaScene.load.audio('damage_sound', 'damage.wav');
-        this.metaScene.load.audio('basic_shoot', 'turretshot.wav');
-        this.metaScene.load.audio('multishot_shoot', 'multishot.wav');
-        this.metaScene.load.audio('levelup_sound', 'levelup.wav');
-        this.metaScene.load.audio('sniper_shoot', 'sniper.wav');
+        this.metaScene.load.audio("main_music", './sounds/gamejam_LD48.ogg');
+        this.metaScene.load.audio('build_sound', './sounds/build.wav');
+        this.metaScene.load.audio('damage_sound', './sounds/damage.wav');
+        this.metaScene.load.audio('basic_shoot', './sounds/turretshot.wav');
+        this.metaScene.load.audio('multishot_shoot', './sounds/multishot.wav');
+        this.metaScene.load.audio('levelup_sound', './sounds/levelup.wav');
+        this.metaScene.load.audio('sniper_shoot', './sounds/sniper.wav');
     }
 
     addSounds() {
