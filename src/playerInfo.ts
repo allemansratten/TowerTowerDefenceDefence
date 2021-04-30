@@ -4,6 +4,7 @@ export class PlayerInfo {
     static money: number = 10;
     static hp: number = 10;
     static timeScale: number = 1;
+    static isPaused: boolean = false;
     // static RNG = new Phaser.Math.RandomDataGenerator(["42"]);
     static RNG = new Phaser.Math.RandomDataGenerator();
 

@@ -158,7 +158,7 @@ export class Tower extends Phaser.GameObjects.Container {
     }
 
     update(_, delta) {
-        delta *= PlayerInfo.timeScale;
+        delta *= PlayerInfo.timeScale * ( + !PlayerInfo.isPaused);
 
         this.towerTurret.update(delta)
 

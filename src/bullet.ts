@@ -62,7 +62,7 @@ export class Bullet extends Phaser.GameObjects.Container {
             this.scene.children.bringToTop(this.particles);
             this.setVisible(true);
         }
-        
+
     }
 
     hit() {
@@ -72,7 +72,7 @@ export class Bullet extends Phaser.GameObjects.Container {
     }
 
     update(_, delta) {
-        delta *= PlayerInfo.timeScale;
+        delta *= PlayerInfo.timeScale * ( + !PlayerInfo.isPaused);
 
         this.lifespan -= delta;
 

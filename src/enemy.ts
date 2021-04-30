@@ -33,7 +33,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
     }
 
     update(_, delta) {
-        delta *= PlayerInfo.timeScale;
+        delta *= PlayerInfo.timeScale * ( + !PlayerInfo.isPaused);
         // move the t point along the path, 0 is the start and 1 is the end
         this.follower.t += this.stats.speed * this.speedModifier * delta;
 

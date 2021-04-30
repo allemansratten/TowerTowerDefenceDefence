@@ -1,3 +1,4 @@
+import { ParenthesizedExpression } from "typescript";
 import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG, EnemyConfig, WaveConfig } from "../config";
 import { EnemyBase } from "../enemy";
 import { PlayerInfo } from "../playerInfo";
@@ -22,6 +23,8 @@ export class HudScene extends Phaser.Scene {
     metaScene: MetaScene;
     backToRootSceneButton: Phaser.GameObjects.Text;
     buyTowerIcons: BuyTowerIcon[]
+    // pauseIcon: PauseIcon
+    pauseIcon: PauseIcon
 
     lastActiveScene: TDScene
     parentScenesImages: Phaser.GameObjects.Image[]
@@ -70,6 +73,8 @@ export class HudScene extends Phaser.Scene {
         this.descriptionText = this.add.text(5, 300, "", { fontSize: '10pt' });
         this.descriptionText.setWordWrapWidth(HUD_WIDTH - 10, false);
 
+        this.pauseIcon = new PauseIcon(this, xLeft - 55, 470);
+
         this.buyTowerIcons = [];
         let towerTypeIndex = 0;
         for (let towerConfig of TOWER_CONFIGS) {
@@ -78,12 +83,12 @@ export class HudScene extends Phaser.Scene {
         }
 
         const pad = 3
-        this.slowSpeedText = this.add.text(xLeft, 450, ">Slow<", {
+        this.slowSpeedText = this.add.text(xLeft + 20, 460, ">Slow<", {
             fontSize: '20px',
             backgroundColor: "#000",
             padding: { left: pad, right: pad, top: pad, bottom: pad }
         });
-        this.fastSpeedText = this.add.text(xLeft, 475, "Fast", {
+        this.fastSpeedText = this.add.text(xLeft + 20, 485, "Fast", {
             fontSize: '20px',
             backgroundColor: "#000",
             padding: { left: pad, right: pad, top: pad, bottom: pad }
@@ -112,7 +117,7 @@ export class HudScene extends Phaser.Scene {
             this.scene.pause()
         }
 
-        delta *= PlayerInfo.timeScale;
+        delta *= PlayerInfo.timeScale * ( + !PlayerInfo.isPaused);
         this.lastTime += delta;
 
         this.moneyText.setText('Money: ' + PlayerInfo.money)
@@ -348,5 +353,44 @@ class BuyTowerIcon {
             this.updateShop();
             this.oldMoney = PlayerInfo.money;
         }
+    }
+}
+
+
+class PauseIcon {
+    pauseSprite: Phaser.GameObjects.Sprite
+    playSprite: Phaser.GameObjects.Sprite
+
+    spriteContainer: Phaser.GameObjects.Container
+
+    scene: Phaser.Scene
+
+    constructor(scene, x, y) {
+        this.scene = scene;
+
+        this.spriteContainer = scene.add.container(x, y)
+
+        this.spriteContainer.setSize(48, 48);
+        this.spriteContainer.setInteractive()
+        this.pauseSprite = this.scene.add.sprite(0, 0, 'weakEnemy');
+        this.playSprite = this.scene.add.sprite(0, 0, 'splitterSmallEnemy');
+        this.playSprite.setVisible(false);
+
+        this.spriteContainer.add(this.pauseSprite);
+        this.spriteContainer.add(this.playSprite);
+
+        this.spriteContainer.on('pointerdown', () => {
+            this.playSprite.setVisible(!PlayerInfo.isPaused);
+            this.pauseSprite.setVisible(PlayerInfo.isPaused);
+            PlayerInfo.isPaused = !PlayerInfo.isPaused;
+            console.log(
+                `Toggled pause to ${PlayerInfo.isPaused}, ` +
+                `Delta mod = ${PlayerInfo.timeScale * ( + !PlayerInfo.isPaused)}`
+
+            )
+            // this.playSprite.setVisible(PlayerInfo.timeScale !== 0);
+            // this.pauseSprite.setVisible(PlayerInfo.timeScale === 0);
+            // PlayerInfo.timeScale = (PlayerInfo.timeScale === 0) ? 1 : 0;
+        });
     }
 }

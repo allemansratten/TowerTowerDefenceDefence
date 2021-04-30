@@ -147,7 +147,7 @@ export class TDScene extends Phaser.Scene {
     frameNumber = 0;
 
     update(_, delta) {
-        delta *= PlayerInfo.timeScale;
+        delta *= PlayerInfo.timeScale * ( + !PlayerInfo.isPaused);
 
         this.frameNumber++;
         this.waveManager.update(delta)
