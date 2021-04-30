@@ -9,6 +9,7 @@ export class TowerManager {
         'Basic': [towers.BasicTurret, cfg.Basic],
         'Multishot': [towers.MultishotTurret, cfg.Multishot],
         'Sniper': [towers.SniperTurret, cfg.Sniper],
+        'Freeze': [towers.FreezeTurret, cfg.Freeze],
     }
 
     constructor(scene: TDScene) {

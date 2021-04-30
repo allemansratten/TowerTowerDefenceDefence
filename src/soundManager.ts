@@ -1,15 +1,14 @@
 import { MetaScene } from "./scenes/metaScene"
 
 export class SoundManager {
-    music: Phaser.Sound.BaseSound;
-    buildSound: Phaser.Sound.BaseSound;
-    damageSound: Phaser.Sound.BaseSound;
-    shootSound: Phaser.Sound.BaseSound;
-    multishotSound: Phaser.Sound.BaseSound;
-    levelupSound: Phaser.Sound.BaseSound;
-    sniperSound: Phaser.Sound.BaseSound;
+    music: Phaser.Sound.BaseSound
+    buildSound: Phaser.Sound.BaseSound
+    damageSound: Phaser.Sound.BaseSound
+    levelupSound: Phaser.Sound.BaseSound
 
-    metaScene: MetaScene;
+    shootSounds: {[key: string]: Phaser.Sound.BaseSound} = {};
+
+    metaScene: MetaScene
 
     constructor(metaScene: MetaScene) {
         this.metaScene = metaScene;
@@ -23,6 +22,7 @@ export class SoundManager {
         this.metaScene.load.audio('multishot_shoot', './sounds/multishot.wav');
         this.metaScene.load.audio('levelup_sound', './sounds/levelup.wav');
         this.metaScene.load.audio('sniper_shoot', './sounds/sniper.wav');
+        this.metaScene.load.audio('freeze_shoot', './sounds/freeze.wav');
     }
 
     addSounds() {
@@ -31,9 +31,12 @@ export class SoundManager {
 
         this.buildSound = this.metaScene.sound.add('build_sound', { 'loop': false, 'volume': 1});
         this.damageSound = this.metaScene.sound.add('damage_sound', { 'loop': false, 'volume': 0.15});
-        this.shootSound = this.metaScene.sound.add('basic_shoot', { 'loop': false, 'volume': 0.03});
-        this.multishotSound = this.metaScene.sound.add('multishot_shoot', { 'loop': false, 'volume': 0.03});
         this.levelupSound = this.metaScene.sound.add('levelup_sound', { 'loop': false, 'volume': 0.02});
-        this.sniperSound = this.metaScene.sound.add('sniper_shoot', { 'loop': false, 'volume': 0.02});
+
+        // Maybe load these based on config.TOWER_CONFIGS? Would require file for each
+        this.shootSounds['Basic'] = this.metaScene.sound.add('basic_shoot', { 'loop': false, 'volume': 0.03});
+        this.shootSounds['Multishot'] = this.metaScene.sound.add('multishot_shoot', { 'loop': false, 'volume': 0.03});
+        this.shootSounds['Sniper'] = this.metaScene.sound.add('sniper_shoot', { 'loop': false, 'volume': 0.03});
+        this.shootSounds['Freeze'] = this.metaScene.sound.add('freeze_shoot', { 'loop': false, 'volume': 0.03});
     }
 }

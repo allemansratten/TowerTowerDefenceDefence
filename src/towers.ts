@@ -25,7 +25,8 @@ function getEnemy(x, y, range, enemies, numToGet): EnemyBase[] {
 
     if (outEnemies.length > 0) {
         outEnemies.sort((a, b) => b.follower.t - a.follower.t)
-        outEnemies.length = Math.min(numToGet, outEnemies.length)
+        if (numToGet > 0)
+            outEnemies.length = Math.min(numToGet, outEnemies.length)
         return outEnemies
     }
     return null
@@ -44,7 +45,7 @@ export class Tower extends Phaser.GameObjects.Container {
     healthBar: HealthBar
     rangeIndicator: Phaser.GameObjects.Shape
 
-    level: integer
+    level: integer = 1
     levelText: Phaser.GameObjects.Text
 
     // Location in the tdScene
@@ -84,6 +85,7 @@ export class Tower extends Phaser.GameObjects.Container {
     public make(i: number, j: number, innerTowerSceneKey: string, config: TowerConfig, towerClassName) {
         this.config = config
         this.stats = this.config;
+        this.level = 1
 
         this.towerTurret = new towerClassName(this.scene, this.config, this);
 
@@ -135,7 +137,6 @@ export class Tower extends Phaser.GameObjects.Container {
         this.healthBar.make(this.xCoord, this.yCoord + TILE_SIZE / 2 - 8, TILE_SIZE - 14)
         this.add(this.healthBar)
 
-        this.level = 1
 
         const pad = 3
         this.levelText = this.scene.add.text(
@@ -209,29 +210,36 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
     }
 
     fire() {
+        let numTargets = 1;
+        if (this.parent.stats.numTargets) {
+            numTargets = this.parent.stats.numTargets(this.parent.level);
+        }
+        console.log(this.x)
         let enemies = getEnemy(
-            this.x, this.y, this.parent.stats.range(this.parent.level),
-            this.scene.allEnemies, 1
+            this.x, this.y,
+            this.parent.stats.range(this.parent.level),
+            this.scene.allEnemies,
+            numTargets
         );
-        if (enemies) {
-            let enemy = enemies[0]
 
-            let [xPred, yPred] = this.predictEnemyPositionForShot(enemy)
-            let angle = Phaser.Math.Angle.Between(this.x, this.y, xPred, yPred);
+        if (enemies && enemies.length > 0) {
+            for (let enemy of enemies) {
+                let enemy = enemies[0]
 
-            let damage = this.parent.stats.damage(this.parent.level)
-            this.scene.addBullet(
-                this.x, this.y, angle,
-                damage,
-                this.parent.stats.range(this.parent.level),
-                this.parent.stats.bulletSpeedMod
-            );
-            this.fireAnimation(angle, damage);
-            if (this.scene.input.enabled) {
-                if (this.parent.stats.name === "Sniper")  // temporary hack
-                    this.scene.metaScene.soundManager.sniperSound.play();
-                else
-                    this.scene.metaScene.soundManager.shootSound.play();
+                let [xPred, yPred] = this.predictEnemyPositionForShot(enemy)
+                let angle = Phaser.Math.Angle.Between(this.x, this.y, xPred, yPred);
+
+                let damage = this.parent.stats.damage(this.parent.level)
+                this.scene.addBullet(
+                    this.x, this.y, angle,
+                    damage,
+                    this.parent.stats.range(this.parent.level),
+                    this.parent.stats.bulletSpeedMod
+                );
+                this.fireAnimation(angle, damage);
+                if (this.scene.input.enabled) {  // Only enabled if scene is active
+                    this.scene.metaScene.soundManager.shootSounds[this.parent.config.name].play();
+                }
             }
             return true;
         }
@@ -293,38 +301,57 @@ export class MultishotTurret extends _TowerTurret {
     constructor(scene: TDScene, config, parent) {
         super(scene, config.spriteTop, config.tintTop, parent);
     }
-
-
-    fire() {  // this behaviour should be in _TowerTurret.fire btw
-        let numTargets = 3
-        if (this.parent.stats.numTargets) {
-            numTargets = this.parent.stats.numTargets(this.parent.level);
-        }
-        let enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, numTargets);
-
-        if (enemies && enemies.length > 0) {
-            for (let enemy of enemies) {
-                let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-                let damage = this.parent.stats.damage(this.parent.level)
-                this.scene.addBullet(
-                    this.x, this.y, angle,
-                    damage,
-                    this.parent.stats.range(this.parent.level),
-                    this.parent.stats.bulletSpeedMod
-                );
-                this.fireAnimation(angle, damage)
-                if (this.scene == this.scene.metaScene.activeScene)
-                    this.scene.metaScene.soundManager.multishotSound.play();  // this should be in config if this were done properly
-            }
-            return true
-        }
-        return false
-    }
 }
+
 
 export class SniperTurret extends _TowerTurret {
 
     constructor(scene: TDScene, config, parent) {
         super(scene, config.spriteTop, config.tintTop, parent);
+    }
+}
+
+
+export class FreezeTurret extends _TowerTurret {
+    freezeParticles: Phaser.GameObjects.Particles.ParticleEmitterManager
+    freezeEmitter: Phaser.GameObjects.Particles.ParticleEmitter
+
+    constructor(scene: TDScene, config, parent) {
+        super(scene, config.spriteTop, config.tintTop, parent);
+
+        this.freezeParticles = this.scene.add.particles('particle_red');
+        console.log(config.range(this.parent.level))
+        this.freezeEmitter = this.freezeParticles.createEmitter({
+            lifespan: 500,
+            blendMode: 'ADD',
+            speed: 0,
+            scale: {start: 0, end: config.range(this.parent.level) / 45},
+            on: false,
+            // tint: this.parent.config.tintTop
+            tint: 0x2020ff
+        })
+    }
+
+    fire() {
+        this.freezeEmitter.explode(4, this.x, this.y)
+
+        let enemies = getEnemy(
+            this.x, this.y,
+            this.parent.stats.range(this.parent.level),
+            this.scene.allEnemies, 0
+        )
+        if (enemies) {
+            let baseDamage = this.parent.stats.damage(0)
+            const SLOW_LIMIT = 0.4
+            let slowMod = SLOW_LIMIT + baseDamage * (1 - SLOW_LIMIT) / (this.parent.stats.damage(this.parent.level))
+            console.log(slowMod)
+            for (let enemy of enemies) {
+                enemy.speedModifier = slowMod
+            }
+        }
+        if (this.scene.input.enabled) {  // Only enabled if scene is active
+            this.scene.metaScene.soundManager.shootSounds[this.parent.config.name].play();
+        }
+        return true;
     }
 }
