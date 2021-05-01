@@ -77,8 +77,17 @@ export class HudScene extends Phaser.Scene {
 
         this.buyTowerIcons = [];
         let towerTypeIndex = 0;
+        let towerIconX = (i) => w / 2
+        let towerIconY = (i) => 110 + 70 * (i % 3)
         for (let towerConfig of TOWER_CONFIGS) {
-            this.buyTowerIcons.push(new BuyTowerIcon(this, w / 2, 110 + 70 * towerTypeIndex, towerConfig))
+            if (TOWER_CONFIGS.length > 3)
+                towerIconX = (i) => w / 2 + (1 - 2 * +(i>2)) * 35  // makes two collumns
+
+            this.buyTowerIcons.push(
+                new BuyTowerIcon(
+                    this, towerIconX(towerTypeIndex), towerIconY(towerTypeIndex), towerConfig
+                )
+            )
             towerTypeIndex++;
         }
 
