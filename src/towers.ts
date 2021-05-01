@@ -341,12 +341,9 @@ export class FreezeTurret extends _TowerTurret {
             this.scene.allEnemies, 0
         )
         if (enemies) {
-            let baseSlow = this.parent.stats.special(0)
-            const SLOW_LIMIT = 0.4
-            let slowMod = SLOW_LIMIT + baseSlow * (1 - SLOW_LIMIT) / (this.parent.stats.special(this.parent.level))
-            console.log(slowMod)
+            let slowMod = this.parent.stats.special(this.parent.level)
             for (let enemy of enemies) {
-                enemy.speedModifier = slowMod
+                enemy.speedModifier *= slowMod
                 enemy.receiveDamage(this.parent.stats.damage(this.parent.level))
             }
         }

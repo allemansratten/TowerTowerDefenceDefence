@@ -207,9 +207,12 @@ export class HudScene extends Phaser.Scene {
             level = tower.level
         }
 
-        text += `Damage: ${config.damage(level)}.\n`
-        text += `Fire rate: ${config.firerate(level)/1000}s.\n`
-        text += `Range: ${config.range(level)}.\n`
+        text += `Damage: ${config.damage(level)}\n`
+        text += `Fire rate: ${config.firerate(level)/1000}s\n`
+        text += `Range: ${config.range(level)}\n`
+
+        if (config.special && config.specialName)
+            text += `${config.specialName}: ${config.special(level).toPrecision(3)}\n`
 
         this.descriptionText.setText(text)
     }
