@@ -252,7 +252,7 @@ const SLOW_LIMIT = 0.4  // limit of the level => slow function
 export const Freeze: TowerConfig = {
     'name': "Freeze",
     'damage': level => 10 + 15*(level - 1),
-    'special': level => SLOW_LIMIT + 50 * (1 - SLOW_LIMIT) / (50 + 5 * level),
+    'special': level => SLOW_LIMIT + 50 * (1 - SLOW_LIMIT) / (50 + 10 * level),
     'firerate': level => 4000,
     'range': level => 100 + 5*(level-1),
     'numTargets': level => 3 + Math.floor(level / 2),
