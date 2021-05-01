@@ -152,9 +152,9 @@ export class TDScene extends Phaser.Scene {
         this.frameNumber++;
         this.waveManager.update(delta)
 
-        if (this.frameNumber % 60 == 0) {
-            // console.log(`Update th: ${this.scene.key} e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneParent?.scene.key}`)
-        }
+        // if (this.frameNumber % 60 == 0) {
+        //     console.log(`Update th: ${this.scene.key} e: ${this.input.enabled} | l: ${this.sceneLevel} | p: ${this.sceneParent?.scene.key}`)
+        // }
         if (this.endHealthBar) {
             this.endHealthBar.health = this.towerParent.healthBar.health
             this.endHealthBar.update(delta)

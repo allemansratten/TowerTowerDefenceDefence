@@ -182,6 +182,7 @@ export type TowerConfig = {
     firerate: (integer) => number  // miliseconds between each shot
     range: (integer) => number
     numTargets?: (integer) => integer  // set for towers that target multiple enemies
+    special?: (integer) => number  // for unique behaviour of towers
     bulletSpeedMod: number  // bullet will reach range in 1/bulletSpeedMod seconds
     price: number
     spriteBase: integer  // Array index of sprite in corresponding spritesheet
@@ -247,7 +248,8 @@ export const Multishot: TowerConfig = {
 
 export const Freeze: TowerConfig = {
     'name': "Freeze",
-    'damage': level => 50 + 5*(level - 1),
+    'damage': level => 10 + 15*(level - 1),
+    'special': level => 50 + 5*(level - 1),
     'firerate': level => 4000,
     'range': level => 100 + 5*(level-1),
     'numTargets': level => 3 + Math.floor(level / 2),
