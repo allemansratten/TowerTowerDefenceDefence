@@ -1,4 +1,5 @@
-import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG, EnemyConfig } from "../config";
+import { ParenthesizedExpression } from "typescript";
+import { TowerConfig, TOWER_CONFIGS, RANGE_INDICATOR_CONFIG, EnemyConfig, WaveConfig } from "../config";
 import { EnemyBase } from "../enemy";
 import { PlayerInfo } from "../playerInfo";
 import { MAX_HEIGHT, MAX_WIDTH, Terrain, TILE_SIZE } from "../terrain";
@@ -22,6 +23,9 @@ export class HudScene extends Phaser.Scene {
     metaScene: MetaScene;
     backToRootSceneButton: Phaser.GameObjects.Text;
     buyTowerIcons: BuyTowerIcon[]
+
+    pauseButton: PauseButton
+    muteButton: MuteMusicButton
 
     lastActiveScene: TDScene
     parentScenesImages: Phaser.GameObjects.Image[]
@@ -70,6 +74,9 @@ export class HudScene extends Phaser.Scene {
         this.descriptionText = this.add.text(5, 300, "", { fontSize: '10pt' });
         this.descriptionText.setWordWrapWidth(HUD_WIDTH - 10, false);
 
+        this.pauseButton = new PauseButton(this, xLeft - 55, 475);
+        this.pauseButton = new MuteMusicButton(this, xRight + 55, 475);
+
         this.buyTowerIcons = [];
         let towerTypeIndex = 0;
         for (let towerConfig of TOWER_CONFIGS) {
@@ -78,12 +85,12 @@ export class HudScene extends Phaser.Scene {
         }
 
         const pad = 3
-        this.slowSpeedText = this.add.text(xLeft, 450, ">Slow<", {
+        this.slowSpeedText = this.add.text(xLeft + 20, 465, ">Slow<", {
             fontSize: '20px',
             backgroundColor: "#000",
             padding: { left: pad, right: pad, top: pad, bottom: pad }
         });
-        this.fastSpeedText = this.add.text(xLeft, 475, "Fast", {
+        this.fastSpeedText = this.add.text(xLeft + 20, 490, "Fast", {
             fontSize: '20px',
             backgroundColor: "#000",
             padding: { left: pad, right: pad, top: pad, bottom: pad }
@@ -112,7 +119,7 @@ export class HudScene extends Phaser.Scene {
             this.scene.pause()
         }
 
-        delta *= PlayerInfo.timeScale;
+        delta *= PlayerInfo.timeScale * ( + !PlayerInfo.isPaused);
         this.lastTime += delta;
 
         this.moneyText.setText('Money: ' + PlayerInfo.money)
@@ -203,10 +210,17 @@ export class HudScene extends Phaser.Scene {
     setDescriptionEnemy(enemy: EnemyBase) {
         let text = ""
         if (enemy) {
+            let wave: integer;
+            if(this.metaScene.activeScene.sceneLevel === 0)
+                wave = enemy.scene.waveManager.currentWave;
+            else
+                wave = WaveConfig.levelToWave(this.metaScene.activeScene.getTowerParent().level);
+
             text += `${enemy.stats.displayName}\n`;
-            text += `Health: ${enemy.hp}/${enemy.stats.hp(1)}\n`;
-            text += `Armour: ${enemy.stats.damage}\n`;
-            text += `Speed: ${enemy.speed * 60000}\n`;
+            text += `Health: ${enemy.hp}/${enemy.stats.hp(wave)}\n`;
+            text += `Armour: ${enemy.stats.armour(wave)}\n`;
+            text += `Speed: ${(enemy.stats.speed * 60000 * enemy.speedModifier).toPrecision(2)}\n`;
+            text += `Loot: ${enemy.stats.money}\n`;
             if(enemy.stats.blurb)
                 text += `\n${enemy.stats.blurb}\n`;
         }
@@ -300,7 +314,7 @@ class BuyTowerIcon {
 
             // This makes range indicator visible
             (this.spriteContainer.list[3] as Phaser.GameObjects.Shape).setVisible(false);
-            this.hudScene.metaScene.buildSound.play();
+            this.hudScene.metaScene.soundManager.buildSound.play();
 
             const scene = hudScene.metaScene.getActiveScene()
             scene.towerManager.placeTower(pointer, this.towerName);
@@ -341,5 +355,65 @@ class BuyTowerIcon {
             this.updateShop();
             this.oldMoney = PlayerInfo.money;
         }
+    }
+}
+
+
+abstract class UIButton {
+    baseSprite: Phaser.GameObjects.Sprite
+    altSprite: Phaser.GameObjects.Sprite
+
+    spriteContainer: Phaser.GameObjects.Container
+
+    scene: Phaser.Scene
+
+    constructor(scene, x, y, baseSprite: string, altSprite: string, func) {
+        this.scene = scene;
+
+        this.spriteContainer = scene.add.container(x, y)
+        this.baseSprite = this.scene.add.sprite(0, 0, baseSprite);
+        this.altSprite = this.scene.add.sprite(0, 0, altSprite);
+
+        this.spriteContainer.setSize(this.baseSprite.width, this.baseSprite.height);
+        this.spriteContainer.setInteractive()
+        this.altSprite.setVisible(false);
+
+        this.spriteContainer.add(this.baseSprite);
+        this.spriteContainer.add(this.altSprite);
+
+        this.spriteContainer.on('pointerdown', func);
+    }
+
+    toggleSprite() {
+        this.baseSprite.setVisible(!this.baseSprite.visible);
+        this.altSprite.setVisible(!this.altSprite.visible);
+    }
+}
+
+
+class PauseButton extends UIButton {
+    constructor(scene, x, y) {
+        super(scene, x, y, 'weakEnemy', 'splitterSmallEnemy', () => {
+            this.toggleSprite()
+            PlayerInfo.isPaused = !PlayerInfo.isPaused;
+            console.log(
+                `Toggled pause to ${PlayerInfo.isPaused}, ` +
+                `Delta mod = ${PlayerInfo.timeScale * ( + !PlayerInfo.isPaused)}`
+            )
+        })
+    }
+}
+
+
+class MuteMusicButton extends UIButton {
+    constructor(scene, x, y) {
+        super(scene, x, y, 'armouredEnemy', 'fastEnemy', () => {
+            this.toggleSprite();
+            let music = (this.scene as HudScene).metaScene.soundManager.music
+            if (music.isPlaying)
+                music.pause();
+            else
+                music.play();
+        })
     }
 }

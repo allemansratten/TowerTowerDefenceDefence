@@ -147,7 +147,7 @@ export class TDScene extends Phaser.Scene {
     frameNumber = 0;
 
     update(_, delta) {
-        delta *= PlayerInfo.timeScale;
+        delta *= PlayerInfo.timeScale * ( + !PlayerInfo.isPaused);
 
         this.frameNumber++;
         this.waveManager.update(delta)
@@ -162,9 +162,9 @@ export class TDScene extends Phaser.Scene {
     }
 
     addBullet(x, y, angle, damage, range, bulletSpeedMod) {
-        var bullet = this.bullets.get();
+        let bullet = this.bullets.get() as Bullet;
         if (bullet) {
-            bullet.fire(x, y, angle, damage, range, bulletSpeedMod);
+            bullet.fire(x, y, angle, damage, range, bulletSpeedMod, this);
         }
     }
 
