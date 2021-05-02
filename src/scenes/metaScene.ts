@@ -3,6 +3,8 @@ import {Terrain} from "../terrain"
 import { GameOverScene } from "./gameOverScene";
 import {SCENE_TRANSITION_MS, TDScene} from "./tdScene";
 import {TDSceneConfig} from "./tdSceneConfig"
+import {SoundManager} from "../soundManager"
+import { animationsConfig } from "../animationsConfig"
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: true,
@@ -14,20 +16,14 @@ export class MetaScene extends Phaser.Scene {
 
     public scenes: TDScene[]
     public activeScene: TDScene
-    mainSound: Phaser.Sound.BaseSound;
-
-    // Why are these sounds here? Because we're out of time
-    buildSound: Phaser.Sound.BaseSound;
-    damageSound: Phaser.Sound.BaseSound;
-    shootSound: Phaser.Sound.BaseSound;
-    multishotSound: Phaser.Sound.BaseSound;
-    levelupSound: Phaser.Sound.BaseSound;
+    public soundManager: SoundManager;
 
     enemiesSlain: integer = 0;
 
     constructor() {
         super(sceneConfig);
         this.scenes = [];
+        this.soundManager = new SoundManager(this);
     }
 
     public create() {
@@ -37,14 +33,7 @@ export class MetaScene extends Phaser.Scene {
         this.scenes[0].scene.setVisible(true);
         this.scene.start("hudScene");
 
-        this.mainSound = this.sound.add("main_music", {"loop": true, "volume": 0.07});
-        this.mainSound.play();
-
-        this.buildSound = this.sound.add('build_sound', { 'loop': false, 'volume': 1});
-        this.damageSound = this.sound.add('damage_sound', { 'loop': false, 'volume': 0.15});
-        this.shootSound = this.sound.add('shoot_sound', { 'loop': false, 'volume': 0.03});
-        this.multishotSound = this.sound.add('multishot_sound', { 'loop': false, 'volume': 0.03});
-        this.levelupSound = this.sound.add('levelup_sound', { 'loop': false, 'volume': 0.02});
+        this.soundManager.addSounds();
     }
 
   // Creates new Scene, enables it, and sets it invisible
@@ -120,9 +109,12 @@ export class MetaScene extends Phaser.Scene {
         }
     }
 
+
     public preload() {
         // load the game assets
         this.load.setBaseURL('assets/')
+
+        this.soundManager.loadSounds();
 
         this.load.spritesheet('weakEnemy', 'enemy.png', {frameWidth: 48, frameHeight: 48});
         this.load.spritesheet('fastEnemy', 'enemy_fast.png', {frameWidth: 48, frameHeight: 48});
@@ -149,80 +141,25 @@ export class MetaScene extends Phaser.Scene {
             'towerbase.png',
             {frameWidth: 64, frameHeight: 64}
         )
+        this.load.spritesheet('buttonIcons',
+            'button_icons.png',
+            {frameWidth: 64, frameHeight: 64}
+        )
         this.load.image('particle_red', 'particle_red.png');
 
         this.load.spritesheet('portalFrom', 'portal_from.png', {frameWidth: 40, frameHeight: 40});
         this.load.spritesheet('portalTo', 'portal_to.png', {frameWidth: 40, frameHeight: 40});
-
-        this.load.audio("main_music", "gamejam_LD48.ogg");
-        this.load.audio('build_sound', 'build.wav');
-        this.load.audio('damage_sound', 'damage.wav');
-        this.load.audio('shoot_sound', 'turretshot.wav');
-        this.load.audio('multishot_sound', 'multishot.wav');
-        this.load.audio('levelup_sound', 'levelup.wav');
     }
 
-    createAnimations() { // TODO: Make this not dumb and ugly
-        this.anims.create({
-            key: 'weakEnemy_walk',
-            frames: this.anims.generateFrameNumbers('weakEnemy', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'fastEnemy_walk',
-            frames: this.anims.generateFrameNumbers('fastEnemy', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'fatEnemy_walk',
-            frames: this.anims.generateFrameNumbers('fatEnemy', {start: 0, end: 9}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'splitterFatEnemy_walk',
-            frames: this.anims.generateFrameNumbers('splitterFatEnemy', {start: 0, end: 9}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'armouredEnemy_walk',
-            frames: this.anims.generateFrameNumbers('armouredEnemy', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'splitterBigEnemy_walk',
-            frames: this.anims.generateFrameNumbers('splitterBigEnemy', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'splitterSmallEnemy_walk',
-            frames: this.anims.generateFrameNumbers('splitterSmallEnemy', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'portalFrom_spin',
-            frames: this.anims.generateFrameNumbers('portalFrom', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'portalTo_spin',
-            frames: this.anims.generateFrameNumbers('portalTo', {start: 0, end: 7}),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'towerMids_spin',
-            frames: this.anims.generateFrameNumbers('towermids', {start: 0, end: 1}),
-            frameRate: 5,
-            repeat: -1
-        });
+    createAnimations() {
+        for (let cfg of animationsConfig) {
+            this.anims.create({
+                key: cfg.key,
+                frames: this.anims.generateFrameNumbers(cfg.spriteSheet, cfg.frames),
+                frameRate: cfg.frameRate,
+                repeat: -1
+            });
+        }
     }
 
     getActiveScene() {

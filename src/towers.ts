@@ -47,9 +47,11 @@ export class Tower extends Phaser.GameObjects.Container {
     level: integer
     levelText: Phaser.GameObjects.Text
 
+    // Location in the tdScene
     xCoord: number
     yCoord: number
 
+    // These are used for the levelup effect
     particles: Phaser.GameObjects.Particles.ParticleEmitterManager
     emitter: Phaser.GameObjects.Particles.ParticleEmitter
 
@@ -72,9 +74,10 @@ export class Tower extends Phaser.GameObjects.Container {
 
     public levelUp() {
         this.level++;
-        if (this.scene == this.scene.metaScene.activeScene)
-            this.scene.metaScene.levelupSound.play();
-        this.emitter.explode(20, this.xCoord, this.yCoord);  // this.x doesn't work btw
+        if (this.scene.input.enabled) {
+            this.scene.metaScene.soundManager.levelupSound.play();
+            this.emitter.explode(20, this.xCoord, this.yCoord);  // this.x doesn't work btw
+        }
     }
 
 
@@ -155,7 +158,7 @@ export class Tower extends Phaser.GameObjects.Container {
     }
 
     update(_, delta) {
-        delta *= PlayerInfo.timeScale;
+        delta *= PlayerInfo.timeScale * ( + !PlayerInfo.isPaused);
 
         this.towerTurret.update(delta)
 
@@ -224,8 +227,12 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
                 this.parent.stats.bulletSpeedMod
             );
             this.fireAnimation(angle, damage);
-            if (this.scene == this.scene.metaScene.activeScene)
-                this.scene.metaScene.shootSound.play();
+            if (this.scene.input.enabled) {
+                if (this.parent.stats.name === "Sniper")  // temporary hack
+                    this.scene.metaScene.soundManager.sniperSound.play();
+                else
+                    this.scene.metaScene.soundManager.shootSound.play();
+            }
             return true;
         }
         return false
@@ -240,7 +247,7 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
         let msToHit = distance / speed * 1000
 
         // Shoot at the point where the enemy will be after msToHit milliseconds.
-        let t2 = enemy.follower.t + enemy.speed * msToHit
+        let t2 = enemy.follower.t + enemy.stats.speed * msToHit
         let res = this.scene.terrain.path.getPoint(Math.min(t2, 1))
         return [res.x + enemy.xOffset, res.y + enemy.yOffset]
     }
@@ -307,7 +314,7 @@ export class MultishotTurret extends _TowerTurret {
                 );
                 this.fireAnimation(angle, damage)
                 if (this.scene == this.scene.metaScene.activeScene)
-                    this.scene.metaScene.multishotSound.play();  // this should be in config if this were done properly
+                    this.scene.metaScene.soundManager.multishotSound.play();  // this should be in config if this were done properly
             }
             return true
         }

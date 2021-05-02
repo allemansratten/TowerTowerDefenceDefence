@@ -8,32 +8,34 @@ import { MetaScene } from "./scenes/metaScene";
 
 export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
     stats: cfg.EnemyConfig;
+    config: cfg.EnemyConfig;  // On spawn, stats are copied from config
 
     follower: any
     hp: integer
     yOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     xOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
     scene: TDScene // type assertion
-    speed: number;
+    speedModifier: number = 1;
 
 
     constructor(scene: TDScene, stats) {
         super(scene, 0, 0, stats.spriteName);
 
-        this.stats = stats;
+        this.config = stats
+        this.stats = {...stats}  // shallow copy, idk how to do deep copy
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
 
         this.setInteractive();
         this.on('pointerover', () => {
-            if (this.scene == this.scene.metaScene.activeScene)
+            if (this.scene.input.enabled)
                 (this.scene.scene.get('hudScene') as HudScene).setDescriptionEnemy(this);
         });
     }
 
     update(_, delta) {
-        delta *= PlayerInfo.timeScale;
+        delta *= PlayerInfo.timeScale * ( + !PlayerInfo.isPaused);
         // move the t point along the path, 0 is the start and 1 is the end
-        this.follower.t += this.speed * delta;
+        this.follower.t += this.stats.speed * this.speedModifier * delta;
 
         // get the new x and y coordinates in vec
         this.scene.terrain.path.getPoint(this.follower.t, this.follower.vec);
@@ -70,7 +72,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
             const metaScene = this.scene.scene.get("metaScene") as MetaScene
             metaScene.getActiveScene().cameras.main.shake(200, 0.005)
-            this.scene.metaScene.damageSound.play();
+            this.scene.metaScene.soundManager.damageSound.play();
 
             this.scene.waveManager.respawn(this.stats, this.hp);
         }
@@ -84,12 +86,14 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         // set the t parameter at the start of the path
         this.follower.t = start_t;
 
+        this.stats = {...this.config};
+        this.speedModifier = 1;
+
         if (respawnHealth > 0)
             this.hp = respawnHealth;
         else
             this.hp = this.stats.hp(wave);
 
-        this.speed = this.stats.speed;
         this.tint = this.stats.tint;
 
         // get x and y of the given t point
