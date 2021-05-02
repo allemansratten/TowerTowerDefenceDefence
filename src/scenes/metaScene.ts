@@ -141,6 +141,10 @@ export class MetaScene extends Phaser.Scene {
             'towerbase.png',
             {frameWidth: 64, frameHeight: 64}
         )
+        this.load.spritesheet('buttonIcons',
+            'button_icons.png',
+            {frameWidth: 64, frameHeight: 64}
+        )
         this.load.image('particle_red', 'particle_red.png');
 
         this.load.spritesheet('portalFrom', 'portal_from.png', {frameWidth: 40, frameHeight: 40});

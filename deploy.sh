@@ -9,6 +9,6 @@ git merge -X theirs master
 
 # Build and push
 npm run build
-git add ./dist/ -f 
+git add ./dist_post_ld/ -f
 git commit -m "Publish."
 git push

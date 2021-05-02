@@ -23,8 +23,9 @@ export class HudScene extends Phaser.Scene {
     metaScene: MetaScene;
     backToRootSceneButton: Phaser.GameObjects.Text;
     buyTowerIcons: BuyTowerIcon[]
-    // pauseIcon: PauseIcon
-    pauseIcon: PauseIcon
+
+    pauseButton: PauseButton
+    muteButton: MuteMusicButton
 
     lastActiveScene: TDScene
     parentScenesImages: Phaser.GameObjects.Image[]
@@ -73,7 +74,8 @@ export class HudScene extends Phaser.Scene {
         this.descriptionText = this.add.text(5, 300, "", { fontSize: '10pt' });
         this.descriptionText.setWordWrapWidth(HUD_WIDTH - 10, false);
 
-        this.pauseIcon = new PauseIcon(this, xLeft - 55, 470);
+        this.pauseButton = new PauseButton(this, xLeft - 55, 475);
+        this.muteButton = new MuteMusicButton(this, xRight + 55, 475);
 
         this.buyTowerIcons = [];
         let towerTypeIndex = 0;
@@ -92,12 +94,12 @@ export class HudScene extends Phaser.Scene {
         }
 
         const pad = 3
-        this.slowSpeedText = this.add.text(xLeft + 20, 460, ">Slow<", {
+        this.slowSpeedText = this.add.text(xLeft + 20, 465, ">Slow<", {
             fontSize: '20px',
             backgroundColor: "#000",
             padding: { left: pad, right: pad, top: pad, bottom: pad }
         });
-        this.fastSpeedText = this.add.text(xLeft + 20, 485, "Fast", {
+        this.fastSpeedText = this.add.text(xLeft + 20, 490, "Fast", {
             fontSize: '20px',
             backgroundColor: "#000",
             padding: { left: pad, right: pad, top: pad, bottom: pad }
@@ -369,40 +371,67 @@ class BuyTowerIcon {
 }
 
 
-class PauseIcon {
-    pauseSprite: Phaser.GameObjects.Sprite
-    playSprite: Phaser.GameObjects.Sprite
+abstract class UIButton {
+    baseSprite: Phaser.GameObjects.Sprite
+    altSprite: Phaser.GameObjects.Sprite
 
     spriteContainer: Phaser.GameObjects.Container
 
     scene: Phaser.Scene
 
-    constructor(scene, x, y) {
+    constructor(scene, x, y, spriteInfo , func) {
         this.scene = scene;
 
         this.spriteContainer = scene.add.container(x, y)
+        this.baseSprite = this.scene.add.sprite(0, 0, spriteInfo.baseName, spriteInfo.baseIndex);
+        this.altSprite = this.scene.add.sprite(0, 0, spriteInfo.altName, spriteInfo.altIndex);
 
-        this.spriteContainer.setSize(48, 48);
+        this.spriteContainer.setSize(this.baseSprite.width, this.baseSprite.height);
         this.spriteContainer.setInteractive()
-        this.pauseSprite = this.scene.add.sprite(0, 0, 'weakEnemy');
-        this.playSprite = this.scene.add.sprite(0, 0, 'splitterSmallEnemy');
-        this.playSprite.setVisible(false);
+        this.altSprite.setVisible(false);
 
-        this.spriteContainer.add(this.pauseSprite);
-        this.spriteContainer.add(this.playSprite);
+        this.spriteContainer.add(this.baseSprite);
+        this.spriteContainer.add(this.altSprite);
 
-        this.spriteContainer.on('pointerdown', () => {
-            this.playSprite.setVisible(!PlayerInfo.isPaused);
-            this.pauseSprite.setVisible(PlayerInfo.isPaused);
+        this.spriteContainer.on('pointerdown', func);
+    }
+
+    toggleSprite() {
+        this.baseSprite.setVisible(!this.baseSprite.visible);
+        this.altSprite.setVisible(!this.altSprite.visible);
+    }
+}
+
+
+class PauseButton extends UIButton {
+    constructor(scene, x, y) {
+        super(scene, x, y, {
+            baseName: 'buttonIcons',
+            baseIndex: 1,
+            altName: 'buttonIcons',
+            altIndex: 2
+        }, () => {
+            this.toggleSprite()
             PlayerInfo.isPaused = !PlayerInfo.isPaused;
-            console.log(
-                `Toggled pause to ${PlayerInfo.isPaused}, ` +
-                `Delta mod = ${PlayerInfo.timeScale * ( + !PlayerInfo.isPaused)}`
+        })
+    }
+}
 
-            )
-            // this.playSprite.setVisible(PlayerInfo.timeScale !== 0);
-            // this.pauseSprite.setVisible(PlayerInfo.timeScale === 0);
-            // PlayerInfo.timeScale = (PlayerInfo.timeScale === 0) ? 1 : 0;
-        });
+
+class MuteMusicButton extends UIButton {
+    constructor(scene, x, y) {
+        super(scene, x, y, {
+            baseName: 'buttonIcons',
+            baseIndex: 3,
+            altName: 'buttonIcons',
+            altIndex: 4
+        }, () => {
+            this.toggleSprite();
+            let music = (this.scene as HudScene).metaScene.soundManager.music
+            if (music.isPlaying)
+                music.pause();
+            else
+                music.play();
+        })
     }
 }
