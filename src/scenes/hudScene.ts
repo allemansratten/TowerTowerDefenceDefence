@@ -75,7 +75,7 @@ export class HudScene extends Phaser.Scene {
         this.descriptionText.setWordWrapWidth(HUD_WIDTH - 10, false);
 
         this.pauseButton = new PauseButton(this, xLeft - 55, 475);
-        this.pauseButton = new MuteMusicButton(this, xRight + 55, 475);
+        this.muteButton = new MuteMusicButton(this, xRight + 55, 475);
 
         this.buyTowerIcons = [];
         let towerTypeIndex = 0;
@@ -367,12 +367,12 @@ abstract class UIButton {
 
     scene: Phaser.Scene
 
-    constructor(scene, x, y, baseSprite: string, altSprite: string, func) {
+    constructor(scene, x, y, spriteInfo , func) {
         this.scene = scene;
 
         this.spriteContainer = scene.add.container(x, y)
-        this.baseSprite = this.scene.add.sprite(0, 0, baseSprite);
-        this.altSprite = this.scene.add.sprite(0, 0, altSprite);
+        this.baseSprite = this.scene.add.sprite(0, 0, spriteInfo.baseName, spriteInfo.baseIndex);
+        this.altSprite = this.scene.add.sprite(0, 0, spriteInfo.altName, spriteInfo.altIndex);
 
         this.spriteContainer.setSize(this.baseSprite.width, this.baseSprite.height);
         this.spriteContainer.setInteractive()
@@ -393,13 +393,14 @@ abstract class UIButton {
 
 class PauseButton extends UIButton {
     constructor(scene, x, y) {
-        super(scene, x, y, 'weakEnemy', 'splitterSmallEnemy', () => {
+        super(scene, x, y, {
+            baseName: 'buttonIcons',
+            baseIndex: 1,
+            altName: 'buttonIcons',
+            altIndex: 2
+        }, () => {
             this.toggleSprite()
             PlayerInfo.isPaused = !PlayerInfo.isPaused;
-            console.log(
-                `Toggled pause to ${PlayerInfo.isPaused}, ` +
-                `Delta mod = ${PlayerInfo.timeScale * ( + !PlayerInfo.isPaused)}`
-            )
         })
     }
 }
@@ -407,7 +408,12 @@ class PauseButton extends UIButton {
 
 class MuteMusicButton extends UIButton {
     constructor(scene, x, y) {
-        super(scene, x, y, 'armouredEnemy', 'fastEnemy', () => {
+        super(scene, x, y, {
+            baseName: 'buttonIcons',
+            baseIndex: 3,
+            altName: 'buttonIcons',
+            altIndex: 4
+        }, () => {
             this.toggleSprite();
             let music = (this.scene as HudScene).metaScene.soundManager.music
             if (music.isPlaying)
