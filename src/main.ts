@@ -6,7 +6,6 @@ import { TDScene, TD_SCENE_HEIGHT, TD_SCENE_WIDTH } from './scenes/tdScene'
 import { TDSceneConfig } from './scenes/tdSceneConfig';
 import { Terrain } from './terrain';
 
-PlayerInfo.init()
 
 let metaScene = new MetaScene()
 let hudScene = new HudScene(metaScene);
@@ -29,3 +28,4 @@ const gameConfig = {
 };
 
 export const game = new Phaser.Game(gameConfig);
+PlayerInfo.init()
