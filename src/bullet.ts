@@ -74,6 +74,9 @@ export class Bullet extends Phaser.GameObjects.Container {
         if(this.scene.scene.isVisible()) {
             this.emitter.explode(10, this.bulletImage.x, this.bulletImage.y)
         }
+        else {
+            this.emitter.stop()
+        }
         this.onBulletEnd();
     }
 
