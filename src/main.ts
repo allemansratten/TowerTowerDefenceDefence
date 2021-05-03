@@ -1,9 +1,12 @@
 import * as Phaser from 'phaser'
+import { PlayerInfo } from './playerInfo';
 import { HudScene, HUD_WIDTH } from './scenes/hudScene';
 import { MetaScene } from './scenes/metaScene';
 import { TDScene, TD_SCENE_HEIGHT, TD_SCENE_WIDTH } from './scenes/tdScene'
 import { TDSceneConfig } from './scenes/tdSceneConfig';
 import { Terrain } from './terrain';
+
+PlayerInfo.init()
 
 let metaScene = new MetaScene()
 let hudScene = new HudScene(metaScene);

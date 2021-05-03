@@ -296,7 +296,7 @@ export class Terrain {
 }
 
 function randomItem(array) {
-    return array[Math.floor(PlayerInfo.RNG.frac() * array.length)]
+    return array[Math.floor(PlayerInfo.LevelRNG.frac() * array.length)]
 }
 
 function randomFreeSprite() {
