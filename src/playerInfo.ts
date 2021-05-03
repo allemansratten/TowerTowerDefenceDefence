@@ -8,6 +8,7 @@ export class PlayerInfo {
     
     static RNG = new Phaser.Math.RandomDataGenerator();
     static LevelRNG = new Phaser.Math.RandomDataGenerator();
+    static levelGeneratingSeed = "";
 
     static regenProgress: number = 0;
 
@@ -15,11 +16,16 @@ export class PlayerInfo {
     {
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
-        const levelSeed = urlParams.get('levelSeed')
+        const levelSeedFromQuery = urlParams.get('levelSeed')
 
-        if (levelSeed) {
-            PlayerInfo.LevelRNG = new Phaser.Math.RandomDataGenerator([levelSeed]);
-        }
+        let levelSeed = levelSeedFromQuery
+            ? levelSeedFromQuery
+            : PlayerInfo.RNG.integer().toString()
+
+        PlayerInfo.levelGeneratingSeed = levelSeed;
+        PlayerInfo.LevelRNG = new Phaser.Math.RandomDataGenerator([levelSeed]);
+
+        console.log(`Seed for level generation: ${levelSeed}`)
     }
 
     public static waveHealthRegen() {
