@@ -34,6 +34,7 @@ export class MetaScene extends Phaser.Scene {
         this.scene.start("hudScene");
 
         this.soundManager.addSounds();
+        console.log(`Current game version: ${this.cache.text.get("gameVersion")}`);
     }
 
   // Creates new Scene, enables it, and sets it invisible
@@ -149,6 +150,8 @@ export class MetaScene extends Phaser.Scene {
 
         this.load.spritesheet('portalFrom', 'portal_from.png', {frameWidth: 40, frameHeight: 40});
         this.load.spritesheet('portalTo', 'portal_to.png', {frameWidth: 40, frameHeight: 40});
+
+        this.load.text("gameVersion", "./version.txt");
     }
 
     createAnimations() {
