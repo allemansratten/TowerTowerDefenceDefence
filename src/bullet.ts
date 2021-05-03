@@ -56,7 +56,7 @@ export class Bullet extends Phaser.GameObjects.Container {
         this.lifespan = 1000 / speedMod;
 
         if (this.scene.scene.isVisible()) {
-            this.emitter.flow(0)  // argument: frequency (0 = always)
+            this.emitter.flow(20)  // argument: frequency (0 = always)
             this.emitter.startFollow(this.bulletImage);
             // this.scene.children.bringToTop(this.bulletImage);
             this.scene.children.bringToTop(this.particles);
@@ -65,10 +65,16 @@ export class Bullet extends Phaser.GameObjects.Container {
 
     }
 
-    hit() {
+    onBulletEnd() {
         this.setActive(false);
         this.setVisible(false);
-        this.emitter.explode(10, this.bulletImage.x, this.bulletImage.y)
+    }
+
+    hit() {
+        if(this.scene.scene.isVisible()) {
+            this.emitter.explode(10, this.bulletImage.x, this.bulletImage.y)
+        }
+        this.onBulletEnd();
     }
 
     update(_, delta) {
@@ -82,11 +88,8 @@ export class Bullet extends Phaser.GameObjects.Container {
         (this.body as Phaser.Physics.Arcade.Body).setCircle(RADIUS, this.bulletImage.x, this.bulletImage.y);
 
         if (this.lifespan <= 0) {
-            this.setActive(false);
-            this.setVisible(false);
-            this.particles.destroy(); // disable emittor (also could explode it)
-            this.emitter.manager.removeEmitter(this.emitter)
-            this.destroy()
+            this.onBulletEnd()
+            this.emitter.stop()
         }
     }
 }
