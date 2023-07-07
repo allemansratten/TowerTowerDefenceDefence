@@ -8,6 +8,7 @@ import { TowerConfig, RANGE_INDICATOR_CONFIG } from "./config";
 import { PlayerInfo } from "./playerInfo";
 import { EnemyBase } from "./enemy";
 import { HudScene } from "./scenes/hudScene";
+import ParticleEmitterConfig = Phaser.Types.GameObjects.Particles.ParticleEmitterConfig;
 
 
 // todo: move to scene?
@@ -30,13 +31,18 @@ function getEnemy(x, y, range, enemies, numToGet): EnemyBase[] {
     }
     return null
 }
+class Foo extends Phaser.GameObjects.Container {
+    constructor(scene: Phaser.Scene) {
+        super(scene, 0, 0)
+    }
+}
 
 
 export class Tower extends Phaser.GameObjects.Container {
     config: TowerConfig
     stats: TowerConfig
 
-    scene: TDScene
+    // scene: TDScene
 
     towerTurret: _TowerTurret
     towerMid: Phaser.GameObjects.Sprite
@@ -52,7 +58,7 @@ export class Tower extends Phaser.GameObjects.Container {
     yCoord: number
 
     // These are used for the levelup effect
-    particles: Phaser.GameObjects.Particles.ParticleEmitterManager
+    // ParticleEmitterConfigparticles: Phaser.GameObjects.Particles.ParticleEmitter
     emitter: Phaser.GameObjects.Particles.ParticleEmitter
 
     private innerTowerSceneKey: string
@@ -62,20 +68,22 @@ export class Tower extends Phaser.GameObjects.Container {
         this.healthBar = new HealthBar(towerScene)
         this.scene = towerScene;
 
-        this.particles = this.scene.add.particles('particle_red');
-        this.emitter = this.particles.createEmitter({
+        // TODO fix ordering, now it's behind the tower
+        const config : ParticleEmitterConfig = {
             lifespan: 200,
             blendMode: 'ADD',
             speed: 0,
             scale: {start: 0, end: 1},
-            on: false
-        });
+            emitting: false,
+        }
+
+        this.emitter = this.scene.add.particles(this.xCoord,this.yCoord, 'particle_red', config);
     }
 
     public levelUp() {
         this.level++;
         if (this.scene.input.enabled) {
-            this.scene.metaScene.soundManager.levelupSound.play();
+            (this.scene as TDScene).metaScene.soundManager.levelupSound.play();
             this.emitter.explode(20, this.xCoord, this.yCoord);  // this.x doesn't work btw
         }
     }
@@ -122,13 +130,13 @@ export class Tower extends Phaser.GameObjects.Container {
             });
             this.rangeIndicator.setVisible(true);
 
-            let hudScene = this.scene.scene.get("hudScene") as HudScene
+            let hudScene = this.scene.scene.get<HudScene>("hudScene") as HudScene
             hudScene.setDescriptionTower(this.config, this)
         });
         this.towerBase.on('pointerout', () => { this.rangeIndicator.setVisible(false) });
 
-        this.towerTurret.place(i, j, this.scene.terrain);
-        this.scene.terrain.placeTower(i, j, this);
+        this.towerTurret.place(i, j, (this.scene as TDScene).terrain);
+        (this.scene as TDScene).terrain.placeTower(i, j, this);
 
         this.add(this.towerTurret);
 
@@ -157,7 +165,8 @@ export class Tower extends Phaser.GameObjects.Container {
         })
     }
 
-    update(_, delta) {
+
+    override update(_, delta) {
         delta *= PlayerInfo.timeScale * ( + !PlayerInfo.isPaused);
 
         this.towerTurret.update(delta)
@@ -186,19 +195,18 @@ export class Tower extends Phaser.GameObjects.Container {
 
 abstract class _TowerTurret extends Phaser.GameObjects.Image {
     nextTic: number
-    x: number
-    y: number
     baseX: number
     baseY: number
-    parent: Tower
+    parentTower: Tower
 
-    scene: TDScene
+    tdScene: TDScene
 
     constructor(scene: TDScene, sprite: string, tint: number, parent: Tower) {
         super(scene, 0, 0, 'towertops', sprite);
-        this.parent = parent;
+        this.parentTower = parent;
         this.setTint(tint);
         this.nextTic = 0;
+        this.tdScene = scene
     }
 
     // we will place the tower according to the grid
@@ -210,8 +218,8 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
 
     fire() {
         let enemies = getEnemy(
-            this.x, this.y, this.parent.stats.range(this.parent.level),
-            this.scene.allEnemies, 1
+            this.x, this.y, this.parentTower.stats.range(this.parentTower.level),
+            this.tdScene.allEnemies, 1
         );
         if (enemies) {
             let enemy = enemies[0]
@@ -219,19 +227,19 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
             let [xPred, yPred] = this.predictEnemyPositionForShot(enemy)
             let angle = Phaser.Math.Angle.Between(this.x, this.y, xPred, yPred);
 
-            let damage = this.parent.stats.damage(this.parent.level)
-            this.scene.addBullet(
+            let damage = this.parentTower.stats.damage(this.parentTower.level)
+            this.tdScene.addBullet(
                 this.x, this.y, angle,
                 damage,
-                this.parent.stats.range(this.parent.level),
-                this.parent.stats.bulletSpeedMod
+                this.parentTower.stats.range(this.parentTower.level),
+                this.parentTower.stats.bulletSpeedMod
             );
             this.fireAnimation(angle, damage);
-            if (this.scene.input.enabled) {
-                if (this.parent.stats.name === "Sniper")  // temporary hack
-                    this.scene.metaScene.soundManager.sniperSound.play();
+            if (this.tdScene.input.enabled) {
+                if (this.parentTower.stats.name === "Sniper")  // temporary hack
+                    this.tdScene.metaScene.soundManager.sniperSound.play();
                 else
-                    this.scene.metaScene.soundManager.shootSound.play();
+                    this.tdScene.metaScene.soundManager.shootSound.play();
             }
             return true;
         }
@@ -243,12 +251,12 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
 
         // Compute the time to hit enemy when aiming directly at it
         let distance = Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y)
-        let speed = this.parent.stats.bulletSpeedMod * this.parent.stats.range(this.parent.level)
+        let speed = this.parentTower.stats.bulletSpeedMod * this.parentTower.stats.range(this.parentTower.level)
         let msToHit = distance / speed * 1000
 
         // Shoot at the point where the enemy will be after msToHit milliseconds.
         let t2 = enemy.follower.t + enemy.stats.speed * msToHit
-        let res = this.scene.terrain.path.getPoint(Math.min(t2, 1))
+        let res = this.tdScene.terrain.path.getPoint(Math.min(t2, 1))
         return [res.x + enemy.xOffset, res.y + enemy.yOffset]
     }
 
@@ -257,9 +265,9 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
         let recoil = Math.min(damage * 0.5, 25)
         this.x = this.baseX
         this.y = this.baseY
-        this.scene.tweens.add({
+        this.tdScene.tweens.add({
             targets: this,
-            duration: Math.min(this.parent.config.firerate(this.parent.level) * 0.8, 100 + damage),
+            duration: Math.min(this.parentTower.config.firerate(this.parentTower.level) * 0.8, 100 + damage),
             x: this.x + Math.cos(angle + Math.PI) * recoil,
             y: this.y + Math.sin(angle + Math.PI) * recoil,
             ease: 'Quad',
@@ -273,7 +281,7 @@ abstract class _TowerTurret extends Phaser.GameObjects.Image {
 
         if (this.lastTime > this.nextTic) {
             if (this.fire())
-                this.nextTic = this.lastTime + this.parent.stats.firerate(this.parent.level)
+                this.nextTic = this.lastTime + this.parentTower.stats.firerate(this.parentTower.level)
             else
                 this.nextTic = this.lastTime + 50;
         }
@@ -297,24 +305,24 @@ export class MultishotTurret extends _TowerTurret {
 
     fire() {  // this behaviour should be in _TowerTurret.fire btw
         let numTargets = 3
-        if (this.parent.stats.numTargets) {
-            numTargets = this.parent.stats.numTargets(this.parent.level);
+        if (this.parentTower.stats.numTargets) {
+            numTargets = this.parentTower.stats.numTargets(this.parentTower.level);
         }
-        let enemies = getEnemy(this.x, this.y, this.parent.stats.range(this.parent.level), this.scene.allEnemies, numTargets);
+        let enemies = getEnemy(this.x, this.y, this.parentTower.stats.range(this.parentTower.level), (this.scene as TDScene).allEnemies, numTargets);
 
         if (enemies && enemies.length > 0) {
             for (let enemy of enemies) {
                 let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-                let damage = this.parent.stats.damage(this.parent.level)
-                this.scene.addBullet(
+                let damage = this.parentTower.stats.damage(this.parentTower.level);
+                (this.scene as TDScene).addBullet(
                     this.x, this.y, angle,
                     damage,
-                    this.parent.stats.range(this.parent.level),
-                    this.parent.stats.bulletSpeedMod
+                    this.parentTower.stats.range(this.parentTower.level),
+                    this.parentTower.stats.bulletSpeedMod
                 );
                 this.fireAnimation(angle, damage)
-                if (this.scene == this.scene.metaScene.activeScene)
-                    this.scene.metaScene.soundManager.multishotSound.play();  // this should be in config if this were done properly
+                if ((this.scene as TDScene) == (this.scene as TDScene).metaScene.activeScene)
+                (this.scene as TDScene).metaScene.soundManager.multishotSound.play();  // this should be in config if this were done properly
             }
             return true
         }

@@ -14,7 +14,7 @@ export class Bullet extends Phaser.GameObjects.Container {
     damage: integer
 
     bulletImage: Phaser.GameObjects.Image
-    particles: Phaser.GameObjects.Particles.ParticleEmitterManager
+    // particles: Phaser.GameObjects.Particles.ParticleEmitterManager
     emitter: Phaser.GameObjects.Particles.ParticleEmitter
 
     constructor(scene) {
@@ -28,8 +28,8 @@ export class Bullet extends Phaser.GameObjects.Container {
         this.bulletImage = this.scene.add.image(0, 0, 'bullet')
         this.add(this.bulletImage)
 
-        this.particles = this.scene.add.particles('particle_red')
-        this.emitter = this.particles.createEmitter({
+        this.emitter = this.scene.add.particles(0,0,'particle_red',
+        {
             speed: 100,
             scale: {start: 0.3, end: 0},
             blendMode: 'ADD',
@@ -59,7 +59,8 @@ export class Bullet extends Phaser.GameObjects.Container {
             this.emitter.flow(20)  // argument: frequency (0 = always)
             this.emitter.startFollow(this.bulletImage);
             // this.scene.children.bringToTop(this.bulletImage);
-            this.scene.children.bringToTop(this.particles);
+            // TODO is this correct?
+            this.scene.children.bringToTop(this.emitter);
             this.setVisible(true);
         }
 
