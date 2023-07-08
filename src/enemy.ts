@@ -29,7 +29,7 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         this.setInteractive();
         this.on('pointerover', () => {
             if (this.scene.input.enabled)
-                (this.scene.scene.get<HudScene>('hudScene') as HudScene).setDescriptionEnemy(this);
+                this.scene.scene.get<HudScene>('hudScene').setDescriptionEnemy(this);
         });
     }
 
@@ -66,12 +66,12 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         this.setActive(false);
         this.setVisible(false);
         if (this.scene.sceneLevel === 0) {
-            const hudScene = this.scene.scene.get<HudScene>("hudScene") as HudScene
+            const hudScene = this.scene.scene.get<HudScene>("hudScene")
 
             PlayerInfo.hp -= this.stats.damage;
             hudScene.hpRedness = 1
 
-            const metaScene = this.scene.scene.get<MetaScene>("metaScene") as MetaScene
+            const metaScene = this.scene.scene.get<MetaScene>("metaScene")
             metaScene.getActiveScene().cameras.main.shake(200, 0.005)
             this.scene.metaScene.soundManager.damageSound.play();
 

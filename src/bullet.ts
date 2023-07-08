@@ -14,7 +14,6 @@ export class Bullet extends Phaser.GameObjects.Container {
     damage: integer
 
     bulletImage: Phaser.GameObjects.Image
-    // particles: Phaser.GameObjects.Particles.ParticleEmitterManager
     emitter: Phaser.GameObjects.Particles.ParticleEmitter
 
     constructor(scene) {

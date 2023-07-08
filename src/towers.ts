@@ -29,18 +29,10 @@ function getEnemy(x, y, range, enemies, numToGet): EnemyBase[] {
     }
     return null
 }
-class Foo extends Phaser.GameObjects.Container {
-    constructor(scene: Phaser.Scene) {
-        super(scene, 0, 0)
-    }
-}
-
 
 export class Tower extends Phaser.GameObjects.Container {
     config: TowerConfig
     stats: TowerConfig
-
-    // scene: TDScene
 
     towerTurret: _TowerTurret
     towerMid: Phaser.GameObjects.Sprite
@@ -128,7 +120,7 @@ export class Tower extends Phaser.GameObjects.Container {
             });
             this.rangeIndicator.setVisible(true);
 
-            let hudScene = this.scene.scene.get<HudScene>("hudScene") as HudScene
+            let hudScene = this.scene.scene.get<HudScene>("hudScene")
             hudScene.setDescriptionTower(this.config, this)
         });
         this.towerBase.on('pointerout', () => { this.rangeIndicator.setVisible(false) });
@@ -318,8 +310,10 @@ export class MultishotTurret extends _TowerTurret {
                     this.parent.stats.bulletSpeedMod
                 );
                 this.fireAnimation(angle, damage)
-                if (this.tdScene == this.tdScene.metaScene.activeScene)
-                this.tdScene.metaScene.soundManager.multishotSound.play();  // this should be in config if this were done properly
+                if (this.tdScene == this.tdScene.metaScene.activeScene) {
+                    // this should be in config if this were done properly
+                    this.tdScene.metaScene.soundManager.multishotSound.play();
+                }
             }
             return true
         }
