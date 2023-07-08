@@ -64,7 +64,6 @@ const config: webpack.Configuration & { devServer: any } = {
       cacheGroups: {
         commons: {
           test: /[\\/]node_modules[\\/]/,
-          // name: 'vendors',
           chunks: 'all'
         }
       }
