@@ -49,7 +49,6 @@ const config: webpack.Configuration & { devServer: any } = {
           }
         ],
       }
-
      ),
     new webpack.DefinePlugin({
       'typeof CANVAS_RENDERER': JSON.stringify(true),
