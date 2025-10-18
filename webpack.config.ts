@@ -1,9 +1,11 @@
-const path = require('path');
-const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+import * as webpack from 'webpack';
+import * as path from 'path'
+import * as CopyPlugin from "copy-webpack-plugin";
+import * as HtmlWebpackPlugin from "html-webpack-plugin";
 const distDir = "dist_post_ld"
 
-module.exports = {
+
+const config: webpack.Configuration & { devServer: any } = {
   entry: {
     app: './src/main.ts',
     vendors: ['phaser']
@@ -26,32 +28,35 @@ module.exports = {
   },
 
   output: {
-    filename: 'app.bundle.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, distDir)
   },
 
   mode: 'development',
 
   devServer: {
-    contentBase: path.resolve(__dirname, distDir),
+    static: path.resolve(__dirname, distDir),
     // https: true
   },
 
   plugins: [
-    new CopyWebpackPlugin([
+    new CopyPlugin(
       {
-        from: path.resolve(__dirname, 'index.html'),
-        to: path.resolve(__dirname, distDir)
-      },
-      {
-        from: path.resolve(__dirname, 'assets', '**', '*'),
-        to: path.resolve(__dirname, distDir)
+        patterns:  [
+          {
+            from: path.resolve(__dirname, 'assets', '**', '*'),
+            to: path.resolve(__dirname, distDir)
+          }
+        ],
       }
-    ]),
+     ),
     new webpack.DefinePlugin({
       'typeof CANVAS_RENDERER': JSON.stringify(true),
       'typeof WEBGL_RENDERER': JSON.stringify(true)
     }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'index.html')
+    })
   ],
 
   optimization: {
@@ -59,10 +64,11 @@ module.exports = {
       cacheGroups: {
         commons: {
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
           chunks: 'all'
         }
       }
     }
   }
 };
+
+export default config;

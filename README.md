@@ -2,7 +2,8 @@
 
 Towers do all the work in TD games. But who will defend the defenders themselves?
 
-[Original LD version playable here](https://allemansratten.github.io/LD48/dist/index.html), [improved (rebalanced & slightly fixed) version here](https://allemansratten.github.io/LD48/dist_post_ld/index.html).
+[Improved (rebalanced & slightly fixed) version here](https://allemansratten.github.io/TowerTowerDefenceDefence/dist_post_ld/index.html),
+[original LD version playable here](https://allemansratten.github.io/TowerTowerDefenceDefence/dist/index.html).
 
 ## Credits
 
@@ -30,4 +31,4 @@ and go to https://localhost:8080/.
 
 ## Deployment
 
-The branch `gh-pages` is deployed at https://allemansratten.github.io/LD48/.
+The branch `gh-pages` is deployed at https://allemansratten.github.io/TowerTowerDefenceDefence/.

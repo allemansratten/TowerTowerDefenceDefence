@@ -1,5 +1,5 @@
 {
-  "name": "levy-sluchat",
+  "name": "tower-tower-defence-defence",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,21 +9,27 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/allemansratten/levy-sluchat.git"
+    "url": "git+https://github.com/allemansratten/TowerTowerDefenceDefence.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/allemansratten/levy-sluchat/issues"
+    "url": "https://github.com/allemansratten/TowerTowerDefenceDefence/issues"
   },
-  "homepage": "https://github.com/allemansratten/levy-sluchat#readme",
+  "homepage": "https://github.com/allemansratten/TowerTowerDefenceDefence",
   "dependencies": {
-    "copy-webpack-plugin": "^5.1.1",
-    "phaser": "^3.22.0",
-    "ts-loader": "^7.0.0",
-    "typescript": "^3.8.3",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "copy-webpack-plugin": "^11.0.0",
+    "phaser": "^3.60.0",
+    "ts-loader": "^9.4.4",
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.1",
+    "@types/webpack": "^5.28.1",
+    "html-webpack-plugin": "^5.5.3",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
   }
 }

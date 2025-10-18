@@ -4,6 +4,7 @@ import { PlayerInfo } from "./playerInfo";
 import * as cfg from "./config";
 import { HudScene } from "./scenes/hudScene";
 import { MetaScene } from "./scenes/metaScene";
+import {Math as PMath} from 'phaser';
 
 
 export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
@@ -12,8 +13,8 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
     follower: any
     hp: integer
-    yOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
-    xOffset: number = Phaser.Math.RND.integerInRange(-20, 20);
+    yOffset: number = PMath.RND.integerInRange(-20, 20);
+    xOffset: number = PMath.RND.integerInRange(-20, 20);
     scene: TDScene // type assertion
     speedModifier: number = 1;
 
@@ -23,12 +24,12 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
 
         this.config = stats
         this.stats = {...stats}  // shallow copy, idk how to do deep copy
-        this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
+        this.follower = { t: 0, vec: new PMath.Vector2() };
 
         this.setInteractive();
         this.on('pointerover', () => {
             if (this.scene.input.enabled)
-                (this.scene.scene.get('hudScene') as HudScene).setDescriptionEnemy(this);
+                this.scene.scene.get<HudScene>('hudScene').setDescriptionEnemy(this);
         });
     }
 
@@ -65,12 +66,12 @@ export abstract class EnemyBase extends Phaser.GameObjects.Sprite {
         this.setActive(false);
         this.setVisible(false);
         if (this.scene.sceneLevel === 0) {
-            const hudScene = this.scene.scene.get("hudScene") as HudScene
+            const hudScene = this.scene.scene.get<HudScene>("hudScene")
 
             PlayerInfo.hp -= this.stats.damage;
             hudScene.hpRedness = 1
 
-            const metaScene = this.scene.scene.get("metaScene") as MetaScene
+            const metaScene = this.scene.scene.get<MetaScene>("metaScene")
             metaScene.getActiveScene().cameras.main.shake(200, 0.005)
             this.scene.metaScene.soundManager.damageSound.play();
 
