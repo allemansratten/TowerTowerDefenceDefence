@@ -63,4 +63,15 @@
       </p>
     </div>
   </body>
+  <script>
+    // This is for deployment. There is an index.html in the root, but that's not the built game - that one is in /dist_post_ld/.
+    // So redirect to it. But when developing locally, there is no /dist_post_ld/ folder, so don't redirect then.
+    fetch('/dist_post_ld/', { method: 'HEAD' })
+      .then(response => {
+        if (response.ok) {
+          window.location.href = '/dist_post_ld/';
+        }
+      })
+      .catch(() => {});
+  </script>
 </html>
